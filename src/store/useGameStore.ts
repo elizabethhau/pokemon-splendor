@@ -168,14 +168,15 @@ export const useGameStore = create<GameStore>((set, get) => ({
     if (game.phase !== PHASE.DISCARDING) throw new Error('No discard required');
 
     const totalDiscard = Object.values(tokens).reduce<number>((s, n) => s + (n ?? 0), 0);
-    if (totalDiscard === 0) throw new Error('Must discard at least 1 token');
+    if (totalDiscard <= 0) throw new Error('Must discard at least 1 token');
 
     const idx = game.currentPlayerIndex;
     const player = game.players[idx];
-    const newTokens = { ...player.energyTokens } as Partial<Record<TokenType, number>>;
-    const newSupply = { ...game.board.energySupply } as Partial<Record<TokenType, number>>;
+    const newTokens = { ...player.energyTokens };
+    const newSupply = { ...game.board.energySupply };
 
     for (const [type, count] of Object.entries(tokens) as [TokenType, number][]) {
+      if (count <= 0) throw new Error(`Discard count must be positive for ${type}`);
       const held = newTokens[type] ?? 0;
       if (held < count) throw new Error(`Player does not hold ${count} ${type} tokens to discard`);
       newTokens[type] = held - count;
@@ -222,8 +223,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
     }
 
     // Payment: type bonuses reduce cost; remaining paid from energy tokens; Ditto covers the rest
-    const energyAfter = { ...player.energyTokens } as Partial<Record<TokenType, number>>;
-    const supplyAfter = { ...board.energySupply } as Partial<Record<TokenType, number>>;
+    const energyAfter = { ...player.energyTokens };
+    const supplyAfter = { ...board.energySupply };
     let dittoNeeded = 0;
 
     for (const [type, rawCost] of Object.entries(card.cost) as [EnergyType, number][]) {

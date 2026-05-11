@@ -1,5 +1,6 @@
 import { DeckMode, EnergyType, EvolutionTier, GameState, Legendary, PlayerState, PokemonCard, BoardState, TokenType } from '../types/game';
 import { MAX_TOKENS, PHASE } from '../constants';
+import { canClaimLegendary } from './selectors';
 import first151Data from '../data/first-151.json';
 
 export function totalTokens(energyTokens: Partial<Record<TokenType, number>>): number {
@@ -10,11 +11,7 @@ export function claimLegendaries(
   typeBonuses: Partial<Record<EnergyType, number>>,
   available: Legendary[],
 ): Legendary[] {
-  return available.filter(leg =>
-    (Object.entries(leg.requirements) as [EnergyType, number][]).every(
-      ([type, required]) => (typeBonuses[type] ?? 0) >= required
-    )
-  );
+  return available.filter(leg => canClaimLegendary({ typeBonuses }, leg));
 }
 
 export function shuffle<T>(arr: T[]): T[] {

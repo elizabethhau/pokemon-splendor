@@ -516,3 +516,97 @@ Replaced `claimLegendaries(player.typeBonuses, [legendary]).length > 0` with a d
 ### Redundant casts still present
 
 `src/store/useGameStore.ts` — `trainCard` and `discardTokens` still carry `as Partial<Record<TokenType, number>>` casts on spreads of already-typed fields. Flagged in fourth-review lessons; still harmless, still unresolved.
+
+---
+
+# Lessons Learned — Seventh Review
+
+Findings from the staff engineer review of the sixth implementation. All bugs below were fixed.
+
+---
+
+## Bugs Fixed
+
+### 17. `discardTokens` accepted negative token counts — silently added tokens instead of removing them
+
+**File:** `src/store/useGameStore.ts`
+
+The sixth-review guard (`totalDiscard === 0`) blocked empty or all-zero discard selections, but not negative-count entries. `{ Fire: -1 }` produced `totalDiscard = -1 ≠ 0`, slipped past the check, then computed `newTokens.Fire = held - (-1) = held + 1` — adding a Fire token — while simultaneously decrementing the supply. The player gained a token for "free" with no turn action consumed.
+
+**Fix:**
+1. Changed `=== 0` to `<= 0` to also catch pure-negative totals.
+2. Added per-entry guard inside the loop:
+
+```ts
+if (count <= 0) throw new Error(`Discard count must be positive for ${type}`);
+```
+
+The total guard catches `{ Fire: -2 }` (sum ≤ 0). The per-entry guard catches mixed cases like `{ Fire: -1, Water: 3 }` (sum > 0, but Fire entry would still add tokens if not blocked).
+
+**Rule:** The `held < count` check guards against over-discarding but silently passes when `count` is negative (negative is never greater than a non-negative held amount). Guards for under-discarding and over-discarding are independent — you need both.
+
+---
+
+### 18. `putCardInFace` test helper created duplicate face-up cards — flaky tests
+
+**Files:** `src/__tests__/trainCard.test.ts`, `src/__tests__/scoutCard.test.ts`, `src/__tests__/legendaryCollection.test.ts`
+
+`putCardInFace` injected a card at `face[0]` while preserving `face[1..3]` via `.slice(1)`. If the card was already in `face[1]`, `face[2]`, or `face[3]` from the initial shuffle, the face array would contain two copies. Tests that subsequently checked `expect(board.tier1Face).not.toContainEqual(card)` would fail if the card was removed from `face[0]` (trained/scouted) but its duplicate at another index remained.
+
+These tests passed when the card happened to be shuffled into the deck rather than the face — roughly 4/N probability of a flaky failure per run.
+
+**Fix:** Filter out any existing copy of the card before injecting at position [0], and cap the remaining cards at 3 to maintain the invariant that face always has exactly 4 slots when the deck is non-empty:
+
+```ts
+const rest = s.game!.board[faceKey]
+  .filter(c => c.pokedexNumber !== card.pokedexNumber)
+  .slice(0, 3);
+return { game: { ...s.game!, board: { ...s.game!.board, [faceKey]: [card, ...rest] } } };
+```
+
+**Rule:** Test helpers that inject specific cards into the board must ensure the card appears exactly once. Real game data cards (Bulbasaur #1, Charmander #4, etc.) can appear anywhere in a shuffled deal; `.slice(1)` is not a deduplication strategy — it just happens to work when the card is in the deck rather than the face.
+
+---
+
+## Cleanup Applied
+
+### Redundant `as Partial<Record<TokenType, number>>` casts removed
+
+**File:** `src/store/useGameStore.ts` — `trainCard` and `discardTokens`
+
+The spreads `{ ...player.energyTokens }` and `{ ...game.board.energySupply }` already produce `Partial<Record<TokenType, number>>` because the source fields are typed as such. The casts were added defensively during the lesson-7 type-safety cleanup and have been flagged as unnecessary in the two subsequent reviews. Removed.
+
+---
+
+## Testing Gaps Filled
+
+| Gap | File | Why it matters |
+|-----|------|----------------|
+| `discardTokens` with negative count throws, not silently adds tokens | `takeTokens.test.ts` (Test 12) | The `held < count` guard doesn't catch negatives; this test would have caught the bug before it shipped |
+| `takeTokens` succeeds when supply equals exactly `MIN_SUPPLY_FOR_TAKE_TWO` (boundary) | `takeTokens.test.ts` (Test 11) | Only the failure side of the boundary (supply = 3) was tested; the passing edge (supply = 4) was untested |
+
+---
+
+## Observations (no fix applied)
+
+### `spriteUriCache.ts` is intentional scaffolding for offline image caching
+
+**File:** `src/utils/spriteUriCache.ts`
+
+Phase 1 stores only the CDN URL. The async interface and AsyncStorage dependency are forward-looking — when offline support ships, the implementation will swap to storing base64 image blobs so sprites work without network access. The async signature means callers won't need to change when the implementation upgrades.
+
+A comment was added to the file to make this intent explicit and prevent future reviewers from flagging it as unnecessary overhead.
+
+### `claimLegendaries` and `canClaimLegendary` — consolidated to single source of truth
+
+**Files:** `src/store/gameRules.ts`, `src/store/selectors.ts`
+
+The "does a set of type bonuses meet a legendary's requirements?" predicate previously existed in both functions independently. `canClaimLegendary` was made the canonical implementation by narrowing its parameter from `PlayerState` to `Pick<PlayerState, 'typeBonuses'>`. This change is structurally compatible — all existing callers that pass a full `PlayerState` continue to work unchanged.
+
+`claimLegendaries` now delegates:
+
+```ts
+return available.filter(leg => canClaimLegendary({ typeBonuses }, leg));
+```
+
+No casts required. `gameRules.ts` imports `canClaimLegendary` from `selectors.ts`; `selectors.ts` does not import from `gameRules.ts`, so there is no circular dependency.

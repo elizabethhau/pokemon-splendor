@@ -24,7 +24,7 @@ export function canAfford(player: PlayerState, card: PokemonCard): boolean {
   return playerDitto >= 0;
 }
 
-export function canClaimLegendary(player: PlayerState, legendary: Legendary): boolean {
+export function canClaimLegendary(player: Pick<PlayerState, 'typeBonuses'>, legendary: Legendary): boolean {
   return (Object.entries(legendary.requirements) as [EnergyType, number][]).every(
     ([type, required]) => (player.typeBonuses[type] ?? 0) >= required
   );

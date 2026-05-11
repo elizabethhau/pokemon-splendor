@@ -13,12 +13,12 @@ const BULBASAUR: PokemonCard = {
 
 function putCardInFace(card: PokemonCard) {
   const faceKey = (['tier1Face', 'tier2Face', 'tier3Face'] as const)[card.evolutionTier - 1];
-  useGameStore.setState((s) => ({
-    game: {
-      ...s.game!,
-      board: { ...s.game!.board, [faceKey]: [card, ...s.game!.board[faceKey].slice(1)] },
-    },
-  }));
+  useGameStore.setState((s) => {
+    const rest = s.game!.board[faceKey].filter(c => c.pokedexNumber !== card.pokedexNumber).slice(0, 3);
+    return {
+      game: { ...s.game!, board: { ...s.game!.board, [faceKey]: [card, ...rest] } },
+    };
+  });
 }
 
 beforeEach(() => {

@@ -111,6 +111,40 @@ test('discardTokens throws when handoff is pending', () => {
   expect(() => useGameStore.getState().discardTokens({ Fire: 1 })).toThrow('Acknowledge handoff');
 });
 
+// ─── Test 11 ──────────────────────────────────────────────────────────────────
+test('takeTokens succeeds when supply has exactly MIN_SUPPLY_FOR_TAKE_TWO (4) of a type', () => {
+  // Boundary: supply = 4 is the minimum allowed for taking 2 of the same type
+  useGameStore.setState((s) => ({
+    game: {
+      ...s.game!,
+      board: { ...s.game!.board, energySupply: { ...s.game!.board.energySupply, Fire: 4 } },
+    },
+  }));
+  expect(() => useGameStore.getState().takeTokens({ Fire: 2 })).not.toThrow();
+  expect(useGameStore.getState().game!.board.energySupply.Fire).toBe(2);
+});
+
+// ─── Test 12 ──────────────────────────────────────────────────────────────────
+test('discardTokens throws when a negative count is provided (would add tokens instead)', () => {
+  useGameStore.setState((s) => ({
+    game: {
+      ...s.game!,
+      phase: 'discarding',
+      players: s.game!.players.map((p, i) =>
+        i === 0 ? { ...p, energyTokens: { Fire: 5, Water: 5, Grass: 3 } } : p
+      ),
+    },
+  }));
+
+  // Mixed negative+positive (totalDiscard = 2 > 0, so the total guard won't fire)
+  // — the per-entry guard must catch the negative Fire count
+  expect(() => useGameStore.getState().discardTokens({ Fire: -1, Water: 3 }))
+    .toThrow('Discard count must be positive');
+  // tokens unchanged
+  expect(useGameStore.getState().game!.players[0].energyTokens.Fire).toBe(5);
+  expect(useGameStore.getState().game!.players[0].energyTokens.Water).toBe(5);
+});
+
 // ─── Test 7 ───────────────────────────────────────────────────────────────────
 test('after taking pushes player past 10, discardTokens brings them back to ≤10', () => {
   // Give Alice 9 tokens manually
