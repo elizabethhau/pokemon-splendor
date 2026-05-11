@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { EnergyType, EvolutionTier, GameConfig, GameState, PlayerState, PokemonCard, Legendary, Mythical, PokeballTier, BoardState } from '../types/game';
+import { DeckMode, EnergyType, EvolutionTier, GameConfig, GameState, PlayerState, PokemonCard, Legendary, Mythical, PokeballTier, BoardState } from '../types/game';
 import first151Data from '../data/first-151.json';
 import legData from '../data/legendaries.json';
 import mewData from '../data/mew.json';
@@ -25,7 +25,7 @@ interface GameStore {
 }
 
 function totalTokens(energyTokens: Partial<Record<string, number>>): number {
-  return Object.values(energyTokens).reduce((s, n) => s + (n ?? 0), 0);
+  return Object.values(energyTokens).reduce<number>((s, n) => s + (n ?? 0), 0);
 }
 
 function claimLegendaries(
@@ -48,7 +48,7 @@ function shuffle<T>(arr: T[]): T[] {
   return out;
 }
 
-function buildDecks(deckMode: string) {
+function buildDecks(deckMode: DeckMode) {
   // Phase 1: only first151 mode; balanced mode reuses same data until #16 ships
   const allCards = first151Data.cards as PokemonCard[];
   const tier1 = shuffle(allCards.filter(c => c.evolutionTier === 1));
@@ -69,6 +69,23 @@ function makePlayer(name: string, isAI: boolean, index: number): PlayerState {
     legendaries: [],
     mythical: null,
     pokeballs: {},
+  };
+}
+
+function applyDittoGrant(
+  player: PlayerState,
+  dittoInSupply: number,
+): { newPlayer: PlayerState; newDittoSupply: number } {
+  const dittoGain = dittoInSupply > 0 ? 1 : 0;
+  return {
+    newPlayer: {
+      ...player,
+      energyTokens: {
+        ...player.energyTokens,
+        Ditto: (player.energyTokens.Ditto ?? 0) + dittoGain,
+      },
+    },
+    newDittoSupply: dittoInSupply - dittoGain,
   };
 }
 
@@ -123,7 +140,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     const next = (game.currentPlayerIndex + 1) % game.players.length;
     const nextTurn = game.turnNumber + 1;
 
-    let phase = game.phase;
+    let phase: GameState['phase'] = game.phase;
     let finalRoundTriggerPlayerIndex = game.finalRoundTriggerPlayerIndex;
 
     if (phase === 'playing' && prevTP >= 20) {
@@ -157,7 +174,6 @@ export const useGameStore = create<GameStore>((set, get) => ({
     if (game.phase === 'gameOver') throw new Error('Game is over');
 
     const entries = Object.entries(tokens) as [EnergyType, number][];
-    const totalTaking = entries.reduce((s, [, n]) => s + n, 0);
     const supply = game.board.energySupply;
 
     // Validate: 3 different (all values 1, 3 distinct types) or 2 same (one type, value 2)
@@ -199,6 +215,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
   discardTokens: (tokens: DiscardSelection) => {
     const { game } = get();
     if (!game) return;
+    if (game.pendingHandoff) throw new Error('Acknowledge handoff before acting');
+    if (game.phase === 'gameOver') throw new Error('Game is over');
 
     const idx = game.currentPlayerIndex;
     const player = game.players[idx];
@@ -265,7 +283,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     // Update board: replace face-up slot from deck, or remove from scouted
     let newFace = [...board[faceKey]];
     let newDeck = [...board[deckKey]];
-    const newScouted = [...player.scoutedCards];
+    let newScouted = [...player.scoutedCards];
 
     if (faceIdx !== -1) {
       if (newDeck.length > 0) {
@@ -275,7 +293,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
         newFace = newFace.filter((_, i) => i !== faceIdx);
       }
     } else {
-      newScouted.splice(scoutedIdx, 1);
+      newScouted = newScouted.filter((_, i) => i !== scoutedIdx);
     }
 
     // Update player: type bonus, Pokeball, trained cards
@@ -343,45 +361,26 @@ export const useGameStore = create<GameStore>((set, get) => ({
     const faceIdx = game.board[faceKey].findIndex(c => c.pokedexNumber === card.pokedexNumber);
     if (faceIdx === -1) throw new Error(`${card.name} is not face-up on the board`);
 
-    // Refill face-up slot from deck (slot left empty if deck exhausted)
     const deck = game.board[deckKey];
-    let newFace: PokemonCard[];
-    let newDeck: PokemonCard[];
-    if (deck.length > 0) {
-      newFace = game.board[faceKey].map((c, i) => i === faceIdx ? deck[0] : c);
-      newDeck = deck.slice(1);
-    } else {
-      newFace = game.board[faceKey].filter((_, i) => i !== faceIdx);
-      newDeck = deck;
-    }
+    const newFace = deck.length > 0
+      ? game.board[faceKey].map((c, i) => i === faceIdx ? deck[0] : c)
+      : game.board[faceKey].filter((_, i) => i !== faceIdx);
+    const newDeck = deck.length > 0 ? deck.slice(1) : deck;
 
-    // Grant 1 Ditto if available
-    const dittoInSupply = game.board.energySupply.Ditto ?? 0;
-    const dittoGain = dittoInSupply > 0 ? 1 : 0;
+    const playerWithScout = { ...player, scoutedCards: [...player.scoutedCards, card] };
+    const { newPlayer, newDittoSupply } = applyDittoGrant(playerWithScout, game.board.energySupply.Ditto ?? 0);
+    const newPhase = totalTokens(newPlayer.energyTokens) > 10 ? 'discarding' : game.phase;
 
-    const newPlayer: PlayerState = {
-      ...player,
-      scoutedCards: [...player.scoutedCards, card],
-      energyTokens: {
-        ...player.energyTokens,
-        Ditto: (player.energyTokens.Ditto ?? 0) + dittoGain,
-      },
-    };
-
-    const newPhaseAfterScout = totalTokens(newPlayer.energyTokens) > 10 ? 'discarding' : game.phase;
     set({
       game: {
         ...game,
-        phase: newPhaseAfterScout,
+        phase: newPhase,
         players: game.players.map((p, i) => i === idx ? newPlayer : p),
         board: {
           ...game.board,
           [faceKey]: newFace,
           [deckKey]: newDeck,
-          energySupply: {
-            ...game.board.energySupply,
-            Ditto: dittoInSupply - dittoGain,
-          },
+          energySupply: { ...game.board.energySupply, Ditto: newDittoSupply },
         },
       },
     });
@@ -406,33 +405,19 @@ export const useGameStore = create<GameStore>((set, get) => ({
     if (deck.length === 0) throw new Error(`Tier ${tier} deck is empty`);
 
     const card = deck[0];
-    const newDeck = deck.slice(1);
+    const playerWithScout = { ...player, scoutedCards: [...player.scoutedCards, card] };
+    const { newPlayer, newDittoSupply } = applyDittoGrant(playerWithScout, game.board.energySupply.Ditto ?? 0);
+    const newPhase = totalTokens(newPlayer.energyTokens) > 10 ? 'discarding' : game.phase;
 
-    const dittoInSupply = game.board.energySupply.Ditto ?? 0;
-    const dittoGain = dittoInSupply > 0 ? 1 : 0;
-
-    const newPlayer: PlayerState = {
-      ...player,
-      scoutedCards: [...player.scoutedCards, card],
-      energyTokens: {
-        ...player.energyTokens,
-        Ditto: (player.energyTokens.Ditto ?? 0) + dittoGain,
-      },
-    };
-
-    const newPhaseAfterDeckScout = totalTokens(newPlayer.energyTokens) > 10 ? 'discarding' : game.phase;
     set({
       game: {
         ...game,
-        phase: newPhaseAfterDeckScout,
+        phase: newPhase,
         players: game.players.map((p, i) => i === idx ? newPlayer : p),
         board: {
           ...game.board,
-          [deckKey]: newDeck,
-          energySupply: {
-            ...game.board.energySupply,
-            Ditto: dittoInSupply - dittoGain,
-          },
+          [deckKey]: deck.slice(1),
+          energySupply: { ...game.board.energySupply, Ditto: newDittoSupply },
         },
       },
     });
@@ -449,7 +434,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
     const player = game.players[idx];
 
     if (!game.board.mew) throw new Error('Mew is not on the board');
-    if (player.legendaries.length < 2) throw new Error('Need ≥2 Legendaries to attempt a catch');
+    if (player.legendaries.length < game.board.mew.legendariesRequired)
+      throw new Error(`Need ≥${game.board.mew.legendariesRequired} Legendaries to attempt a catch`);
     if ((player.pokeballs[ball] ?? 0) < 1) throw new Error(`No ${ball} available`);
 
     const BASE_RATES: Record<PokeballTier, number> = {

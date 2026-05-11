@@ -104,6 +104,23 @@ test('throws when player has no Pokeball of the chosen tier', () => {
     .toThrow('No GreatBall available');
 });
 
+// ─── Test 6 ───────────────────────────────────────────────────────────────────
+test('catchMew reads legendariesRequired from mew state, not a hardcoded value', () => {
+  // Mew requiring 3 legendaries — player with only 2 should be blocked
+  useGameStore.setState((s) => ({
+    game: {
+      ...s.game!,
+      board: { ...s.game!.board, mew: { ...MEW, legendariesRequired: 3 } },
+      players: s.game!.players.map((p, i) =>
+        i === 0 ? { ...p, legendaries: [ARTICUNO, ZAPDOS], pokeballs: { Pokeball: 1 } } : p
+      ),
+    },
+  }));
+
+  expect(() => useGameStore.getState().catchMew('Pokeball', () => 0.1))
+    .toThrow('Need ≥3 Legendaries');
+});
+
 // ─── Test 2 ───────────────────────────────────────────────────────────────────
 test('failed catch consumes ball but leaves Mew on board and player.mythical null', () => {
   setupEligible();

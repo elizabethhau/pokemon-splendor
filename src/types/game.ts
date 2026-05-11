@@ -27,7 +27,7 @@ export interface Mythical {
   pokedexNumber: 151;
   name: 'Mew';
   trainerPoints: 5;
-  legendariesRequired: 2;
+  legendariesRequired: number;
 }
 
 export type PokeballTier = 'Pokeball' | 'GreatBall' | 'UltraBall' | 'MasterBall';

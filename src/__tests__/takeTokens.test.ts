@@ -80,6 +80,22 @@ test('discardTokens moves tokens from player hand back to supply', () => {
   expect(game!.board.energySupply.Fire).toBe(7);
 });
 
+// ─── Test 8 ───────────────────────────────────────────────────────────────────
+test('discardTokens throws when phase is gameOver', () => {
+  useGameStore.getState().takeTokens({ Fire: 1, Water: 1, Grass: 1 });
+  useGameStore.setState((s) => ({ game: { ...s.game!, phase: 'gameOver' } }));
+
+  expect(() => useGameStore.getState().discardTokens({ Fire: 1 })).toThrow('Game is over');
+});
+
+// ─── Test 9 ───────────────────────────────────────────────────────────────────
+test('discardTokens throws when handoff is pending', () => {
+  useGameStore.getState().takeTokens({ Fire: 1, Water: 1, Grass: 1 });
+  useGameStore.setState((s) => ({ game: { ...s.game!, pendingHandoff: true } }));
+
+  expect(() => useGameStore.getState().discardTokens({ Fire: 1 })).toThrow('Acknowledge handoff');
+});
+
 // ─── Test 7 ───────────────────────────────────────────────────────────────────
 test('after taking pushes player past 10, discardTokens brings them back to ≤10', () => {
   // Give Alice 9 tokens manually
