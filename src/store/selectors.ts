@@ -1,5 +1,4 @@
 import { EnergyType, GameState, Legendary, Mythical, PlayerState, PokemonCard } from '../types/game';
-import { claimLegendaries } from './gameRules';
 
 export function currentPlayer(game: GameState): PlayerState {
   return game.players[game.currentPlayerIndex];
@@ -26,7 +25,9 @@ export function canAfford(player: PlayerState, card: PokemonCard): boolean {
 }
 
 export function canClaimLegendary(player: PlayerState, legendary: Legendary): boolean {
-  return claimLegendaries(player.typeBonuses, [legendary]).length > 0;
+  return (Object.entries(legendary.requirements) as [EnergyType, number][]).every(
+    ([type, required]) => (player.typeBonuses[type] ?? 0) >= required
+  );
 }
 
 export function canCatchMew(player: PlayerState, mew: Mythical): boolean {

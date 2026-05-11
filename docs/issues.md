@@ -37,11 +37,17 @@ GitHub repo: https://github.com/elizabethhau/pokemon-splendor/issues
 | [#15](https://github.com/elizabethhau/pokemon-splendor/issues/15) | Rulebook Screen | #1 | [ ] |
 | [#16](https://github.com/elizabethhau/pokemon-splendor/issues/16) | Balanced Deck Mode | #5 | [ ] |
 
+## Phase 1 — UI
+
+| # | Issue | Blocked by | Status |
+|---|-------|-----------|--------|
+| [#18](https://github.com/elizabethhau/pokemon-splendor/issues/18) | Game Board UI (Playable End-to-End) | #9 | [ ] |
+
 ## Phase 1 — Polish
 
 | # | Issue | Blocked by | Status |
 |---|-------|-----------|--------|
-| [#17](https://github.com/elizabethhau/pokemon-splendor/issues/17) | Animation Polish | #9 | [ ] |
+| [#17](https://github.com/elizabethhau/pokemon-splendor/issues/17) | Animation Polish | #18 | [ ] |
 
 ---
 
@@ -64,5 +70,7 @@ GitHub repo: https://github.com/elizabethhau/pokemon-splendor/issues
                 │       └── #13 Stats
                 │           └── #14 Pokedex
                 └── #16 Balanced Deck
+#9 → #18 Game Board UI
+    └── #17 Animations
 #1 → #15 Rulebook (parallel track)
 ```

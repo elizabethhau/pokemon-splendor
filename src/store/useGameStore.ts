@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { EnergyType, EvolutionTier, GameConfig, GamePhase, GameState, PokemonCard, Legendary, Mythical, PokeballTier, TokenType } from '../types/game';
 import legData from '../data/legendaries.json';
 import mewData from '../data/mew.json';
-import { trainerPoints } from './selectors';
+import { trainerPoints, canAfford } from './selectors';
 import { totalTokens, claimLegendaries, buildDecks, makePlayer, applyScout, tierFaceKey, tierDeckKey } from './gameRules';
 import {
   BASE_CATCH_RATES, FACE_UP_COUNT, INITIAL_DITTO_SUPPLY, INITIAL_ENERGY_SUPPLY,
@@ -217,6 +217,9 @@ export const useGameStore = create<GameStore>((set, get) => ({
     if (faceIdx === -1 && scoutedIdx === -1) {
       throw new Error(`Card ${card.name} is not available to train`);
     }
+    if (!canAfford(player, card)) {
+      throw new Error(`Cannot afford ${card.name}`);
+    }
 
     // Payment: type bonuses reduce cost; remaining paid from energy tokens; Ditto covers the rest
     const energyAfter = { ...player.energyTokens } as Partial<Record<TokenType, number>>;
@@ -232,9 +235,6 @@ export const useGameStore = create<GameStore>((set, get) => ({
       dittoNeeded += effective - tokensPay;
     }
 
-    if (dittoNeeded > (energyAfter.Ditto ?? 0)) {
-      throw new Error(`Cannot afford ${card.name}`);
-    }
     energyAfter.Ditto = (energyAfter.Ditto ?? 0) - dittoNeeded;
     supplyAfter.Ditto = (supplyAfter.Ditto ?? 0) + dittoNeeded;
 

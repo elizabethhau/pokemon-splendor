@@ -26,7 +26,7 @@ export function shuffle<T>(arr: T[]): T[] {
   return out;
 }
 
-export function buildDecks(deckMode: DeckMode) {
+export function buildDecks(_deckMode: DeckMode) {
   // Phase 1: only first151 mode; balanced mode reuses same data until #16 ships
   const allCards = first151Data.cards as PokemonCard[];
   const tier1 = shuffle(allCards.filter(c => c.evolutionTier === 1));

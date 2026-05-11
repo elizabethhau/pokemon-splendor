@@ -420,3 +420,99 @@ Both were renamed to make the distinction unambiguous:
 | `dittoInSupply` | `boardDittoSupply` | Tokens on the board; decrements when a scout grants one to the player |
 
 **Rule:** When two variables represent the same game concept (Ditto tokens) but from different perspectives (player vs. board), the name must make the perspective explicit. Generic names like `dittoAvailable` invite silent mix-ups — a reader can't tell at a glance whether "available" means "in my hand" or "in the supply."
+
+---
+
+# Lessons Learned — Sixth Review (Selector / Logic Consistency)
+
+---
+
+## Issues Flagged
+
+### 1. `canAfford` and `trainCard` implement the same payment algorithm independently
+
+**Files:** `src/store/selectors.ts:15`, `src/store/useGameStore.ts:226`
+
+`canAfford` and the payment loop inside `trainCard` are the same algorithm written twice. Today they're identical. If either changes — a cost formula tweak, a wild-card rule adjustment — the UI can show a card as affordable while the action throws, with no compile-time signal.
+
+The fix: have `trainCard` call `canAfford` as a pre-check and throw early, then run its mutation loop with no affordability re-check. Or have `canAfford` return the computed payment breakdown (how much of each type, how much Ditto) so `trainCard` consumes the result rather than re-computing it.
+
+**Rule:** A UI predicate and the action it guards must share a single source of truth for their condition. Duplicating the check means the two can drift silently.
+
+---
+
+### 2. `buildDecks` accepts an unused typed parameter
+
+**File:** `src/store/gameRules.ts:29`
+
+```ts
+export function buildDecks(deckMode: DeckMode) {
+  // Phase 1: only first151 mode; balanced mode reuses same data until #16 ships
+```
+
+The `deckMode` parameter is typed as `DeckMode` but never read. The comment explains the intent, but TypeScript doesn't warn because the parameter is named (not `_deckMode`). A future reader or autocomplete won't distinguish this from an accidental omission.
+
+Fix: prefix with `_` (`_deckMode: DeckMode`) to signal the unused-by-design intent, or remove the parameter entirely until the balanced deck mode ships.
+
+---
+
+### 3. `canClaimLegendary` is indirect and allocates unnecessarily
+
+**File:** `src/store/selectors.ts:28`
+
+```ts
+export function canClaimLegendary(player: PlayerState, legendary: Legendary): boolean {
+  return claimLegendaries(player.typeBonuses, [legendary]).length > 0;
+}
+```
+
+This wraps `claimLegendaries` by creating a singleton array just to filter it and check if the result is non-empty. Both the allocation and the filter are wasted work. The direct version is shorter and doesn't pull in a `gameRules` import for what is purely a selector check:
+
+```ts
+export function canClaimLegendary(player: PlayerState, legendary: Legendary): boolean {
+  return (Object.entries(legendary.requirements) as [EnergyType, number][]).every(
+    ([type, required]) => (player.typeBonuses[type] ?? 0) >= required
+  );
+}
+```
+
+---
+
+## Design Clarification
+
+### `discardTokens` enforces "at least 1", not "discard to ≤10"
+
+**File:** `src/store/useGameStore.ts` — `discardTokens`
+
+`discardTokens` validates:
+1. Phase is `DISCARDING`
+2. Total discarded ≥ 1
+3. Player holds each token they claim to discard
+
+It does **not** throw if the post-discard total is still >10. If the player discards 1 from a hand of 12, they stay in `DISCARDING` phase and must call `discardTokens` again. The ≤10 ceiling is enforced indirectly: `advanceTurn` throws while `phase === DISCARDING`, so the player is blocked from progressing until they've discarded enough.
+
+This is intentional — the action is callable multiple times in sequence, giving the UI flexibility to let the player discard one token at a time.
+
+---
+
+## Fixes Applied
+
+### `canAfford` now guards `trainCard` (issue 1)
+
+`trainCard` used to re-implement the affordability check in its mutation loop. It now calls `canAfford(player, card)` before the loop and throws early if false. The `if (dittoNeeded > energyAfter.Ditto)` check was removed — it was unreachable once `canAfford` passed. The mutation loop still runs to compute `dittoNeeded` for the Ditto deduction.
+
+### `buildDecks` unused parameter prefixed `_` (issue 2)
+
+`deckMode` → `_deckMode` to signal the parameter is intentionally ignored until balanced deck ships.
+
+### `canClaimLegendary` inlined (issue 3)
+
+Replaced `claimLegendaries(player.typeBonuses, [legendary]).length > 0` with a direct `.every()` on `legendary.requirements`. Removed the `claimLegendaries` import from `selectors.ts` — that import crossed a module boundary just to wrap a one-liner.
+
+---
+
+## Observations (no fix applied)
+
+### Redundant casts still present
+
+`src/store/useGameStore.ts` — `trainCard` and `discardTokens` still carry `as Partial<Record<TokenType, number>>` casts on spreads of already-typed fields. Flagged in fourth-review lessons; still harmless, still unresolved.
