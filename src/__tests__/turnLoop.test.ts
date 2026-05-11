@@ -193,6 +193,42 @@ test('3-player final round: all remaining players complete their turns before ga
   expect(useGameStore.getState().game!.phase).toBe('gameOver');
 });
 
+// ─── Test 10 ──────────────────────────────────────────────────────────────────
+test('discarding during finalRound restores finalRound phase, not playing', () => {
+  // Alice hits 20 TP → triggers finalRound
+  useGameStore.setState((s) => ({
+    game: {
+      ...s.game!,
+      players: s.game!.players.map((p, i) =>
+        i === 0 ? { ...p, trainedCards: [HIGH_TP_CARD(20)] } : p
+      ),
+    },
+  }));
+  useGameStore.getState().takeTokens({ Fire: 1, Water: 1, Grass: 1 });
+  useGameStore.getState().advanceTurn(); // → Bob, phase=finalRound
+
+  // Give Bob 9 tokens so his next take pushes to 12 → discarding
+  useGameStore.setState((s) => ({
+    game: {
+      ...s.game!,
+      players: s.game!.players.map((p, i) =>
+        i === 1 ? { ...p, energyTokens: { Fire: 3, Water: 3, Grass: 3 } } : p
+      ),
+    },
+  }));
+  useGameStore.getState().takeTokens({ Electric: 1, Psychic: 1, Fire: 1 }); // 12 tokens → discarding
+
+  expect(useGameStore.getState().game!.phase).toBe('discarding');
+
+  useGameStore.getState().discardTokens({ Electric: 1, Psychic: 1 }); // back to 10
+
+  // Must restore to finalRound, not playing — otherwise advanceTurn never reaches gameOver
+  expect(useGameStore.getState().game!.phase).toBe('finalRound');
+
+  useGameStore.getState().advanceTurn(); // → wraps to Alice (trigger) → gameOver
+  expect(useGameStore.getState().game!.phase).toBe('gameOver');
+});
+
 // ─── Test 9 ───────────────────────────────────────────────────────────────────
 test('4-player final round: all three remaining players complete turns before gameOver', () => {
   const FOUR_PLAYER: GameConfig = {

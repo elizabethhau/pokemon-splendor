@@ -1,4 +1,5 @@
-import { DeckMode, EnergyType, GameState, Legendary, PlayerState, PokemonCard, BoardState, TokenType } from '../types/game';
+import { DeckMode, EnergyType, EvolutionTier, GameState, Legendary, PlayerState, PokemonCard, BoardState, TokenType } from '../types/game';
+import { MAX_TOKENS, PHASE } from '../constants';
 import first151Data from '../data/first-151.json';
 
 export function totalTokens(energyTokens: Partial<Record<TokenType, number>>): number {
@@ -49,21 +50,12 @@ export function makePlayer(name: string, index: number): PlayerState {
   };
 }
 
-export function applyDittoGrant(
-  player: PlayerState,
-  dittoInSupply: number,
-): { newPlayer: PlayerState; newDittoSupply: number } {
-  const dittoGain = dittoInSupply > 0 ? 1 : 0;
-  return {
-    newPlayer: {
-      ...player,
-      energyTokens: {
-        ...player.energyTokens,
-        Ditto: (player.energyTokens.Ditto ?? 0) + dittoGain,
-      },
-    },
-    newDittoSupply: dittoInSupply - dittoGain,
-  };
+export function tierFaceKey(tier: EvolutionTier): 'tier1Face' | 'tier2Face' | 'tier3Face' {
+  return (['tier1Face', 'tier2Face', 'tier3Face'] as const)[tier - 1];
+}
+
+export function tierDeckKey(tier: EvolutionTier): 'tier1Deck' | 'tier2Deck' | 'tier3Deck' {
+  return (['tier1Deck', 'tier2Deck', 'tier3Deck'] as const)[tier - 1];
 }
 
 // updatedBoard should already have face/deck mutations applied; this function adds the player scout + Ditto grant.
@@ -75,14 +67,24 @@ export function applyScout(
 ): GameState {
   const player = game.players[playerIdx];
   const playerWithScout = { ...player, scoutedCards: [...player.scoutedCards, card] };
-  const { newPlayer, newDittoSupply } = applyDittoGrant(playerWithScout, updatedBoard.energySupply.Ditto ?? 0);
-  const newPhase = totalTokens(newPlayer.energyTokens) > 10 ? 'discarding' : game.phase;
+
+  const dittoInSupply = updatedBoard.energySupply.Ditto ?? 0;
+  const dittoGain = dittoInSupply > 0 ? 1 : 0;
+  const newPlayer = {
+    ...playerWithScout,
+    energyTokens: {
+      ...playerWithScout.energyTokens,
+      Ditto: (playerWithScout.energyTokens.Ditto ?? 0) + dittoGain,
+    },
+  };
+
+  const newPhase = totalTokens(newPlayer.energyTokens) > MAX_TOKENS ? PHASE.DISCARDING : game.phase;
 
   return {
     ...game,
     phase: newPhase,
     actionTakenThisTurn: true,
     players: game.players.map((p, i) => i === playerIdx ? newPlayer : p),
-    board: { ...updatedBoard, energySupply: { ...updatedBoard.energySupply, Ditto: newDittoSupply } },
+    board: { ...updatedBoard, energySupply: { ...updatedBoard.energySupply, Ditto: dittoInSupply - dittoGain } },
   };
 }

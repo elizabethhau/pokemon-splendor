@@ -52,17 +52,11 @@ The parameter type was too loose. The TypeScript compiler couldn't catch callers
 
 ---
 
-## Known Issue (not fixed — out of scope)
+## Known Issue (resolved in Third Review)
 
 ### `discardTokens` always restores to `'playing'`, not previous phase
 
-**File:** `src/store/useGameStore.ts`
-
-If a player enters `'discarding'` from `'finalRound'` (takes tokens that push them over 10 during the final round), `discardTokens` restores phase to `'playing'` instead of `'finalRound'`. This means `advanceTurn` would not detect that the game was already in final round and could fail to trigger `gameOver` at the right time.
-
-**Root cause:** `'discarding'` overwrites the previous phase with no memory of what it was. Fix requires tracking `priorPhase` in `GameState` or making `'discarding'` a separate flag rather than a phase value.
-
-**When to fix:** Before shipping if playtesting confirms the scenario is reachable (e.g., player in final round takes 3 tokens over 10). Low priority in Phase 1 since most players won't accumulate 10+ tokens in final round.
+See Bug #10 in the Third Review section below.
 
 ---
 
@@ -184,3 +178,75 @@ Importing `AsyncStorage` into the store would have required all store-importing 
 | 4-player final round wraps correctly | `turnLoop.test.ts` | 2- and 3-player tests don't exercise all wrap-around cases |
 | Second player blocked after Mew caught | `catchMew.test.ts` | Mew is a global singleton; concurrent attempts needed an explicit test |
 | Multi-legendary in one `trainCard` gives exactly 1 MasterBall | `legendaryCollection.test.ts` | The once-per-game MasterBall rule had no test for the multi-claim edge case |
+
+---
+
+# Lessons Learned — Third Review (Bug Fixes + Constants)
+
+Findings from the staff engineer review of the second implementation. All items below were fixed.
+
+---
+
+## Bugs Fixed
+
+### 10. `discardTokens` always snapped phase back to `'playing'`
+
+**File:** `src/store/useGameStore.ts`
+
+If a player entered `'discarding'` during `'finalRound'` (took tokens that pushed them over 10 during the final round), `discardTokens` would restore phase to `'playing'` instead of `'finalRound'`. The `advanceTurn` check `if (phase === 'finalRound' && next === finalRoundTriggerPlayerIndex)` would never fire again, making `gameOver` unreachable — the game would loop forever.
+
+The same pattern existed in `applyScout` (the Ditto grant from scouting could also push a player over 10 during final round).
+
+**Fix:** Use `finalRoundTriggerPlayerIndex !== null` as the discriminator to determine which phase to restore to:
+
+```ts
+const restoredPhase = game.finalRoundTriggerPlayerIndex !== null ? PHASE.FINAL_ROUND : PHASE.PLAYING;
+const newPhase = totalTokens(newTokens) <= MAX_TOKENS ? restoredPhase : PHASE.DISCARDING;
+```
+
+`finalRoundTriggerPlayerIndex` is already set when the final round starts and never cleared until `gameOver`, making it a reliable proxy for "were we in final round before discarding?"
+
+**Rule:** When a phase transition overwrites a prior phase value, you must be able to recover the prior phase. Either store it explicitly (`priorPhase`) or use an existing invariant that encodes the same information.
+
+---
+
+### 11. `discardTokens` was callable outside `'discarding'` phase
+
+**File:** `src/store/useGameStore.ts`
+
+`discardTokens` had guards for `pendingHandoff` and `gameOver` but not for the case where `phase !== 'discarding'`. A player in `'playing'` or `'finalRound'` phase could call `discardTokens` to return tokens to the supply for free, without spending their turn action (`actionTakenThisTurn` is never set by `discardTokens`).
+
+**Fix:** Added `if (game.phase !== PHASE.DISCARDING) throw new Error('No discard required')` after the `gameOver` check. The `gameOver` check is kept first so it produces a clear error message.
+
+**Rule:** Every store action should validate that the game is in a state where the action is legal, not just that it won't crash.
+
+---
+
+## Design Improvements
+
+### Constants extracted to `src/constants.ts`
+
+Magic numbers and strings (`10`, `4`, `3`, `7`, `5`, `20`, `0.40`, `'playing'`, etc.) were scattered across `useGameStore.ts` and `gameRules.ts`. Extracted to a single file with named constants: `MAX_TOKENS`, `FACE_UP_COUNT`, `SCOUT_HAND_LIMIT`, `MIN/MAX_PLAYERS`, `INITIAL_ENERGY_SUPPLY`, `INITIAL_DITTO_SUPPLY`, `MIN_SUPPLY_FOR_TAKE_TWO`, `TP_TRIGGER_THRESHOLD`, `MEWTWO_POKEDEX_NUMBER`, `MEWTWO_CATCH_BONUS`, `BASE_CATCH_RATES`, and the `PHASE` object.
+
+`PHASE` uses `as const` so its values retain their literal types and remain assignable to `GamePhase` without casting.
+
+### `GamePhase` type alias added to `src/types/game.ts`
+
+The `'playing' | 'discarding' | 'finalRound' | 'gameOver'` union was inlined directly in `GameState`. Extracted to `export type GamePhase` so it can be used in function signatures and local variable annotations without repeating the union.
+
+### `applyDittoGrant` inlined into `applyScout`
+
+`applyDittoGrant` was a named helper called exactly once, inside `applyScout`. The extra function boundary added indirection (a returned object, a destructuring) for 4 lines of arithmetic. Per the project's simplicity principle — no abstraction for single-use code — it was inlined.
+
+### `tierFaceKey` / `tierDeckKey` helpers in `gameRules.ts`
+
+The pattern `(['tier1Face', 'tier2Face', 'tier3Face'] as const)[tier - 1]` appeared 6 times across three actions in `useGameStore.ts` (`trainCard`, `scoutFaceUp`, `scoutFromDeck`). Extracted to two small exported helpers. Eliminates the transcription risk if tier count ever changes and makes each call site a readable one-liner.
+
+---
+
+## Testing Gaps Filled
+
+| Gap | File | Why it matters |
+|-----|------|----------------|
+| `discardTokens` during `finalRound` restores `finalRound`, not `'playing'` | `turnLoop.test.ts` | The critical endgame bug was reachable and untested; without the test the fix can regress silently |
+| `discardTokens` throws when called outside `'discarding'` phase | `takeTokens.test.ts` | Guards are only valuable if tested — this one was missing entirely |

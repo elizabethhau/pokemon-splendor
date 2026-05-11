@@ -72,19 +72,35 @@ test('takeTokens throws when a selected type has 0 in supply', () => {
 
 // ─── Test 6 ───────────────────────────────────────────────────────────────────
 test('discardTokens moves tokens from player hand back to supply', () => {
-  useGameStore.getState().takeTokens({ Fire: 1, Water: 1, Grass: 1 });
+  // Force discarding phase with 11 tokens
+  useGameStore.setState((s) => ({
+    game: {
+      ...s.game!,
+      phase: 'discarding',
+      players: s.game!.players.map((p, i) =>
+        i === 0 ? { ...p, energyTokens: { Fire: 4, Water: 4, Grass: 3 } } : p
+      ),
+    },
+  }));
+
   useGameStore.getState().discardTokens({ Fire: 1 });
   const { game } = useGameStore.getState();
-  expect(game!.players[0].energyTokens.Fire).toBe(0);
-  expect(game!.board.energySupply.Fire).toBe(7);
+  expect(game!.players[0].energyTokens.Fire).toBe(3);
+  expect(game!.board.energySupply.Fire).toBe(8); // 7 + 1 returned
 });
 
 // ─── Test 8 ───────────────────────────────────────────────────────────────────
 test('discardTokens throws when phase is gameOver', () => {
-  useGameStore.getState().takeTokens({ Fire: 1, Water: 1, Grass: 1 });
   useGameStore.setState((s) => ({ game: { ...s.game!, phase: 'gameOver' } }));
-
   expect(() => useGameStore.getState().discardTokens({ Fire: 1 })).toThrow('Game is over');
+});
+
+// ─── Test 10 ──────────────────────────────────────────────────────────────────
+test('discardTokens throws when phase is playing (no discard needed)', () => {
+  // Player has 3 tokens — not in discarding phase
+  useGameStore.getState().takeTokens({ Fire: 1, Water: 1, Grass: 1 });
+  expect(useGameStore.getState().game!.phase).toBe('playing');
+  expect(() => useGameStore.getState().discardTokens({ Fire: 1 })).toThrow('No discard required');
 });
 
 // ─── Test 9 ───────────────────────────────────────────────────────────────────

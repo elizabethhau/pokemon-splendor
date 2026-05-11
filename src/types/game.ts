@@ -68,12 +68,14 @@ export interface BoardState {
   mew: Mythical | null;
 }
 
+export type GamePhase = 'playing' | 'discarding' | 'finalRound' | 'gameOver';
+
 export interface GameState {
   config: GameConfig;
   players: PlayerState[];
   board: BoardState;
   currentPlayerIndex: number;
-  phase: 'playing' | 'discarding' | 'finalRound' | 'gameOver';
+  phase: GamePhase;
   finalRoundTriggerPlayerIndex: number | null;
   pendingHandoff: boolean;
   turnNumber: number;

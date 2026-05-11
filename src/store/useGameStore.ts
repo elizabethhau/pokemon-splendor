@@ -1,9 +1,14 @@
 import { create } from 'zustand';
-import { EnergyType, EvolutionTier, GameConfig, GameState, PokemonCard, Legendary, Mythical, PokeballTier, TokenType } from '../types/game';
+import { EnergyType, EvolutionTier, GameConfig, GamePhase, GameState, PokemonCard, Legendary, Mythical, PokeballTier, TokenType } from '../types/game';
 import legData from '../data/legendaries.json';
 import mewData from '../data/mew.json';
 import { trainerPoints } from './selectors';
-import { totalTokens, claimLegendaries, buildDecks, makePlayer, applyScout } from './gameRules';
+import { totalTokens, claimLegendaries, buildDecks, makePlayer, applyScout, tierFaceKey, tierDeckKey } from './gameRules';
+import {
+  BASE_CATCH_RATES, FACE_UP_COUNT, INITIAL_DITTO_SUPPLY, INITIAL_ENERGY_SUPPLY,
+  MAX_PLAYERS, MAX_TOKENS, MEWTWO_CATCH_BONUS, MEWTWO_POKEDEX_NUMBER, MIN_PLAYERS,
+  MIN_SUPPLY_FOR_TAKE_TWO, PHASE, SCOUT_HAND_LIMIT, TP_TRIGGER_THRESHOLD,
+} from '../constants';
 
 type TokenSelection = Partial<Record<EnergyType, number>>;
 type DiscardSelection = Partial<Record<TokenType, number>>;
@@ -33,8 +38,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
   game: null,
 
   initGame: (config: GameConfig) => {
-    if (config.playerNames.length === 0) throw new Error('Game requires at least 1 player');
-    if (config.playerNames.length > 4) throw new Error('Game supports a maximum of 4 players');
+    if (config.playerNames.length < MIN_PLAYERS) throw new Error('Game requires at least 1 player');
+    if (config.playerNames.length > MAX_PLAYERS) throw new Error('Game supports a maximum of 4 players');
 
     const players = config.playerNames.map((name, i) => makePlayer(name, i));
     const { tier1, tier2, tier3 } = buildDecks(config.deckMode);
@@ -44,21 +49,26 @@ export const useGameStore = create<GameStore>((set, get) => ({
         config,
         players,
         board: {
-          tier1Deck: tier1.slice(4),
-          tier2Deck: tier2.slice(4),
-          tier3Deck: tier3.slice(4),
-          tier1Face: tier1.slice(0, 4),
-          tier2Face: tier2.slice(0, 4),
-          tier3Face: tier3.slice(0, 4),
+          tier1Deck: tier1.slice(FACE_UP_COUNT),
+          tier2Deck: tier2.slice(FACE_UP_COUNT),
+          tier3Deck: tier3.slice(FACE_UP_COUNT),
+          tier1Face: tier1.slice(0, FACE_UP_COUNT),
+          tier2Face: tier2.slice(0, FACE_UP_COUNT),
+          tier3Face: tier3.slice(0, FACE_UP_COUNT),
           energySupply: {
-            Fire: 7, Water: 7, Grass: 7, Electric: 7, Psychic: 7, Ditto: 5,
+            Fire: INITIAL_ENERGY_SUPPLY,
+            Water: INITIAL_ENERGY_SUPPLY,
+            Grass: INITIAL_ENERGY_SUPPLY,
+            Electric: INITIAL_ENERGY_SUPPLY,
+            Psychic: INITIAL_ENERGY_SUPPLY,
+            Ditto: INITIAL_DITTO_SUPPLY,
           },
           availableLegendaries: legData.legendaries as Legendary[],
           firstLegendaryClaimed: false,
           mew: mewData.mythical as Mythical,
         },
         currentPlayerIndex: 0,
-        phase: 'playing',
+        phase: PHASE.PLAYING,
         finalRoundTriggerPlayerIndex: null,
         pendingHandoff: false,
         turnNumber: 1,
@@ -70,8 +80,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
   advanceTurn: () => {
     const { game } = get();
     if (!game) return;
-    if (game.phase === 'discarding') throw new Error('Must discard tokens to ≤10 before ending turn');
-    if (game.phase === 'gameOver') throw new Error('Game is over');
+    if (game.phase === PHASE.DISCARDING) throw new Error('Must discard tokens to ≤10 before ending turn');
+    if (game.phase === PHASE.GAME_OVER) throw new Error('Game is over');
     if (!game.actionTakenThisTurn) throw new Error('Must take an action before ending turn');
 
     const prevPlayer = game.players[game.currentPlayerIndex];
@@ -79,19 +89,19 @@ export const useGameStore = create<GameStore>((set, get) => ({
     const next = (game.currentPlayerIndex + 1) % game.players.length;
     const nextTurn = game.turnNumber + 1;
 
-    let phase: GameState['phase'] = game.phase;
+    let phase: GamePhase = game.phase;
     let finalRoundTriggerPlayerIndex = game.finalRoundTriggerPlayerIndex;
 
-    if (phase === 'playing' && prevTP >= 20) {
-      phase = 'finalRound';
+    if (phase === PHASE.PLAYING && prevTP >= TP_TRIGGER_THRESHOLD) {
+      phase = PHASE.FINAL_ROUND;
       finalRoundTriggerPlayerIndex = game.currentPlayerIndex;
     }
 
-    if (phase === 'finalRound' && next === finalRoundTriggerPlayerIndex) {
-      phase = 'gameOver';
+    if (phase === PHASE.FINAL_ROUND && next === finalRoundTriggerPlayerIndex) {
+      phase = PHASE.GAME_OVER;
     }
 
-    const pendingHandoff = game.config.passAndPlay && phase !== 'gameOver';
+    const pendingHandoff = game.config.passAndPlay && phase !== PHASE.GAME_OVER;
 
     set({
       game: {
@@ -110,8 +120,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
     const { game } = get();
     if (!game) return;
     if (game.pendingHandoff) throw new Error('Acknowledge handoff before acting');
-    if (game.phase === 'discarding') throw new Error('Must discard tokens first');
-    if (game.phase === 'gameOver') throw new Error('Game is over');
+    if (game.phase === PHASE.DISCARDING) throw new Error('Must discard tokens first');
+    if (game.phase === PHASE.GAME_OVER) throw new Error('Game is over');
 
     const entries = Object.entries(tokens) as [EnergyType, number][];
     const supply = game.board.energySupply;
@@ -125,7 +135,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     for (const [type, count] of entries) {
       const available = supply[type] ?? 0;
       if (available < count) throw new Error(`Not enough ${type} tokens in supply`);
-      if (isTwoSame && available < 4) throw new Error(`Need ≥4 ${type} tokens in supply to take 2`);
+      if (isTwoSame && available < MIN_SUPPLY_FOR_TAKE_TWO) throw new Error(`Need ≥4 ${type} tokens in supply to take 2`);
     }
 
     const idx = game.currentPlayerIndex;
@@ -137,7 +147,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
       newSupply[type] = (newSupply[type] ?? 0) - count;
     }
 
-    const newPhase = totalTokens(newTokens) > 10 ? 'discarding' : game.phase;
+    const newPhase = totalTokens(newTokens) > MAX_TOKENS ? PHASE.DISCARDING : game.phase;
     set({
       game: {
         ...game,
@@ -153,7 +163,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
     const { game } = get();
     if (!game) return;
     if (game.pendingHandoff) throw new Error('Acknowledge handoff before acting');
-    if (game.phase === 'gameOver') throw new Error('Game is over');
+    if (game.phase === PHASE.GAME_OVER) throw new Error('Game is over');
+    if (game.phase !== PHASE.DISCARDING) throw new Error('No discard required');
 
     const idx = game.currentPlayerIndex;
     const player = game.players[idx];
@@ -167,7 +178,9 @@ export const useGameStore = create<GameStore>((set, get) => ({
       newSupply[type] = (newSupply[type] ?? 0) + count;
     }
 
-    const newPhase = game.phase === 'discarding' && totalTokens(newTokens) <= 10 ? 'playing' : game.phase;
+    // Restore the phase we were in before entering 'discarding'
+    const restoredPhase: GamePhase = game.finalRoundTriggerPlayerIndex !== null ? PHASE.FINAL_ROUND : PHASE.PLAYING;
+    const newPhase = totalTokens(newTokens) <= MAX_TOKENS ? restoredPhase : PHASE.DISCARDING;
     set({
       game: {
         ...game,
@@ -182,15 +195,15 @@ export const useGameStore = create<GameStore>((set, get) => ({
     const { game } = get();
     if (!game) return;
     if (game.pendingHandoff) throw new Error('Acknowledge handoff before acting');
-    if (game.phase === 'discarding') throw new Error('Must discard tokens first');
-    if (game.phase === 'gameOver') throw new Error('Game is over');
+    if (game.phase === PHASE.DISCARDING) throw new Error('Must discard tokens first');
+    if (game.phase === PHASE.GAME_OVER) throw new Error('Game is over');
 
     const idx = game.currentPlayerIndex;
     const player = game.players[idx];
     const board = game.board;
 
-    const faceKey = (['tier1Face', 'tier2Face', 'tier3Face'] as const)[card.evolutionTier - 1];
-    const deckKey = (['tier1Deck', 'tier2Deck', 'tier3Deck'] as const)[card.evolutionTier - 1];
+    const faceKey = tierFaceKey(card.evolutionTier);
+    const deckKey = tierDeckKey(card.evolutionTier);
     const pokeballTier = (['Pokeball', 'GreatBall', 'UltraBall'] as const)[card.evolutionTier - 1] as PokeballTier;
 
     const faceIdx = board[faceKey].findIndex(c => c.pokedexNumber === card.pokedexNumber);
@@ -282,16 +295,16 @@ export const useGameStore = create<GameStore>((set, get) => ({
     const { game } = get();
     if (!game) return;
     if (game.pendingHandoff) throw new Error('Acknowledge handoff before acting');
-    if (game.phase === 'discarding') throw new Error('Must discard tokens first');
-    if (game.phase === 'gameOver') throw new Error('Game is over');
+    if (game.phase === PHASE.DISCARDING) throw new Error('Must discard tokens first');
+    if (game.phase === PHASE.GAME_OVER) throw new Error('Game is over');
 
     const idx = game.currentPlayerIndex;
-    if (game.players[idx].scoutedCards.length >= 3) {
+    if (game.players[idx].scoutedCards.length >= SCOUT_HAND_LIMIT) {
       throw new Error('Cannot scout: already holding 3 scouted cards');
     }
 
-    const faceKey = (['tier1Face', 'tier2Face', 'tier3Face'] as const)[card.evolutionTier - 1];
-    const deckKey = (['tier1Deck', 'tier2Deck', 'tier3Deck'] as const)[card.evolutionTier - 1];
+    const faceKey = tierFaceKey(card.evolutionTier);
+    const deckKey = tierDeckKey(card.evolutionTier);
     const faceIdx = game.board[faceKey].findIndex(c => c.pokedexNumber === card.pokedexNumber);
     if (faceIdx === -1) throw new Error(`${card.name} is not face-up on the board`);
 
@@ -309,15 +322,15 @@ export const useGameStore = create<GameStore>((set, get) => ({
     const { game } = get();
     if (!game) return;
     if (game.pendingHandoff) throw new Error('Acknowledge handoff before acting');
-    if (game.phase === 'discarding') throw new Error('Must discard tokens first');
-    if (game.phase === 'gameOver') throw new Error('Game is over');
+    if (game.phase === PHASE.DISCARDING) throw new Error('Must discard tokens first');
+    if (game.phase === PHASE.GAME_OVER) throw new Error('Game is over');
 
     const idx = game.currentPlayerIndex;
-    if (game.players[idx].scoutedCards.length >= 3) {
+    if (game.players[idx].scoutedCards.length >= SCOUT_HAND_LIMIT) {
       throw new Error('Cannot scout: already holding 3 scouted cards');
     }
 
-    const deckKey = (['tier1Deck', 'tier2Deck', 'tier3Deck'] as const)[tier - 1];
+    const deckKey = tierDeckKey(tier);
     const deck = game.board[deckKey];
     if (deck.length === 0) throw new Error(`Tier ${tier} deck is empty`);
 
@@ -329,8 +342,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
     const { game } = get();
     if (!game) return false;
     if (game.pendingHandoff) throw new Error('Acknowledge handoff before acting');
-    if (game.phase === 'discarding') throw new Error('Must discard tokens first');
-    if (game.phase === 'gameOver') throw new Error('Game is over');
+    if (game.phase === PHASE.DISCARDING) throw new Error('Must discard tokens first');
+    if (game.phase === PHASE.GAME_OVER) throw new Error('Game is over');
 
     const idx = game.currentPlayerIndex;
     const player = game.players[idx];
@@ -340,14 +353,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
       throw new Error(`Need ≥${game.board.mew.legendariesRequired} Legendaries to attempt a catch`);
     if ((player.pokeballs[ball] ?? 0) < 1) throw new Error(`No ${ball} available`);
 
-    const BASE_RATES: Record<PokeballTier, number> = {
-      Pokeball: 0.40,
-      GreatBall: 0.65,
-      UltraBall: 0.85,
-      MasterBall: 1.00,
-    };
-    const hasMewtwo = player.legendaries.some(l => l.pokedexNumber === 150);
-    const threshold = Math.min(1, BASE_RATES[ball] + (hasMewtwo ? 0.10 : 0));
+    const hasMewtwo = player.legendaries.some(l => l.pokedexNumber === MEWTWO_POKEDEX_NUMBER);
+    const threshold = Math.min(1, BASE_CATCH_RATES[ball] + (hasMewtwo ? MEWTWO_CATCH_BONUS : 0));
 
     const newPokeballs = { ...player.pokeballs, [ball]: (player.pokeballs[ball] ?? 0) - 1 };
     const caught = rng() < threshold;
