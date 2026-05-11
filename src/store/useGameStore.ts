@@ -135,8 +135,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
     for (const [type, count] of entries) {
       const available = supply[type] ?? 0;
+      if (isTwoSame && available < MIN_SUPPLY_FOR_TAKE_TWO) throw new Error(`Need ≥${MIN_SUPPLY_FOR_TAKE_TWO} ${type} tokens in supply to take 2`);
       if (available < count) throw new Error(`Not enough ${type} tokens in supply`);
-      if (isTwoSame && available < MIN_SUPPLY_FOR_TAKE_TWO) throw new Error(`Need ≥4 ${type} tokens in supply to take 2`);
     }
 
     const idx = game.currentPlayerIndex;
@@ -166,6 +166,9 @@ export const useGameStore = create<GameStore>((set, get) => ({
     if (game.pendingHandoff) throw new Error('Acknowledge handoff before acting');
     if (game.phase === PHASE.GAME_OVER) throw new Error('Game is over');
     if (game.phase !== PHASE.DISCARDING) throw new Error('No discard required');
+
+    const totalDiscard = Object.values(tokens).reduce<number>((s, n) => s + (n ?? 0), 0);
+    if (totalDiscard === 0) throw new Error('Must discard at least 1 token');
 
     const idx = game.currentPlayerIndex;
     const player = game.players[idx];

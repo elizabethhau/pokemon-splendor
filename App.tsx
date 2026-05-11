@@ -13,10 +13,12 @@ export default function App() {
 
   // Load persisted sound preference once on mount
   useEffect(() => {
-    AsyncStorage.getItem(SOUND_KEY).then((stored) => {
-      if (stored !== null) setSoundEnabled(JSON.parse(stored) as boolean);
-      hydrated.current = true;
-    });
+    AsyncStorage.getItem(SOUND_KEY)
+      .then((stored) => {
+        if (stored !== null) setSoundEnabled(JSON.parse(stored) as boolean);
+        hydrated.current = true;
+      })
+      .catch(() => { hydrated.current = true; });
   }, [setSoundEnabled]);
 
   // Save whenever soundEnabled changes (skip the initial hydration write)

@@ -314,6 +314,89 @@ The original `canAfford` accumulated a separate `dittoNeeded` counter across the
 
 ---
 
+# Lessons Learned — Sixth Review
+
+Findings from the staff engineer review of the fifth implementation. All bugs below were fixed.
+
+---
+
+## Bugs Fixed
+
+### 14. `discardTokens({})` was a valid no-op — phase stuck in `DISCARDING`
+
+**File:** `src/store/useGameStore.ts`
+
+`discardTokens` accepted an empty selection (`{}`) or a zero-quantity selection (`{ Fire: 0 }`) without error. The loop did nothing, `totalTokens` stayed above `MAX_TOKENS`, and phase remained `DISCARDING` indefinitely. The UI should prevent this, but the action layer must enforce it independently — a player could exploit this to probe state without consuming their discard obligation.
+
+**Fix:** Added a total-quantity guard before the loop:
+
+```ts
+const totalDiscard = Object.values(tokens).reduce<number>((s, n) => s + (n ?? 0), 0);
+if (totalDiscard === 0) throw new Error('Must discard at least 1 token');
+```
+
+**Rule:** Every action should reject inputs that produce no state change and no error. Silent no-ops are the most common source of stuck UI states — they look like they worked.
+
+---
+
+### 15. `takeTokens` showed "Not enough" error instead of "Need ≥4" for the two-same path when supply < 2
+
+**File:** `src/store/useGameStore.ts`
+
+The supply checks for the two-same path ran in this order:
+
+```ts
+if (available < count) throw new Error(`Not enough ${type} tokens in supply`);
+if (isTwoSame && available < MIN_SUPPLY_FOR_TAKE_TWO) throw new Error(`Need ≥4 ...`);
+```
+
+For supply = 0 or 1, `available < count` (count = 2) fired first, producing the generic "Not enough" message. The actual rule is "need ≥4 in supply" — a player trying to take two of a type with supply = 1 should see the specific rule, not a confusing "you don't have 2 of something you can't take anyway."
+
+**Fix:** Swapped check order so the specific two-same rule fires first:
+
+```ts
+if (isTwoSame && available < MIN_SUPPLY_FOR_TAKE_TWO) throw new Error(`Need ≥${MIN_SUPPLY_FOR_TAKE_TWO} ...`);
+if (available < count) throw new Error(`Not enough ${type} tokens in supply`);
+```
+
+**Rule:** When two guards protect the same invalid state, order them most-specific to least-specific. The caller deserves the error that explains the actual rule, not the first one that triggers.
+
+---
+
+### 16. `App.tsx` AsyncStorage load had no `.catch()` — saves permanently silenced on load failure
+
+**File:** `App.tsx`
+
+`AsyncStorage.getItem(SOUND_KEY)` had no `.catch()`. If storage failed (corruption, quota exceeded, device restrictions), `hydrated.current` was never set to `true`, and every subsequent `soundEnabled` change was silently dropped by the `if (!hydrated.current) return` guard in the save effect.
+
+**Fix:** Added `.catch(() => { hydrated.current = true; })`. A failed load still unblocks saves — the default `soundEnabled = true` is used, and future changes persist correctly.
+
+**Rule:** An async boundary that sets a gate flag (`hydrated.current`) must set that flag in both the success and failure paths. A gate stuck at `false` silences all downstream effects, often with no visible symptom until the user notices their settings weren't saved.
+
+---
+
+## Testing Gaps Filled
+
+| Gap | File | Why it matters |
+|-----|------|----------------|
+| `discardTokens({})` throws | `takeTokens.test.ts` | A no-op that changes no state should be rejected, not silently accepted |
+| `canAfford` edge cases: free card, bonus covers full cost, Ditto shortfall, insufficient Ditto | `selectors.test.ts` | `canAfford` mirrors `trainCard`'s payment loop — divergence causes actions that throw despite being "available" in the UI |
+| `canClaimLegendary` and `canCatchMew` positive and negative cases | `selectors.test.ts` | These drive button enable/disable state; testing them directly decouples selector correctness from store action tests |
+
+---
+
+## Observations (no fix applied)
+
+### Redundant type casts in `trainCard` and `discardTokens`
+
+`{ ...player.energyTokens } as Partial<Record<TokenType, number>>` is redundant — the spread already produces that type. Same for `board.energySupply`. These casts were added defensively during the lesson #7 type-safety cleanup and are now unnecessary. They're harmless but should be removed in a future cleanup to keep the "only cast at `Object.entries()` call sites" rule clean.
+
+### `PlayerState.isAI` is always `false`
+
+`makePlayer` hardcodes `isAI: false` with no path to set it `true` (since `aiFlags` was removed from `GameConfig` in the second review). The field reads as meaningful but is dead until AI is implemented. Worth an in-code comment when AI work begins; no change now.
+
+---
+
 # Lessons Learned — Fifth Review (Ditto Naming Clarity)
 
 ---
