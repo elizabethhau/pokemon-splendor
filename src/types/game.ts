@@ -1,8 +1,10 @@
 export type EnergyType = 'Fire' | 'Water' | 'Grass' | 'Electric' | 'Psychic';
+export type TokenType = EnergyType | 'Ditto';
 
 export type EvolutionTier = 1 | 2 | 3;
 
-export type CardCost = Partial<Record<EnergyType | 'Ditto', number>>;
+// Cards never cost Ditto — Ditto tokens are a wild-card payment mechanism only
+export type CardCost = Partial<Record<EnergyType, number>>;
 
 export interface PokemonCard {
   pokedexNumber: number;
@@ -36,7 +38,6 @@ export type DeckMode = 'first151' | 'balanced';
 
 export interface GameConfig {
   playerNames: string[];
-  aiFlags: boolean[];
   deckMode: DeckMode;
   passAndPlay: boolean;
 }
@@ -45,7 +46,7 @@ export interface PlayerState {
   id: string;
   name: string;
   isAI: boolean;
-  energyTokens: Partial<Record<EnergyType | 'Ditto', number>>;
+  energyTokens: Partial<Record<TokenType, number>>;
   typeBonuses: Partial<Record<EnergyType, number>>;
   trainedCards: PokemonCard[];
   scoutedCards: PokemonCard[];
@@ -61,7 +62,7 @@ export interface BoardState {
   tier1Face: PokemonCard[];
   tier2Face: PokemonCard[];
   tier3Face: PokemonCard[];
-  energySupply: Partial<Record<EnergyType | 'Ditto', number>>;
+  energySupply: Partial<Record<TokenType, number>>;
   availableLegendaries: Legendary[];
   firstLegendaryClaimed: boolean;
   mew: Mythical | null;
@@ -76,4 +77,5 @@ export interface GameState {
   finalRoundTriggerPlayerIndex: number | null;
   pendingHandoff: boolean;
   turnNumber: number;
+  actionTakenThisTurn: boolean;
 }

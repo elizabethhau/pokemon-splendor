@@ -3,7 +3,6 @@ import { GameConfig, PokemonCard } from '../types/game';
 
 const TWO_PLAYER: GameConfig = {
   playerNames: ['Alice', 'Bob'],
-  aiFlags: [false, false],
   deckMode: 'first151', passAndPlay: false,
 };
 

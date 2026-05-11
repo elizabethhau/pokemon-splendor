@@ -1,4 +1,4 @@
-import { getSpriteUri } from '../utils/spriteCache';
+import { getSpriteUri } from '../utils/spriteUriCache';
 
 jest.mock('@react-native-async-storage/async-storage', () => ({
   getItem: jest.fn(),

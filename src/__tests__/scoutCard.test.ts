@@ -3,7 +3,6 @@ import { GameConfig, PokemonCard } from '../types/game';
 
 const TWO_PLAYER: GameConfig = {
   playerNames: ['Alice', 'Bob'],
-  aiFlags: [false, false],
   deckMode: 'first151', passAndPlay: false,
 };
 
@@ -122,4 +121,44 @@ test('scoutFromDeck throws when the target deck is empty', () => {
   }));
 
   expect(() => useGameStore.getState().scoutFromDeck(2)).toThrow();
+});
+
+// ─── Test 7 ───────────────────────────────────────────────────────────────────
+test('scoutFaceUp throws if the card is not currently face-up on the board', () => {
+  const NOT_ON_BOARD: PokemonCard = {
+    pokedexNumber: 9999, name: 'FakeCard', energyType: 'Fire',
+    evolutionTier: 1, cost: {}, trainerPoints: 0, typeBonus: 'Fire',
+  };
+  expect(() => useGameStore.getState().scoutFaceUp(NOT_ON_BOARD))
+    .toThrow('is not face-up on the board');
+});
+
+// ─── Test 8 ───────────────────────────────────────────────────────────────────
+test('after scouting 3 cards and training 1, player can scout a 4th', () => {
+  // Scout 3 cards from the deck
+  useGameStore.getState().scoutFromDeck(1);
+  useGameStore.getState().scoutFromDeck(2);
+  useGameStore.getState().scoutFromDeck(3);
+
+  expect(useGameStore.getState().game!.players[0].scoutedCards).toHaveLength(3);
+  expect(() => useGameStore.getState().scoutFromDeck(1)).toThrow('already holding 3');
+
+  // Train the first scouted card (give player enough tokens)
+  const scoutedCard = useGameStore.getState().game!.players[0].scoutedCards[0];
+  const maxCost = Object.values(scoutedCard.cost).reduce((s, n) => s + (n ?? 0), 0);
+  useGameStore.setState((s) => ({
+    game: {
+      ...s.game!,
+      players: s.game!.players.map((p, i) =>
+        i === 0 ? { ...p, energyTokens: { Fire: maxCost + 5, Water: maxCost + 5, Grass: maxCost + 5, Electric: maxCost + 5, Psychic: maxCost + 5 } } : p
+      ),
+    },
+  }));
+  useGameStore.getState().trainCard(scoutedCard);
+
+  expect(useGameStore.getState().game!.players[0].scoutedCards).toHaveLength(2);
+
+  // Now can scout again
+  useGameStore.getState().scoutFromDeck(1);
+  expect(useGameStore.getState().game!.players[0].scoutedCards).toHaveLength(3);
 });

@@ -1,16 +1,17 @@
 import { create } from 'zustand';
-import { DeckMode, EnergyType, EvolutionTier, GameConfig, GameState, PlayerState, PokemonCard, Legendary, Mythical, PokeballTier, BoardState } from '../types/game';
-import first151Data from '../data/first-151.json';
+import { EnergyType, EvolutionTier, GameConfig, GameState, PokemonCard, Legendary, Mythical, PokeballTier, TokenType } from '../types/game';
 import legData from '../data/legendaries.json';
 import mewData from '../data/mew.json';
 import { trainerPoints } from './selectors';
+import { totalTokens, claimLegendaries, buildDecks, makePlayer, applyScout } from './gameRules';
 
 type TokenSelection = Partial<Record<EnergyType, number>>;
-type DiscardSelection = Partial<Record<EnergyType | 'Ditto', number>>;
+type DiscardSelection = Partial<Record<TokenType, number>>;
 
 interface GameStore {
   soundEnabled: boolean;
   toggleSound: () => void;
+  setSoundEnabled: (enabled: boolean) => void;
 
   game: GameState | null;
   initGame: (config: GameConfig) => void;
@@ -24,82 +25,18 @@ interface GameStore {
   acknowledgeHandoff: () => void;
 }
 
-function totalTokens(energyTokens: Partial<Record<string, number>>): number {
-  return Object.values(energyTokens).reduce<number>((s, n) => s + (n ?? 0), 0);
-}
-
-function claimLegendaries(
-  typeBonuses: Partial<Record<string, number>>,
-  available: Legendary[],
-): Legendary[] {
-  return available.filter(leg =>
-    Object.entries(leg.requirements).every(
-      ([type, required]) => (typeBonuses[type] ?? 0) >= (required ?? 0)
-    )
-  );
-}
-
-function shuffle<T>(arr: T[]): T[] {
-  const out = [...arr];
-  for (let i = out.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [out[i], out[j]] = [out[j], out[i]];
-  }
-  return out;
-}
-
-function buildDecks(deckMode: DeckMode) {
-  // Phase 1: only first151 mode; balanced mode reuses same data until #16 ships
-  const allCards = first151Data.cards as PokemonCard[];
-  const tier1 = shuffle(allCards.filter(c => c.evolutionTier === 1));
-  const tier2 = shuffle(allCards.filter(c => c.evolutionTier === 2));
-  const tier3 = shuffle(allCards.filter(c => c.evolutionTier === 3));
-  return { tier1, tier2, tier3 };
-}
-
-function makePlayer(name: string, isAI: boolean, index: number): PlayerState {
-  return {
-    id: `player-${index}`,
-    name,
-    isAI,
-    energyTokens: {},
-    typeBonuses: {},
-    trainedCards: [],
-    scoutedCards: [],
-    legendaries: [],
-    mythical: null,
-    pokeballs: {},
-  };
-}
-
-function applyDittoGrant(
-  player: PlayerState,
-  dittoInSupply: number,
-): { newPlayer: PlayerState; newDittoSupply: number } {
-  const dittoGain = dittoInSupply > 0 ? 1 : 0;
-  return {
-    newPlayer: {
-      ...player,
-      energyTokens: {
-        ...player.energyTokens,
-        Ditto: (player.energyTokens.Ditto ?? 0) + dittoGain,
-      },
-    },
-    newDittoSupply: dittoInSupply - dittoGain,
-  };
-}
-
 export const useGameStore = create<GameStore>((set, get) => ({
   soundEnabled: true,
   toggleSound: () => set((state) => ({ soundEnabled: !state.soundEnabled })),
+  setSoundEnabled: (enabled: boolean) => set({ soundEnabled: enabled }),
 
   game: null,
 
   initGame: (config: GameConfig) => {
-    const players = config.playerNames.map((name, i) =>
-      makePlayer(name, config.aiFlags[i] ?? false, i)
-    );
+    if (config.playerNames.length === 0) throw new Error('Game requires at least 1 player');
+    if (config.playerNames.length > 4) throw new Error('Game supports a maximum of 4 players');
 
+    const players = config.playerNames.map((name, i) => makePlayer(name, i));
     const { tier1, tier2, tier3 } = buildDecks(config.deckMode);
 
     set({
@@ -125,6 +62,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
         finalRoundTriggerPlayerIndex: null,
         pendingHandoff: false,
         turnNumber: 1,
+        actionTakenThisTurn: false,
       },
     });
   },
@@ -134,6 +72,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     if (!game) return;
     if (game.phase === 'discarding') throw new Error('Must discard tokens to ≤10 before ending turn');
     if (game.phase === 'gameOver') throw new Error('Game is over');
+    if (!game.actionTakenThisTurn) throw new Error('Must take an action before ending turn');
 
     const prevPlayer = game.players[game.currentPlayerIndex];
     const prevTP = trainerPoints(prevPlayer);
@@ -162,6 +101,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
         phase,
         finalRoundTriggerPlayerIndex,
         pendingHandoff,
+        actionTakenThisTurn: false,
       },
     });
   },
@@ -176,25 +116,18 @@ export const useGameStore = create<GameStore>((set, get) => ({
     const entries = Object.entries(tokens) as [EnergyType, number][];
     const supply = game.board.energySupply;
 
-    // Validate: 3 different (all values 1, 3 distinct types) or 2 same (one type, value 2)
     const isThreeDiff = entries.length === 3 && entries.every(([, n]) => n === 1);
     const isTwoSame = entries.length === 1 && entries[0][1] === 2;
     if (!isThreeDiff && !isTwoSame) {
       throw new Error('Invalid token selection: must take 3 different types or 2 of the same type');
     }
 
-    // Validate supply
     for (const [type, count] of entries) {
       const available = supply[type] ?? 0;
-      if (available < count) {
-        throw new Error(`Not enough ${type} tokens in supply`);
-      }
-      if (isTwoSame && available < 4) {
-        throw new Error(`Need ≥4 ${type} tokens in supply to take 2`);
-      }
+      if (available < count) throw new Error(`Not enough ${type} tokens in supply`);
+      if (isTwoSame && available < 4) throw new Error(`Need ≥4 ${type} tokens in supply to take 2`);
     }
 
-    // Apply: update supply and current player's tokens
     const idx = game.currentPlayerIndex;
     const player = game.players[idx];
     const newTokens = { ...player.energyTokens };
@@ -204,12 +137,16 @@ export const useGameStore = create<GameStore>((set, get) => ({
       newSupply[type] = (newSupply[type] ?? 0) - count;
     }
 
-    const newPlayers = game.players.map((p, i) =>
-      i === idx ? { ...p, energyTokens: newTokens } : p
-    );
-
     const newPhase = totalTokens(newTokens) > 10 ? 'discarding' : game.phase;
-    set({ game: { ...game, players: newPlayers, board: { ...game.board, energySupply: newSupply }, phase: newPhase } });
+    set({
+      game: {
+        ...game,
+        players: game.players.map((p, i) => i === idx ? { ...p, energyTokens: newTokens } : p),
+        board: { ...game.board, energySupply: newSupply },
+        phase: newPhase,
+        actionTakenThisTurn: true,
+      },
+    });
   },
 
   discardTokens: (tokens: DiscardSelection) => {
@@ -220,22 +157,25 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
     const idx = game.currentPlayerIndex;
     const player = game.players[idx];
-    const newTokens = { ...player.energyTokens };
-    const newSupply = { ...game.board.energySupply };
+    const newTokens = { ...player.energyTokens } as Partial<Record<TokenType, number>>;
+    const newSupply = { ...game.board.energySupply } as Partial<Record<TokenType, number>>;
 
-    for (const [type, count] of Object.entries(tokens) as [EnergyType | 'Ditto', number][]) {
-      const held = (newTokens as Record<string, number>)[type] ?? 0;
+    for (const [type, count] of Object.entries(tokens) as [TokenType, number][]) {
+      const held = newTokens[type] ?? 0;
       if (held < count) throw new Error(`Player does not hold ${count} ${type} tokens to discard`);
-      (newTokens as Record<string, number>)[type] = held - count;
+      newTokens[type] = held - count;
       newSupply[type] = (newSupply[type] ?? 0) + count;
     }
 
-    const newPlayers = game.players.map((p, i) =>
-      i === idx ? { ...p, energyTokens: newTokens } : p
-    );
-
     const newPhase = game.phase === 'discarding' && totalTokens(newTokens) <= 10 ? 'playing' : game.phase;
-    set({ game: { ...game, players: newPlayers, board: { ...game.board, energySupply: newSupply }, phase: newPhase } });
+    set({
+      game: {
+        ...game,
+        players: game.players.map((p, i) => i === idx ? { ...p, energyTokens: newTokens } : p),
+        board: { ...game.board, energySupply: newSupply },
+        phase: newPhase,
+      },
+    });
   },
 
   trainCard: (card: PokemonCard) => {
@@ -260,13 +200,13 @@ export const useGameStore = create<GameStore>((set, get) => ({
       throw new Error(`Card ${card.name} is not available to train`);
     }
 
-    // Compute payment: type bonuses first, then energy tokens, then Ditto
-    const energyAfter = { ...player.energyTokens } as Record<string, number>;
-    const supplyAfter = { ...board.energySupply } as Record<string, number>;
+    // Payment: type bonuses reduce cost; remaining paid from energy tokens; Ditto covers the rest
+    const energyAfter = { ...player.energyTokens } as Partial<Record<TokenType, number>>;
+    const supplyAfter = { ...board.energySupply } as Partial<Record<TokenType, number>>;
     let dittoNeeded = 0;
 
-    for (const [type, rawCost] of Object.entries(card.cost) as [string, number][]) {
-      const bonus = (player.typeBonuses as Record<string, number>)[type] ?? 0;
+    for (const [type, rawCost] of Object.entries(card.cost) as [EnergyType, number][]) {
+      const bonus = player.typeBonuses[type] ?? 0;
       const effective = Math.max(0, rawCost - bonus);
       const tokensPay = Math.min(effective, energyAfter[type] ?? 0);
       energyAfter[type] = (energyAfter[type] ?? 0) - tokensPay;
@@ -274,11 +214,11 @@ export const useGameStore = create<GameStore>((set, get) => ({
       dittoNeeded += effective - tokensPay;
     }
 
-    if (dittoNeeded > (energyAfter['Ditto'] ?? 0)) {
+    if (dittoNeeded > (energyAfter.Ditto ?? 0)) {
       throw new Error(`Cannot afford ${card.name}`);
     }
-    energyAfter['Ditto'] = (energyAfter['Ditto'] ?? 0) - dittoNeeded;
-    supplyAfter['Ditto'] = (supplyAfter['Ditto'] ?? 0) + dittoNeeded;
+    energyAfter.Ditto = (energyAfter.Ditto ?? 0) - dittoNeeded;
+    supplyAfter.Ditto = (supplyAfter.Ditto ?? 0) + dittoNeeded;
 
     // Update board: replace face-up slot from deck, or remove from scouted
     let newFace = [...board[faceKey]];
@@ -296,19 +236,16 @@ export const useGameStore = create<GameStore>((set, get) => ({
       newScouted = newScouted.filter((_, i) => i !== scoutedIdx);
     }
 
-    // Update player: type bonus, Pokeball, trained cards
-    const newTypeBonuses = { ...player.typeBonuses } as Record<string, number>;
+    const newTypeBonuses = { ...player.typeBonuses };
     if (card.typeBonus !== null) {
       newTypeBonuses[card.typeBonus] = (newTypeBonuses[card.typeBonus] ?? 0) + 1;
     }
 
-    // Legendary auto-collection check (runs on newTypeBonuses, after card bonus applied)
     const claimed = claimLegendaries(newTypeBonuses, board.availableLegendaries);
     const newAvailableLegendaries = board.availableLegendaries.filter(
       l => !claimed.some(c => c.pokedexNumber === l.pokedexNumber)
     );
 
-    // First player to claim any Legendary earns a MasterBall (one-time per game)
     const newPokeballs = { ...player.pokeballs };
     newPokeballs[pokeballTier] = (newPokeballs[pokeballTier] ?? 0) + 1;
     const isFirstLegendary = claimed.length > 0 && !board.firstLegendaryClaimed;
@@ -316,25 +253,24 @@ export const useGameStore = create<GameStore>((set, get) => ({
       newPokeballs['MasterBall'] = (newPokeballs['MasterBall'] ?? 0) + 1;
     }
 
-    const newPlayer: PlayerState = {
-      ...player,
-      energyTokens: energyAfter as PlayerState['energyTokens'],
-      typeBonuses: newTypeBonuses as PlayerState['typeBonuses'],
-      trainedCards: [...player.trainedCards, card],
-      scoutedCards: newScouted,
-      legendaries: [...player.legendaries, ...claimed],
-      pokeballs: newPokeballs,
-    };
-
     set({
       game: {
         ...game,
-        players: game.players.map((p, i) => i === idx ? newPlayer : p),
+        actionTakenThisTurn: true,
+        players: game.players.map((p, i) => i === idx ? {
+          ...player,
+          energyTokens: energyAfter,
+          typeBonuses: newTypeBonuses,
+          trainedCards: [...player.trainedCards, card],
+          scoutedCards: newScouted,
+          legendaries: [...player.legendaries, ...claimed],
+          pokeballs: newPokeballs,
+        } : p),
         board: {
           ...board,
           [faceKey]: faceIdx !== -1 ? newFace : board[faceKey],
           [deckKey]: faceIdx !== -1 ? newDeck : board[deckKey],
-          energySupply: supplyAfter as BoardState['energySupply'],
+          energySupply: supplyAfter,
           availableLegendaries: newAvailableLegendaries,
           firstLegendaryClaimed: board.firstLegendaryClaimed || isFirstLegendary,
         },
@@ -350,9 +286,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     if (game.phase === 'gameOver') throw new Error('Game is over');
 
     const idx = game.currentPlayerIndex;
-    const player = game.players[idx];
-
-    if (player.scoutedCards.length >= 3) {
+    if (game.players[idx].scoutedCards.length >= 3) {
       throw new Error('Cannot scout: already holding 3 scouted cards');
     }
 
@@ -367,23 +301,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
       : game.board[faceKey].filter((_, i) => i !== faceIdx);
     const newDeck = deck.length > 0 ? deck.slice(1) : deck;
 
-    const playerWithScout = { ...player, scoutedCards: [...player.scoutedCards, card] };
-    const { newPlayer, newDittoSupply } = applyDittoGrant(playerWithScout, game.board.energySupply.Ditto ?? 0);
-    const newPhase = totalTokens(newPlayer.energyTokens) > 10 ? 'discarding' : game.phase;
-
-    set({
-      game: {
-        ...game,
-        phase: newPhase,
-        players: game.players.map((p, i) => i === idx ? newPlayer : p),
-        board: {
-          ...game.board,
-          [faceKey]: newFace,
-          [deckKey]: newDeck,
-          energySupply: { ...game.board.energySupply, Ditto: newDittoSupply },
-        },
-      },
-    });
+    const updatedBoard = { ...game.board, [faceKey]: newFace, [deckKey]: newDeck };
+    set({ game: applyScout(game, idx, card, updatedBoard) });
   },
 
   scoutFromDeck: (tier: EvolutionTier) => {
@@ -394,9 +313,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     if (game.phase === 'gameOver') throw new Error('Game is over');
 
     const idx = game.currentPlayerIndex;
-    const player = game.players[idx];
-
-    if (player.scoutedCards.length >= 3) {
+    if (game.players[idx].scoutedCards.length >= 3) {
       throw new Error('Cannot scout: already holding 3 scouted cards');
     }
 
@@ -404,23 +321,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
     const deck = game.board[deckKey];
     if (deck.length === 0) throw new Error(`Tier ${tier} deck is empty`);
 
-    const card = deck[0];
-    const playerWithScout = { ...player, scoutedCards: [...player.scoutedCards, card] };
-    const { newPlayer, newDittoSupply } = applyDittoGrant(playerWithScout, game.board.energySupply.Ditto ?? 0);
-    const newPhase = totalTokens(newPlayer.energyTokens) > 10 ? 'discarding' : game.phase;
-
-    set({
-      game: {
-        ...game,
-        phase: newPhase,
-        players: game.players.map((p, i) => i === idx ? newPlayer : p),
-        board: {
-          ...game.board,
-          [deckKey]: deck.slice(1),
-          energySupply: { ...game.board.energySupply, Ditto: newDittoSupply },
-        },
-      },
-    });
+    const updatedBoard = { ...game.board, [deckKey]: deck.slice(1) };
+    set({ game: applyScout(game, idx, deck[0], updatedBoard) });
   },
 
   catchMew: (ball: PokeballTier, rng: () => number = Math.random) => {
@@ -453,6 +355,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     set({
       game: {
         ...game,
+        actionTakenThisTurn: true,
         players: game.players.map((p, i) =>
           i === idx ? { ...p, pokeballs: newPokeballs, mythical: caught ? game.board.mew : p.mythical } : p
         ),

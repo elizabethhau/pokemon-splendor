@@ -4,7 +4,6 @@ import { GameConfig, PlayerState } from '../types/game';
 
 const TWO_PLAYER: GameConfig = {
   playerNames: ['Alice', 'Bob'],
-  aiFlags: [false, false],
   deckMode: 'first151', passAndPlay: false,
 };
 
@@ -92,6 +91,14 @@ test('initGame gives all players empty hands and zero bonuses', () => {
   }
 });
 
+// ─── Test 6b ──────────────────────────────────────────────────────────────────
+test('initGame throws for 0 players or more than 4 players', () => {
+  expect(() => useGameStore.getState().initGame({ ...TWO_PLAYER, playerNames: [] }))
+    .toThrow('at least 1 player');
+  expect(() => useGameStore.getState().initGame({ ...TWO_PLAYER, playerNames: ['A', 'B', 'C', 'D', 'E'] }))
+    .toThrow('maximum of 4 players');
+});
+
 // ─── Test 7 ───────────────────────────────────────────────────────────────────
 test('currentPlayer() returns the player at currentPlayerIndex', () => {
   useGameStore.getState().initGame(TWO_PLAYER);
@@ -130,9 +137,17 @@ test('advanceTurn moves to the next player and wraps back to 0', () => {
 
   expect(useGameStore.getState().game!.currentPlayerIndex).toBe(0);
 
+  useGameStore.getState().takeTokens({ Fire: 1, Water: 1, Grass: 1 });
   useGameStore.getState().advanceTurn();
   expect(useGameStore.getState().game!.currentPlayerIndex).toBe(1);
 
-  useGameStore.getState().advanceTurn(); // wraps
+  useGameStore.getState().takeTokens({ Fire: 1, Water: 1, Grass: 1 });
+  useGameStore.getState().advanceTurn(); // wraps to 0
   expect(useGameStore.getState().game!.currentPlayerIndex).toBe(0);
+});
+
+// ─── Test 10 ──────────────────────────────────────────────────────────────────
+test('advanceTurn throws if no action was taken this turn', () => {
+  useGameStore.getState().initGame(TWO_PLAYER);
+  expect(() => useGameStore.getState().advanceTurn()).toThrow('Must take an action before ending turn');
 });

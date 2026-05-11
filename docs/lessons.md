@@ -1,4 +1,4 @@
-# Lessons Learned — Core Game Implementation (Issues #1–#9)
+# Lessons Learned
 
 Findings from the staff engineer review of the initial implementation. Bugs fixed in-place; this file captures what to watch for going forward.
 
@@ -81,3 +81,106 @@ If a player enters `'discarding'` from `'finalRound'` (takes tokens that push th
 | `discardTokens` rejects `pendingHandoff`/`gameOver` | `takeTokens.test.ts` | Guards are only valuable if tested |
 | 3-player final round lasts the full lap | `turnLoop.test.ts` | 2-player tests don't exercise the `next !== triggerIndex` multi-lap logic |
 | `catchMew` respects `mew.legendariesRequired` | `catchMew.test.ts` | The whole point of the fix is testability — verify it actually reads the field |
+
+---
+
+# Lessons Learned — Second Review (Post-Core Cleanup)
+
+Findings from the staff engineer review of the refactored implementation. All items below were fixed.
+
+---
+
+## Bugs Fixed
+
+### 6. `advanceTurn` allowed silent pass with no action taken
+
+**File:** `src/store/useGameStore.ts`
+
+Nothing prevented a player from calling `advanceTurn` without having taken any action (no tokens, no card, no scout). The `discarding` guard existed but there was no "action taken" gate.
+
+**Fix:** Added `actionTakenThisTurn: boolean` to `GameState`. Every real action sets it `true`; `advanceTurn` checks it and resets it. `discardTokens` (cleanup, not an action) does not set it.
+
+**Rule:** Model the game's turn contract in state, not just in documentation. If the rule is "one action per turn," enforce it in code.
+
+---
+
+### 7. Token type casts bypassed the type system
+
+**File:** `src/store/useGameStore.ts`
+
+`trainCard` and `discardTokens` cast token maps to `Record<string, number>` to iterate them, losing type safety on key access. The casts existed because `Object.entries()` always returns `[string, ...]`, but the fix is to cast the entries, not the object.
+
+**Fix:** `Object.entries(card.cost) as [EnergyType, number][]` and `Object.entries(tokens) as [TokenType, number][]`. Combined with the new `TokenType = EnergyType | 'Ditto'` alias, all token access is now type-safe with no `as Record<string, number>` escape hatches.
+
+**Rule:** Cast at the `Object.entries()` call site, not on the object. Casting the object silently kills all downstream type safety.
+
+---
+
+### 8. `CardCost` included `'Ditto'` as a possible key
+
+**File:** `src/types/game.ts`
+
+`CardCost` was typed as `Partial<Record<EnergyType | 'Ditto', number>>`. Cards in Splendor-style games have costs in energy types; Ditto is a payment mechanism only. The wider type was misleading and caused the `Record<string, number>` cast in `trainCard` (see #7 above).
+
+**Fix:** `CardCost = Partial<Record<EnergyType, number>>`. Ditto is now only in `TokenType`, not in cost definitions.
+
+---
+
+### 9. Spreading `Partial<T>` as a function parameter does not override like an inline computed property
+
+**File:** `src/store/gameRules.ts`
+
+`applyScout` accepted a `boardPatch: Partial<BoardState>` and spread it into the returned board:
+
+```typescript
+board: { ...game.board, ...boardPatch, energySupply: ... }
+```
+
+The intent was that `boardPatch = { [faceKey]: newFace, [deckKey]: newDeck }` would override those two keys. In practice the override did not apply — the board came back unchanged — causing the scout test to fail.
+
+The root cause wasn't fully diagnosed (likely a ts-jest / Babel interaction with optional-typed spreads), but the fix is unambiguous: **construct the full `BoardState` before passing it**. The helper now receives a complete `BoardState`, not a partial patch.
+
+```typescript
+// Before (broken):
+set({ game: applyScout(game, idx, card, { [faceKey]: newFace, [deckKey]: newDeck }) });
+
+// After (correct):
+const updatedBoard = { ...game.board, [faceKey]: newFace, [deckKey]: newDeck };
+set({ game: applyScout(game, idx, card, updatedBoard) });
+```
+
+**Rule:** Prefer passing complete objects to helper functions over partial patches. Partial patches are fragile — the recipient has to know which fields to override and the spread order matters. Constructing the full object at the call site makes the intent explicit and avoids subtle spread-ordering bugs.
+
+---
+
+## Design Improvements
+
+### Game logic extracted to `gameRules.ts`
+
+All pure helper functions (`totalTokens`, `claimLegendaries`, `shuffle`, `buildDecks`, `makePlayer`, `applyDittoGrant`, `applyScout`) moved out of the store into `src/store/gameRules.ts`. The store is now a thin layer that calls these functions and updates state. Pure functions are testable in isolation and easier to reason about.
+
+### `aiFlags` removed from `GameConfig`
+
+The field existed but was never read outside of `makePlayer`, and AI is not implemented. Dead configuration is a maintenance hazard — readers assume any field in a config struct is meaningful. Removed entirely; `PlayerState.isAI` is kept for when AI is implemented.
+
+### Sound preference persistence moved to `App.tsx`
+
+Importing `AsyncStorage` into the store would have required all store-importing tests to mock it. Persistence belongs at the app boundary, not in state management. `App.tsx` now loads and saves `soundEnabled` via AsyncStorage; the store remains a pure, sync, mockable state container.
+
+### Selectors added for domain queries
+
+`canAfford`, `canClaimLegendary`, `canCatchMew` added to `selectors.ts`. Previously these were only computed inline inside store actions. UI components checking button enable/disable state would have had to duplicate the logic.
+
+---
+
+## Testing Gaps Filled
+
+| Gap | File | Why it matters |
+|-----|------|----------------|
+| `advanceTurn` throws when no action was taken | `gameStore.test.ts` | The whole point of the enforcement is that it's enforced |
+| `initGame` rejects 0 or 5+ players | `gameStore.test.ts` | Boundary validation is only useful if tested at the boundary |
+| `scoutFaceUp` throws if card not face-up | `scoutCard.test.ts` | The guard existed but was untested; bugs in the findIndex path would have been invisible |
+| Scout 3 → train 1 → scout 4th succeeds | `scoutCard.test.ts` | The cap is per-hand, not per-game; training must clear the slot |
+| 4-player final round wraps correctly | `turnLoop.test.ts` | 2- and 3-player tests don't exercise all wrap-around cases |
+| Second player blocked after Mew caught | `catchMew.test.ts` | Mew is a global singleton; concurrent attempts needed an explicit test |
+| Multi-legendary in one `trainCard` gives exactly 1 MasterBall | `legendaryCollection.test.ts` | The once-per-game MasterBall rule had no test for the multi-claim edge case |

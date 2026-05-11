@@ -3,7 +3,6 @@ import { GameConfig, PokemonCard } from '../types/game';
 
 const TWO_PLAYER: GameConfig = {
   playerNames: ['Alice', 'Bob'],
-  aiFlags: [false, false],
   deckMode: 'first151',
   passAndPlay: false,
 };
@@ -161,7 +160,6 @@ test('actions throw when phase is gameOver', () => {
 test('3-player final round: all remaining players complete their turns before gameOver', () => {
   const THREE_PLAYER: GameConfig = {
     playerNames: ['Alice', 'Bob', 'Carol'],
-    aiFlags: [false, false, false],
     deckMode: 'first151',
     passAndPlay: false,
   };
@@ -188,6 +186,49 @@ test('3-player final round: all remaining players complete their turns before ga
 
   expect(useGameStore.getState().game!.phase).toBe('finalRound');
   expect(useGameStore.getState().game!.currentPlayerIndex).toBe(2);
+
+  useGameStore.getState().takeTokens({ Fire: 1, Water: 1, Grass: 1 });
+  useGameStore.getState().advanceTurn(); // → wraps to Alice (trigger) → gameOver
+
+  expect(useGameStore.getState().game!.phase).toBe('gameOver');
+});
+
+// ─── Test 9 ───────────────────────────────────────────────────────────────────
+test('4-player final round: all three remaining players complete turns before gameOver', () => {
+  const FOUR_PLAYER: GameConfig = {
+    playerNames: ['Alice', 'Bob', 'Carol', 'Dave'],
+    deckMode: 'first151',
+    passAndPlay: false,
+  };
+  useGameStore.getState().initGame(FOUR_PLAYER);
+
+  // Alice hits ≥20 TP
+  useGameStore.setState((s) => ({
+    game: {
+      ...s.game!,
+      players: s.game!.players.map((p, i) =>
+        i === 0 ? { ...p, trainedCards: [HIGH_TP_CARD(20)] } : p
+      ),
+    },
+  }));
+
+  useGameStore.getState().takeTokens({ Fire: 1, Water: 1, Grass: 1 });
+  useGameStore.getState().advanceTurn(); // → Bob; finalRound
+
+  expect(useGameStore.getState().game!.phase).toBe('finalRound');
+  expect(useGameStore.getState().game!.currentPlayerIndex).toBe(1);
+
+  useGameStore.getState().takeTokens({ Fire: 1, Water: 1, Grass: 1 });
+  useGameStore.getState().advanceTurn(); // → Carol
+
+  expect(useGameStore.getState().game!.phase).toBe('finalRound');
+  expect(useGameStore.getState().game!.currentPlayerIndex).toBe(2);
+
+  useGameStore.getState().takeTokens({ Fire: 1, Water: 1, Grass: 1 });
+  useGameStore.getState().advanceTurn(); // → Dave
+
+  expect(useGameStore.getState().game!.phase).toBe('finalRound');
+  expect(useGameStore.getState().game!.currentPlayerIndex).toBe(3);
 
   useGameStore.getState().takeTokens({ Fire: 1, Water: 1, Grass: 1 });
   useGameStore.getState().advanceTurn(); // → wraps to Alice (trigger) → gameOver

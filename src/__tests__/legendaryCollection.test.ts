@@ -3,7 +3,6 @@ import { GameConfig, Legendary, PokemonCard } from '../types/game';
 
 const TWO_PLAYER: GameConfig = {
   playerNames: ['Alice', 'Bob'],
-  aiFlags: [false, false],
   deckMode: 'first151',
   passAndPlay: false,
 };
@@ -193,4 +192,38 @@ test('first player to claim a Legendary earns a MasterBall; subsequent claims do
   // Bob claims Moltres but gets no MasterBall (already claimed by Alice)
   expect(useGameStore.getState().game!.players[1].legendaries).toHaveLength(1);
   expect(useGameStore.getState().game!.players[1].pokeballs.MasterBall).toBeUndefined();
+});
+
+// ─── Test 6 ───────────────────────────────────────────────────────────────────
+test('claiming multiple legendaries in a single trainCard gives exactly 1 MasterBall', () => {
+  // Two legendaries both triggered by one card: Moltres (Fire:4, Grass:3) + Zapdos (Electric:4, Fire:3)
+  // After training one more Fire card (Fire goes 3→4), both trigger simultaneously
+  const MOLTRES: Legendary = {
+    pokedexNumber: 146, name: 'Moltres', trainerPoints: 3,
+    requirements: { Fire: 4, Grass: 3 },
+  };
+  useGameStore.setState((s) => ({
+    game: {
+      ...s.game!,
+      board: { ...s.game!.board, availableLegendaries: [ZAPDOS, MOLTRES] },
+    },
+  }));
+
+  setTypeBonuses({ Electric: 4, Fire: 3, Grass: 3 });
+  putCardInFace(CHARMANDER);
+  useGameStore.setState((s) => ({
+    game: {
+      ...s.game!,
+      players: s.game!.players.map((p, i) =>
+        i === 0 ? { ...p, energyTokens: { Fire: 5 } } : p
+      ),
+    },
+  }));
+
+  useGameStore.getState().trainCard(CHARMANDER); // Fire goes 3→4 → triggers both Zapdos and Moltres
+
+  const player = useGameStore.getState().game!.players[0];
+  expect(player.legendaries).toHaveLength(2);
+  // First-legendary bonus fires once for the whole trainCard call, not once per legendary
+  expect(player.pokeballs.MasterBall).toBe(1);
 });

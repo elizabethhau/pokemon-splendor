@@ -3,7 +3,6 @@ import { GameConfig, Legendary, Mythical } from '../types/game';
 
 const TWO_PLAYER: GameConfig = {
   playerNames: ['Alice', 'Bob'],
-  aiFlags: [false, false],
   deckMode: 'first151',
   passAndPlay: false,
 };
@@ -133,4 +132,29 @@ test('failed catch consumes ball but leaves Mew on board and player.mythical nul
   expect(game!.players[0].mythical).toBeNull();
   expect(game!.board.mew).toEqual(MEW);
   expect(game!.players[0].pokeballs.Pokeball).toBe(0);
+});
+
+// ─── Test 7 ───────────────────────────────────────────────────────────────────
+test('second player cannot catch Mew after first player already caught it', () => {
+  setupEligible();
+
+  // Alice catches Mew (MasterBall always succeeds)
+  useGameStore.getState().catchMew('MasterBall', () => 0);
+  expect(useGameStore.getState().game!.board.mew).toBeNull();
+
+  // Advance to Bob with enough legendaries and a ball
+  useGameStore.setState((s) => ({
+    game: {
+      ...s.game!,
+      currentPlayerIndex: 1,
+      players: s.game!.players.map((p, i) =>
+        i === 1
+          ? { ...p, legendaries: [ARTICUNO, ZAPDOS], pokeballs: { Pokeball: 1 } }
+          : p
+      ),
+    },
+  }));
+
+  expect(() => useGameStore.getState().catchMew('Pokeball', () => 0))
+    .toThrow('Mew is not on the board');
 });
