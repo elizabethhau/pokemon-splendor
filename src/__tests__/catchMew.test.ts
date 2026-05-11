@@ -159,3 +159,13 @@ test('second player cannot catch Mew after first player already caught it', () =
   expect(() => useGameStore.getState().catchMew('Pokeball', () => 0))
     .toThrow('Mew is not on the board');
 });
+
+// ─── Test 8 ───────────────────────────────────────────────────────────────────
+test('MasterBall always catches Mew regardless of rng value', () => {
+  setupEligible();
+
+  // rng at 0.99 — below the 1.0 threshold — still succeeds
+  const caught = useGameStore.getState().catchMew('MasterBall', () => 0.99);
+  expect(caught).toBe(true);
+  expect(useGameStore.getState().game!.board.mew).toBeNull();
+});

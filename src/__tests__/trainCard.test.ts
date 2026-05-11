@@ -1,5 +1,6 @@
 import { useGameStore } from '../store/useGameStore';
 import { GameConfig, PokemonCard } from '../types/game';
+import { givePlayerTokens, putCardInFace } from './helpers';
 
 const TWO_PLAYER: GameConfig = {
   playerNames: ['Alice', 'Bob'],
@@ -30,26 +31,6 @@ const EEVEE: PokemonCard = {
   evolutionTier: 1, cost: { Electric: 2 }, trainerPoints: 0, typeBonus: null,
 };
 
-function givePlayerTokens(tokens: Partial<Record<string, number>>, playerIndex = 0) {
-  useGameStore.setState((s) => ({
-    game: {
-      ...s.game!,
-      players: s.game!.players.map((p, i) =>
-        i === playerIndex ? { ...p, energyTokens: tokens } : p
-      ),
-    },
-  }));
-}
-
-function putCardInFace(card: PokemonCard) {
-  const faceKey = (['tier1Face', 'tier2Face', 'tier3Face'] as const)[card.evolutionTier - 1];
-  useGameStore.setState((s) => {
-    const rest = s.game!.board[faceKey].filter(c => c.pokedexNumber !== card.pokedexNumber).slice(0, 3);
-    return {
-      game: { ...s.game!, board: { ...s.game!.board, [faceKey]: [card, ...rest] } },
-    };
-  });
-}
 
 function putCardInScouted(card: PokemonCard, playerIndex = 0) {
   useGameStore.setState((s) => ({
@@ -204,4 +185,14 @@ test('trainCard throws when player cannot afford the card', () => {
   const { game } = useGameStore.getState();
   expect(game!.players[0].trainedCards).toHaveLength(0);
   expect(game!.board.tier1Face).toContainEqual(BULBASAUR);
+});
+
+// ─── Test 9 ───────────────────────────────────────────────────────────────────
+test('trainCard throws when the card is neither face-up nor scouted', () => {
+  const NOT_AVAILABLE: PokemonCard = {
+    pokedexNumber: 9998, name: 'NotAvailable', energyType: 'Fire',
+    evolutionTier: 1, cost: {}, trainerPoints: 0, typeBonus: 'Fire',
+  };
+  expect(() => useGameStore.getState().trainCard(NOT_AVAILABLE))
+    .toThrow('is not available to train');
 });

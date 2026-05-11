@@ -1,4 +1,4 @@
-import { canAfford, canCatchMew, canClaimLegendary } from '../store/selectors';
+import { canAfford, canCatchMew, canClaimLegendary, getWinners } from '../store/selectors';
 import { Legendary, Mythical, PlayerState, PokemonCard } from '../types/game';
 
 function makePlayer(overrides: Partial<PlayerState> = {}): PlayerState {
@@ -106,4 +106,40 @@ test('canCatchMew: false when ball count is 0', () => {
     pokeballs: { Pokeball: 0 },
   });
   expect(canCatchMew(player, MEW)).toBe(false);
+});
+
+// ─── getWinners ───────────────────────────────────────────────────────────────
+
+const CARD_5TP: import('../types/game').PokemonCard = {
+  pokedexNumber: 6, name: 'Charizard', energyType: 'Fire',
+  evolutionTier: 3, cost: {}, trainerPoints: 5, typeBonus: 'Fire',
+};
+
+test('getWinners: single winner with highest TP', () => {
+  const alice = makePlayer({ trainedCards: [CARD_5TP] }); // 5 TP
+  const bob = makePlayer({ name: 'Bob' });                 // 0 TP
+  expect(getWinners([alice, bob])).toEqual([alice]);
+});
+
+test('getWinners: tiebreaker — fewest trained cards wins', () => {
+  const alice = makePlayer({ trainedCards: [CARD_5TP] });              // 5 TP, 1 card
+  const bob = makePlayer({ name: 'Bob', trainedCards: [CARD_5TP, CARD_5TP] }); // 10 TP, 2 cards
+  // bob has more TP, so alice is eliminated — this test verifies bob wins outright
+  expect(getWinners([alice, bob])).toEqual([bob]);
+});
+
+test('getWinners: tiebreaker applied when TP is equal', () => {
+  const alice = makePlayer({ trainedCards: [CARD_5TP] });  // 5 TP, 1 card
+  const bob = makePlayer({ name: 'Bob', trainedCards: [CARD_5TP, { ...CARD_5TP, pokedexNumber: 7, trainerPoints: 0 }] }); // 5 TP, 2 cards
+  // equal TP; alice has fewer trained cards → alice wins
+  expect(getWinners([alice, bob])).toEqual([alice]);
+});
+
+test('getWinners: true tie returns both players', () => {
+  const alice = makePlayer({ trainedCards: [CARD_5TP] }); // 5 TP, 1 card
+  const bob = makePlayer({ name: 'Bob', trainedCards: [CARD_5TP] }); // 5 TP, 1 card
+  const winners = getWinners([alice, bob]);
+  expect(winners).toHaveLength(2);
+  expect(winners).toContain(alice);
+  expect(winners).toContain(bob);
 });

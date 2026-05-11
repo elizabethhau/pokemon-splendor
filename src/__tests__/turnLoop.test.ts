@@ -20,16 +20,6 @@ const HIGH_TP_CARD = (tp: number): PokemonCard => ({
   evolutionTier: 1, cost: {}, trainerPoints: tp, typeBonus: 'Fire',
 });
 
-function givePlayerTokens(tokens: Partial<Record<string, number>>, playerIndex = 0) {
-  useGameStore.setState((s) => ({
-    game: {
-      ...s.game!,
-      players: s.game!.players.map((p, i) =>
-        i === playerIndex ? { ...p, energyTokens: tokens } : p
-      ),
-    },
-  }));
-}
 
 beforeEach(() => {
   useGameStore.setState({ game: null });
@@ -141,6 +131,27 @@ test('all players completing Final Round turns transitions to gameOver', () => {
   // Bob takes his Final Round turn
   useGameStore.getState().takeTokens({ Fire: 1, Water: 1, Grass: 1 });
   useGameStore.getState().advanceTurn(); // → would wrap to Alice (index 0) = trigger → gameOver
+
+  expect(useGameStore.getState().game!.phase).toBe('gameOver');
+});
+
+// ─── Test 12 ──────────────────────────────────────────────────────────────────
+test('1-player game: reaching ≥20 TP transitions to gameOver in the same advanceTurn call', () => {
+  // A single player has no opponents — the final round collapses: trigger player = next player.
+  const ONE_PLAYER: GameConfig = { playerNames: ['Alice'], deckMode: 'first151', passAndPlay: false };
+  useGameStore.getState().initGame(ONE_PLAYER);
+
+  useGameStore.setState((s) => ({
+    game: {
+      ...s.game!,
+      players: s.game!.players.map((p, i) =>
+        i === 0 ? { ...p, trainedCards: [HIGH_TP_CARD(20)] } : p
+      ),
+    },
+  }));
+
+  useGameStore.getState().takeTokens({ Fire: 1, Water: 1, Grass: 1 });
+  useGameStore.getState().advanceTurn(); // trigger player (0) → next is also 0 → gameOver immediately
 
   expect(useGameStore.getState().game!.phase).toBe('gameOver');
 });

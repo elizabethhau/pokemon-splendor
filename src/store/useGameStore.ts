@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { EnergyType, EvolutionTier, GameConfig, GamePhase, GameState, PokemonCard, Legendary, Mythical, PokeballTier, TokenType } from '../types/game';
+import { EnergyType, EvolutionTier, GameAction, GameConfig, GamePhase, GameState, PokemonCard, Legendary, Mythical, PokeballTier, TokenType } from '../types/game';
 import legData from '../data/legendaries.json';
 import mewData from '../data/mew.json';
 import { trainerPoints, canAfford } from './selectors';
@@ -28,6 +28,7 @@ interface GameStore {
   scoutFromDeck: (tier: EvolutionTier) => void;
   catchMew: (ball: PokeballTier, rng?: () => number) => boolean;
   acknowledgeHandoff: () => void;
+  dispatchAction: (action: GameAction) => boolean;
 }
 
 export const useGameStore = create<GameStore>((set, get) => ({
@@ -41,7 +42,9 @@ export const useGameStore = create<GameStore>((set, get) => ({
     if (config.playerNames.length < MIN_PLAYERS) throw new Error('Game requires at least 1 player');
     if (config.playerNames.length > MAX_PLAYERS) throw new Error('Game supports a maximum of 4 players');
 
-    const players = config.playerNames.map((name, i) => makePlayer(name, i));
+    const players = config.playerNames.map((name, i) =>
+      makePlayer(name, i, config.aiPlayerIndices?.includes(i) ?? false)
+    );
     const { tier1, tier2, tier3 } = buildDecks(config.deckMode);
 
     set({
@@ -134,7 +137,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     }
 
     for (const [type, count] of entries) {
-      const available = supply[type] ?? 0;
+      const available = supply[type];
       if (isTwoSame && available < MIN_SUPPLY_FOR_TAKE_TWO) throw new Error(`Need ≥${MIN_SUPPLY_FOR_TAKE_TWO} ${type} tokens in supply to take 2`);
       if (available < count) throw new Error(`Not enough ${type} tokens in supply`);
     }
@@ -145,7 +148,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     const newSupply = { ...supply };
     for (const [type, count] of entries) {
       newTokens[type] = (newTokens[type] ?? 0) + count;
-      newSupply[type] = (newSupply[type] ?? 0) - count;
+      newSupply[type] = newSupply[type] - count;
     }
 
     const newPhase = totalTokens(newTokens) > MAX_TOKENS ? PHASE.DISCARDING : game.phase;
@@ -180,7 +183,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
       const held = newTokens[type] ?? 0;
       if (held < count) throw new Error(`Player does not hold ${count} ${type} tokens to discard`);
       newTokens[type] = held - count;
-      newSupply[type] = (newSupply[type] ?? 0) + count;
+      newSupply[type] = newSupply[type] + count;
     }
 
     // Restore the phase we were in before entering 'discarding'
@@ -210,7 +213,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
     const faceKey = tierFaceKey(card.evolutionTier);
     const deckKey = tierDeckKey(card.evolutionTier);
-    const pokeballTier = (['Pokeball', 'GreatBall', 'UltraBall'] as const)[card.evolutionTier - 1] as PokeballTier;
+    const pokeballTier = (['Pokeball', 'GreatBall', 'UltraBall'] as const)[card.evolutionTier - 1];
 
     const faceIdx = board[faceKey].findIndex(c => c.pokedexNumber === card.pokedexNumber);
     const scoutedIdx = player.scoutedCards.findIndex(c => c.pokedexNumber === card.pokedexNumber);
@@ -232,12 +235,12 @@ export const useGameStore = create<GameStore>((set, get) => ({
       const effective = Math.max(0, rawCost - bonus);
       const tokensPay = Math.min(effective, energyAfter[type] ?? 0);
       energyAfter[type] = (energyAfter[type] ?? 0) - tokensPay;
-      supplyAfter[type] = (supplyAfter[type] ?? 0) + tokensPay;
+      supplyAfter[type] = supplyAfter[type] + tokensPay;
       dittoNeeded += effective - tokensPay;
     }
 
     energyAfter.Ditto = (energyAfter.Ditto ?? 0) - dittoNeeded;
-    supplyAfter.Ditto = (supplyAfter.Ditto ?? 0) + dittoNeeded;
+    supplyAfter.Ditto = supplyAfter.Ditto + dittoNeeded;
 
     // Update board: replace face-up slot from deck, or remove from scouted
     let newFace = [...board[faceKey]];
@@ -386,5 +389,16 @@ export const useGameStore = create<GameStore>((set, get) => ({
     const { game } = get();
     if (!game) return;
     set({ game: { ...game, pendingHandoff: false } });
+  },
+
+  dispatchAction: (action: GameAction) => {
+    const { takeTokens, trainCard, scoutFaceUp, scoutFromDeck, catchMew } = get();
+    switch (action.type) {
+      case 'takeTokens':    takeTokens(action.tokens);          return true;
+      case 'trainCard':     trainCard(action.card);             return true;
+      case 'scoutFaceUp':   scoutFaceUp(action.card);           return true;
+      case 'scoutFromDeck': scoutFromDeck(action.tier);         return true;
+      case 'catchMew':      return catchMew(action.ball);
+    }
   },
 }));

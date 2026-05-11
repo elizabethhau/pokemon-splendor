@@ -35,3 +35,12 @@ export function canCatchMew(player: PlayerState, mew: Mythical): boolean {
   const hasAnyBall = Object.values(player.pokeballs).some(n => (n ?? 0) > 0);
   return hasEnoughLegendaries && hasAnyBall;
 }
+
+// Returns the winner(s) at game over. Tiebreaker: fewest trained cards.
+// Returns multiple players only when both TP and trained-card count are tied.
+export function getWinners(players: PlayerState[]): PlayerState[] {
+  const maxTP = Math.max(...players.map(trainerPoints));
+  const leaders = players.filter(p => trainerPoints(p) === maxTP);
+  const minCards = Math.min(...leaders.map(p => p.trainedCards.length));
+  return leaders.filter(p => p.trainedCards.length === minCards);
+}

@@ -610,3 +610,121 @@ return available.filter(leg => canClaimLegendary({ typeBonuses }, leg));
 ```
 
 No casts required. `gameRules.ts` imports `canClaimLegendary` from `selectors.ts`; `selectors.ts` does not import from `gameRules.ts`, so there is no circular dependency.
+
+---
+
+# Lessons Learned — Eighth Review
+
+Findings from the staff engineer review. No behavioral bugs found. Changes focus on type accuracy, test hygiene, and filling coverage gaps before UI work begins.
+
+---
+
+## Design Improvements
+
+### `BoardState.energySupply` tightened to `Record<TokenType, number>`
+
+**File:** `src/types/game.ts`
+
+`energySupply` was typed as `Partial<Record<TokenType, number>>` but is always fully initialised by `initGame` with all 6 token types and never has keys removed. The `Partial` type forced `?? 0` on every supply access throughout the store — adding noise without adding safety. Changed to `Record<TokenType, number>`. All 6 `?? 0` guards on supply access were removed as a result.
+
+`PlayerState.energyTokens` remains `Partial` — players legitimately start with no tokens and accumulate only the types they take.
+
+**Rule:** A `Partial<Record<K, V>>` type says "some keys may be absent." If the invariant is that all keys are always present, use `Record<K, V>` and let TypeScript prove it.
+
+---
+
+### `getWinners` selector added
+
+**File:** `src/store/selectors.ts`
+
+`design.md` specifies: highest TP wins; fewest trained cards breaks ties. This logic was previously missing — there was no way to determine the game result when `phase === GAME_OVER`. Added `getWinners(players: PlayerState[]): PlayerState[]`, which returns a list (length > 1 only on a true tie after the tiebreaker).
+
+---
+
+### Test helper duplication eliminated
+
+**Files:** `src/__tests__/helpers.ts` (new), `trainCard.test.ts`, `scoutCard.test.ts`, `legendaryCollection.test.ts`, `turnLoop.test.ts`
+
+`givePlayerTokens` was copy-pasted verbatim in `trainCard.test.ts` and `turnLoop.test.ts`. `putCardInFace` was copy-pasted verbatim in `trainCard.test.ts`, `scoutCard.test.ts`, and `legendaryCollection.test.ts`. Extracted both to `src/__tests__/helpers.ts`. All three test files now import from helpers.
+
+Also discovered that `givePlayerTokens` in `turnLoop.test.ts` was defined but never called — dead code removed.
+
+**Rule:** Copy-pasting a test helper into three files means a future change to its logic (e.g., the `filter + slice` deduplication pattern in `putCardInFace`) needs to be applied in three places. Extract when the second copy appears.
+
+---
+
+### `as PokeballTier` cast removed from `trainCard`
+
+**File:** `src/store/useGameStore.ts:213`
+
+`(['Pokeball', 'GreatBall', 'UltraBall'] as const)[card.evolutionTier - 1]` already infers `'Pokeball' | 'GreatBall' | 'UltraBall'`, which is a strict subtype of `PokeballTier`. The `as PokeballTier` cast was redundant.
+
+---
+
+### Comment added to `makePlayer` about AI path
+
+**File:** `src/store/gameRules.ts`
+
+`PlayerState.isAI` is always `false` with no path to set it `true`. Added a one-line comment on `makePlayer` so the AI implementer knows exactly where to add the entry point.
+
+---
+
+## Testing Gaps Filled
+
+| Gap | File | Why it matters |
+|-----|------|----------------|
+| `trainCard` throws "not available" when card is neither face-up nor scouted | `trainCard.test.ts` (Test 9) | The error path existed but was completely untested |
+| 1-player game: final round and game over collapse into one `advanceTurn` call | `turnLoop.test.ts` (Test 12) | `MIN_PLAYERS = 1` is enforced but the single-player end condition (next === trigger immediately) was never exercised |
+| MasterBall 100% catch rate explicit | `catchMew.test.ts` (Test 8) | `rng() < 1.0` is always true for `rng ∈ [0, 1)` — the semantics deserve a direct test, not just implicit use in another test |
+| `getWinners` positive, tiebreak, and true-tie cases | `selectors.test.ts` | New selector; all branches need coverage before the game-over screen can rely on it |
+
+---
+
+## Observations (no fix applied)
+
+### `BULBASAUR` is dead code in `turnLoop.test.ts`
+
+**File:** `src/__tests__/turnLoop.test.ts:12`
+
+`const BULBASAUR: PokemonCard = {...}` is defined but never referenced in any test in that file. Pre-existing dead code, not introduced by this review. Mentioned here so it doesn't appear in a future review as a newly noticed issue.
+
+---
+
+## AI Implementation Prep (issues #10, #11)
+
+The following changes were made to eliminate rewrites when AI ships:
+
+### `GameConfig.aiPlayerIndices` added
+
+**File:** `src/types/game.ts`
+
+`GameConfig` now accepts `aiPlayerIndices?: number[]`. `initGame` reads this field to set `PlayerState.isAI` correctly at game creation. All existing callers that omit the field default to all-human games.
+
+### `makePlayer` accepts `isAI` parameter
+
+**File:** `src/store/gameRules.ts`
+
+`makePlayer(name, index, isAI = false)` — the AI flag is now threaded at the factory level rather than being hardcoded to `false`. `initGame` derives it from `config.aiPlayerIndices`.
+
+### `GameAction` union type added
+
+**File:** `src/types/game.ts`
+
+```ts
+export type GameAction =
+  | { type: 'takeTokens'; tokens: Partial<Record<EnergyType, number>> }
+  | { type: 'trainCard'; card: PokemonCard }
+  | { type: 'scoutFaceUp'; card: PokemonCard }
+  | { type: 'scoutFromDeck'; tier: EvolutionTier }
+  | { type: 'catchMew'; ball: PokeballTier };
+```
+
+An AI function's natural signature is `(game: GameState, playerIndex: number) => GameAction`. This type makes that possible without reaching into the store directly.
+
+### `dispatchAction` added to the store
+
+**File:** `src/store/useGameStore.ts`
+
+`dispatchAction(action: GameAction): boolean` routes a `GameAction` to the correct store method. Returns the `catchMew` result for the catch case; `true` for all others (which throw on illegal moves). The AI runner calls `dispatchAction` then `advanceTurn`, keeping AI turn execution identical to human turn execution.
+
+**Rule:** An AI and a human should use exactly the same game-action interface. If the AI has a separate code path into the store, game-rule bugs affect humans and AIs differently, making them hard to catch in tests.

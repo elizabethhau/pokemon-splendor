@@ -1,5 +1,6 @@
 import { useGameStore } from '../store/useGameStore';
 import { GameConfig, Legendary, PokemonCard } from '../types/game';
+import { putCardInFace } from './helpers';
 
 const TWO_PLAYER: GameConfig = {
   playerNames: ['Alice', 'Bob'],
@@ -25,15 +26,6 @@ const SQUIRTLE: PokemonCard = {
   evolutionTier: 1, cost: { Water: 2 }, trainerPoints: 0, typeBonus: 'Water',
 };
 
-function putCardInFace(card: PokemonCard) {
-  const faceKey = (['tier1Face', 'tier2Face', 'tier3Face'] as const)[card.evolutionTier - 1];
-  useGameStore.setState((s) => {
-    const rest = s.game!.board[faceKey].filter(c => c.pokedexNumber !== card.pokedexNumber).slice(0, 3);
-    return {
-      game: { ...s.game!, board: { ...s.game!.board, [faceKey]: [card, ...rest] } },
-    };
-  });
-}
 
 function setTypeBonuses(bonuses: Partial<Record<string, number>>, playerIndex = 0) {
   useGameStore.setState((s) => ({

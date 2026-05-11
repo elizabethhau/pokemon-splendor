@@ -32,11 +32,11 @@ export function buildDecks(_deckMode: DeckMode) {
   return { tier1, tier2, tier3 };
 }
 
-export function makePlayer(name: string, index: number): PlayerState {
+export function makePlayer(name: string, index: number, isAI = false): PlayerState {
   return {
     id: `player-${index}`,
     name,
-    isAI: false,
+    isAI,
     energyTokens: {},
     typeBonuses: {},
     trainedCards: [],
@@ -65,7 +65,7 @@ export function applyScout(
   const player = game.players[playerIdx];
   const playerWithScout = { ...player, scoutedCards: [...player.scoutedCards, card] };
 
-  const boardDittoSupply = updatedBoard.energySupply.Ditto ?? 0;
+  const boardDittoSupply = updatedBoard.energySupply.Ditto;
   const dittoGain = boardDittoSupply > 0 ? 1 : 0;
   const newPlayer = {
     ...playerWithScout,

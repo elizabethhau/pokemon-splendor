@@ -40,7 +40,15 @@ export interface GameConfig {
   playerNames: string[];
   deckMode: DeckMode;
   passAndPlay: boolean;
+  aiPlayerIndices?: number[];
 }
+
+export type GameAction =
+  | { type: 'takeTokens'; tokens: Partial<Record<EnergyType, number>> }
+  | { type: 'trainCard'; card: PokemonCard }
+  | { type: 'scoutFaceUp'; card: PokemonCard }
+  | { type: 'scoutFromDeck'; tier: EvolutionTier }
+  | { type: 'catchMew'; ball: PokeballTier };
 
 export interface PlayerState {
   id: string;
@@ -62,7 +70,7 @@ export interface BoardState {
   tier1Face: PokemonCard[];
   tier2Face: PokemonCard[];
   tier3Face: PokemonCard[];
-  energySupply: Partial<Record<TokenType, number>>;
+  energySupply: Record<TokenType, number>;
   availableLegendaries: Legendary[];
   firstLegendaryClaimed: boolean;
   mew: Mythical | null;
