@@ -43,4 +43,7 @@ yarn-error.*
 # claude files
 /.claude
 CLAUDE.md
-CONTEXT.md
+
+# graphify knowledge graph — keep stable outputs, ignore generated intermediates
+graphify-out/cache/
+graphify-out/.graphify_*

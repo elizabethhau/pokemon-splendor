@@ -1,0 +1,3744 @@
+{
+  "directed": false,
+  "multigraph": false,
+  "graph": {},
+  "nodes": [
+    {
+      "label": "constants.ts",
+      "file_type": "code",
+      "source_file": "constants.ts",
+      "source_location": "L1",
+      "id": "constants_ts",
+      "community": 0,
+      "norm_label": "constants.ts"
+    },
+    {
+      "label": "BASE_CATCH_RATES",
+      "file_type": "code",
+      "source_file": "constants.ts",
+      "source_location": "L23",
+      "id": "src_constants_base_catch_rates",
+      "community": 0,
+      "norm_label": "base_catch_rates"
+    },
+    {
+      "label": "PHASE",
+      "file_type": "code",
+      "source_file": "constants.ts",
+      "source_location": "L30",
+      "id": "src_constants_phase",
+      "community": 0,
+      "norm_label": "phase"
+    },
+    {
+      "label": "game.ts",
+      "file_type": "code",
+      "source_file": "types/game.ts",
+      "source_location": "L1",
+      "id": "types_game_ts",
+      "community": 0,
+      "norm_label": "game.ts"
+    },
+    {
+      "label": "EnergyType",
+      "file_type": "code",
+      "source_file": "types/game.ts",
+      "source_location": "L1",
+      "id": "types_game_energytype",
+      "community": 5,
+      "norm_label": "energytype"
+    },
+    {
+      "label": "TokenType",
+      "file_type": "code",
+      "source_file": "types/game.ts",
+      "source_location": "L2",
+      "id": "types_game_tokentype",
+      "community": 0,
+      "norm_label": "tokentype"
+    },
+    {
+      "label": "EvolutionTier",
+      "file_type": "code",
+      "source_file": "types/game.ts",
+      "source_location": "L4",
+      "id": "types_game_evolutiontier",
+      "community": 0,
+      "norm_label": "evolutiontier"
+    },
+    {
+      "label": "CardCost",
+      "file_type": "code",
+      "source_file": "types/game.ts",
+      "source_location": "L7",
+      "id": "types_game_cardcost",
+      "community": 0,
+      "norm_label": "cardcost"
+    },
+    {
+      "label": "PokemonCard",
+      "file_type": "code",
+      "source_file": "types/game.ts",
+      "source_location": "L9",
+      "id": "types_game_pokemoncard",
+      "community": 8,
+      "norm_label": "pokemoncard"
+    },
+    {
+      "label": "LegendaryRequirements",
+      "file_type": "code",
+      "source_file": "types/game.ts",
+      "source_location": "L19",
+      "id": "types_game_legendaryrequirements",
+      "community": 0,
+      "norm_label": "legendaryrequirements"
+    },
+    {
+      "label": "Legendary",
+      "file_type": "code",
+      "source_file": "types/game.ts",
+      "source_location": "L21",
+      "id": "types_game_legendary",
+      "community": 1,
+      "norm_label": "legendary"
+    },
+    {
+      "label": "Mythical",
+      "file_type": "code",
+      "source_file": "types/game.ts",
+      "source_location": "L28",
+      "id": "types_game_mythical",
+      "community": 1,
+      "norm_label": "mythical"
+    },
+    {
+      "label": "PokeballTier",
+      "file_type": "code",
+      "source_file": "types/game.ts",
+      "source_location": "L35",
+      "id": "types_game_pokeballtier",
+      "community": 0,
+      "norm_label": "pokeballtier"
+    },
+    {
+      "label": "DeckMode",
+      "file_type": "code",
+      "source_file": "types/game.ts",
+      "source_location": "L37",
+      "id": "types_game_deckmode",
+      "community": 0,
+      "norm_label": "deckmode"
+    },
+    {
+      "label": "GameConfig",
+      "file_type": "code",
+      "source_file": "types/game.ts",
+      "source_location": "L39",
+      "id": "types_game_gameconfig",
+      "community": 3,
+      "norm_label": "gameconfig"
+    },
+    {
+      "label": "PlayerState",
+      "file_type": "code",
+      "source_file": "types/game.ts",
+      "source_location": "L45",
+      "id": "types_game_playerstate",
+      "community": 1,
+      "norm_label": "playerstate"
+    },
+    {
+      "label": "BoardState",
+      "file_type": "code",
+      "source_file": "types/game.ts",
+      "source_location": "L58",
+      "id": "types_game_boardstate",
+      "community": 0,
+      "norm_label": "boardstate"
+    },
+    {
+      "label": "GamePhase",
+      "file_type": "code",
+      "source_file": "types/game.ts",
+      "source_location": "L71",
+      "id": "types_game_gamephase",
+      "community": 0,
+      "norm_label": "gamephase"
+    },
+    {
+      "label": "GameState",
+      "file_type": "code",
+      "source_file": "types/game.ts",
+      "source_location": "L73",
+      "id": "types_game_gamestate",
+      "community": 0,
+      "norm_label": "gamestate"
+    },
+    {
+      "label": "AppNavigator.tsx",
+      "file_type": "code",
+      "source_file": "navigation/AppNavigator.tsx",
+      "source_location": "L1",
+      "id": "navigation_appnavigator_tsx",
+      "community": 2,
+      "norm_label": "appnavigator.tsx"
+    },
+    {
+      "label": "RootStackParamList",
+      "file_type": "code",
+      "source_file": "navigation/AppNavigator.tsx",
+      "source_location": "L11",
+      "id": "navigation_appnavigator_rootstackparamlist",
+      "community": 2,
+      "norm_label": "rootstackparamlist"
+    },
+    {
+      "label": "Stack",
+      "file_type": "code",
+      "source_file": "navigation/AppNavigator.tsx",
+      "source_location": "L20",
+      "id": "navigation_appnavigator_stack",
+      "community": 2,
+      "norm_label": "stack"
+    },
+    {
+      "label": "AppNavigator()",
+      "file_type": "code",
+      "source_file": "navigation/AppNavigator.tsx",
+      "source_location": "L22",
+      "id": "navigation_appnavigator_appnavigator",
+      "community": 2,
+      "norm_label": "appnavigator()"
+    },
+    {
+      "label": "spriteUriCache.ts",
+      "file_type": "code",
+      "source_file": "utils/spriteUriCache.ts",
+      "source_location": "L1",
+      "id": "utils_spriteuricache_ts",
+      "community": 9,
+      "norm_label": "spriteuricache.ts"
+    },
+    {
+      "label": "getSpriteUri()",
+      "file_type": "code",
+      "source_file": "utils/spriteUriCache.ts",
+      "source_location": "L7",
+      "id": "utils_spriteuricache_getspriteuri",
+      "community": 9,
+      "norm_label": "getspriteuri()"
+    },
+    {
+      "label": "StatsScreen.tsx",
+      "file_type": "code",
+      "source_file": "screens/StatsScreen.tsx",
+      "source_location": "L1",
+      "id": "screens_statsscreen_tsx",
+      "community": 2,
+      "norm_label": "statsscreen.tsx"
+    },
+    {
+      "label": "StatsScreen()",
+      "file_type": "code",
+      "source_file": "screens/StatsScreen.tsx",
+      "source_location": "L4",
+      "id": "screens_statsscreen_statsscreen",
+      "community": 2,
+      "norm_label": "statsscreen()"
+    },
+    {
+      "label": "styles",
+      "file_type": "code",
+      "source_file": "screens/StatsScreen.tsx",
+      "source_location": "L12",
+      "id": "screens_statsscreen_styles",
+      "community": 2,
+      "norm_label": "styles"
+    },
+    {
+      "label": "GameBoardScreen.tsx",
+      "file_type": "code",
+      "source_file": "screens/GameBoardScreen.tsx",
+      "source_location": "L1",
+      "id": "screens_gameboardscreen_tsx",
+      "community": 2,
+      "norm_label": "gameboardscreen.tsx"
+    },
+    {
+      "label": "GameBoardScreen()",
+      "file_type": "code",
+      "source_file": "screens/GameBoardScreen.tsx",
+      "source_location": "L4",
+      "id": "screens_gameboardscreen_gameboardscreen",
+      "community": 2,
+      "norm_label": "gameboardscreen()"
+    },
+    {
+      "label": "styles",
+      "file_type": "code",
+      "source_file": "screens/GameBoardScreen.tsx",
+      "source_location": "L12",
+      "id": "screens_gameboardscreen_styles",
+      "community": 2,
+      "norm_label": "styles"
+    },
+    {
+      "label": "PokedexScreen.tsx",
+      "file_type": "code",
+      "source_file": "screens/PokedexScreen.tsx",
+      "source_location": "L1",
+      "id": "screens_pokedexscreen_tsx",
+      "community": 2,
+      "norm_label": "pokedexscreen.tsx"
+    },
+    {
+      "label": "PokedexScreen()",
+      "file_type": "code",
+      "source_file": "screens/PokedexScreen.tsx",
+      "source_location": "L4",
+      "id": "screens_pokedexscreen_pokedexscreen",
+      "community": 2,
+      "norm_label": "pokedexscreen()"
+    },
+    {
+      "label": "styles",
+      "file_type": "code",
+      "source_file": "screens/PokedexScreen.tsx",
+      "source_location": "L12",
+      "id": "screens_pokedexscreen_styles",
+      "community": 2,
+      "norm_label": "styles"
+    },
+    {
+      "label": "RulebookScreen.tsx",
+      "file_type": "code",
+      "source_file": "screens/RulebookScreen.tsx",
+      "source_location": "L1",
+      "id": "screens_rulebookscreen_tsx",
+      "community": 2,
+      "norm_label": "rulebookscreen.tsx"
+    },
+    {
+      "label": "RulebookScreen()",
+      "file_type": "code",
+      "source_file": "screens/RulebookScreen.tsx",
+      "source_location": "L4",
+      "id": "screens_rulebookscreen_rulebookscreen",
+      "community": 2,
+      "norm_label": "rulebookscreen()"
+    },
+    {
+      "label": "styles",
+      "file_type": "code",
+      "source_file": "screens/RulebookScreen.tsx",
+      "source_location": "L12",
+      "id": "screens_rulebookscreen_styles",
+      "community": 2,
+      "norm_label": "styles"
+    },
+    {
+      "label": "SettingsScreen.tsx",
+      "file_type": "code",
+      "source_file": "screens/SettingsScreen.tsx",
+      "source_location": "L1",
+      "id": "screens_settingsscreen_tsx",
+      "community": 3,
+      "norm_label": "settingsscreen.tsx"
+    },
+    {
+      "label": "SettingsScreen()",
+      "file_type": "code",
+      "source_file": "screens/SettingsScreen.tsx",
+      "source_location": "L5",
+      "id": "screens_settingsscreen_settingsscreen",
+      "community": 3,
+      "norm_label": "settingsscreen()"
+    },
+    {
+      "label": "styles",
+      "file_type": "code",
+      "source_file": "screens/SettingsScreen.tsx",
+      "source_location": "L18",
+      "id": "screens_settingsscreen_styles",
+      "community": 3,
+      "norm_label": "styles"
+    },
+    {
+      "label": "HomeScreen.tsx",
+      "file_type": "code",
+      "source_file": "screens/HomeScreen.tsx",
+      "source_location": "L1",
+      "id": "screens_homescreen_tsx",
+      "community": 2,
+      "norm_label": "homescreen.tsx"
+    },
+    {
+      "label": "Props",
+      "file_type": "code",
+      "source_file": "screens/HomeScreen.tsx",
+      "source_location": "L6",
+      "id": "screens_homescreen_props",
+      "community": 2,
+      "norm_label": "props"
+    },
+    {
+      "label": "HomeScreen()",
+      "file_type": "code",
+      "source_file": "screens/HomeScreen.tsx",
+      "source_location": "L10",
+      "id": "screens_homescreen_homescreen",
+      "community": 2,
+      "norm_label": "homescreen()"
+    },
+    {
+      "label": "styles",
+      "file_type": "code",
+      "source_file": "screens/HomeScreen.tsx",
+      "source_location": "L33",
+      "id": "screens_homescreen_styles",
+      "community": 2,
+      "norm_label": "styles"
+    },
+    {
+      "label": "turnLoop.test.ts",
+      "file_type": "code",
+      "source_file": "__tests__/turnLoop.test.ts",
+      "source_location": "L1",
+      "id": "tests_turnloop_test_ts",
+      "community": 7,
+      "norm_label": "turnloop.test.ts"
+    },
+    {
+      "label": "TWO_PLAYER",
+      "file_type": "code",
+      "source_file": "__tests__/turnLoop.test.ts",
+      "source_location": "L4",
+      "id": "tests_turnloop_test_two_player",
+      "community": 7,
+      "norm_label": "two_player"
+    },
+    {
+      "label": "TWO_PLAYER_PNP",
+      "file_type": "code",
+      "source_file": "__tests__/turnLoop.test.ts",
+      "source_location": "L10",
+      "id": "tests_turnloop_test_two_player_pnp",
+      "community": 7,
+      "norm_label": "two_player_pnp"
+    },
+    {
+      "label": "BULBASAUR",
+      "file_type": "code",
+      "source_file": "__tests__/turnLoop.test.ts",
+      "source_location": "L12",
+      "id": "tests_turnloop_test_bulbasaur",
+      "community": 7,
+      "norm_label": "bulbasaur"
+    },
+    {
+      "label": "HIGH_TP_CARD()",
+      "file_type": "code",
+      "source_file": "__tests__/turnLoop.test.ts",
+      "source_location": "L18",
+      "id": "tests_turnloop_test_high_tp_card",
+      "community": 7,
+      "norm_label": "high_tp_card()"
+    },
+    {
+      "label": "givePlayerTokens()",
+      "file_type": "code",
+      "source_file": "__tests__/turnLoop.test.ts",
+      "source_location": "L23",
+      "id": "tests_turnloop_test_giveplayertokens",
+      "community": 7,
+      "norm_label": "giveplayertokens()"
+    },
+    {
+      "label": "{ game }",
+      "file_type": "code",
+      "source_file": "__tests__/turnLoop.test.ts",
+      "source_location": "L44",
+      "id": "tests_turnloop_test_game",
+      "community": 7,
+      "norm_label": "{ game }"
+    },
+    {
+      "label": "THREE_PLAYER",
+      "file_type": "code",
+      "source_file": "__tests__/turnLoop.test.ts",
+      "source_location": "L171",
+      "id": "tests_turnloop_test_three_player",
+      "community": 7,
+      "norm_label": "three_player"
+    },
+    {
+      "label": "FOUR_PLAYER",
+      "file_type": "code",
+      "source_file": "__tests__/turnLoop.test.ts",
+      "source_location": "L244",
+      "id": "tests_turnloop_test_four_player",
+      "community": 7,
+      "norm_label": "four_player"
+    },
+    {
+      "label": "scoutCard.test.ts",
+      "file_type": "code",
+      "source_file": "__tests__/scoutCard.test.ts",
+      "source_location": "L1",
+      "id": "tests_scoutcard_test_ts",
+      "community": 8,
+      "norm_label": "scoutcard.test.ts"
+    },
+    {
+      "label": "TWO_PLAYER",
+      "file_type": "code",
+      "source_file": "__tests__/scoutCard.test.ts",
+      "source_location": "L4",
+      "id": "tests_scoutcard_test_two_player",
+      "community": 8,
+      "norm_label": "two_player"
+    },
+    {
+      "label": "BULBASAUR",
+      "file_type": "code",
+      "source_file": "__tests__/scoutCard.test.ts",
+      "source_location": "L9",
+      "id": "tests_scoutcard_test_bulbasaur",
+      "community": 8,
+      "norm_label": "bulbasaur"
+    },
+    {
+      "label": "putCardInFace()",
+      "file_type": "code",
+      "source_file": "__tests__/scoutCard.test.ts",
+      "source_location": "L14",
+      "id": "tests_scoutcard_test_putcardinface",
+      "community": 8,
+      "norm_label": "putcardinface()"
+    },
+    {
+      "label": "{ game }",
+      "file_type": "code",
+      "source_file": "__tests__/scoutCard.test.ts",
+      "source_location": "L35",
+      "id": "tests_scoutcard_test_game",
+      "community": 8,
+      "norm_label": "{ game }"
+    },
+    {
+      "label": "NOT_ON_BOARD",
+      "file_type": "code",
+      "source_file": "__tests__/scoutCard.test.ts",
+      "source_location": "L128",
+      "id": "tests_scoutcard_test_not_on_board",
+      "community": 8,
+      "norm_label": "not_on_board"
+    },
+    {
+      "label": "maxCost",
+      "file_type": "code",
+      "source_file": "__tests__/scoutCard.test.ts",
+      "source_location": "L156",
+      "id": "tests_scoutcard_test_maxcost",
+      "community": 8,
+      "norm_label": "maxcost"
+    },
+    {
+      "label": "selectors.test.ts",
+      "file_type": "code",
+      "source_file": "__tests__/selectors.test.ts",
+      "source_location": "L1",
+      "id": "tests_selectors_test_ts",
+      "community": 1,
+      "norm_label": "selectors.test.ts"
+    },
+    {
+      "label": "makePlayer()",
+      "file_type": "code",
+      "source_file": "__tests__/selectors.test.ts",
+      "source_location": "L4",
+      "id": "tests_selectors_test_makeplayer",
+      "community": 1,
+      "norm_label": "makeplayer()"
+    },
+    {
+      "label": "MEW",
+      "file_type": "code",
+      "source_file": "__tests__/selectors.test.ts",
+      "source_location": "L14",
+      "id": "tests_selectors_test_mew",
+      "community": 1,
+      "norm_label": "mew"
+    },
+    {
+      "label": "ARTICUNO",
+      "file_type": "code",
+      "source_file": "__tests__/selectors.test.ts",
+      "source_location": "L15",
+      "id": "tests_selectors_test_articuno",
+      "community": 1,
+      "norm_label": "articuno"
+    },
+    {
+      "label": "CARD",
+      "file_type": "code",
+      "source_file": "__tests__/selectors.test.ts",
+      "source_location": "L19",
+      "id": "tests_selectors_test_card",
+      "community": 1,
+      "norm_label": "card"
+    },
+    {
+      "label": "player",
+      "file_type": "code",
+      "source_file": "__tests__/selectors.test.ts",
+      "source_location": "L25",
+      "id": "tests_selectors_test_player",
+      "community": 1,
+      "norm_label": "player"
+    },
+    {
+      "label": "FREE",
+      "file_type": "code",
+      "source_file": "__tests__/selectors.test.ts",
+      "source_location": "L51",
+      "id": "tests_selectors_test_free",
+      "community": 1,
+      "norm_label": "free"
+    },
+    {
+      "label": "gameData.test.ts",
+      "file_type": "code",
+      "source_file": "__tests__/gameData.test.ts",
+      "source_location": "L1",
+      "id": "tests_gamedata_test_ts",
+      "community": 5,
+      "norm_label": "gamedata.test.ts"
+    },
+    {
+      "label": "VALID_ENERGY_TYPES",
+      "file_type": "code",
+      "source_file": "__tests__/gameData.test.ts",
+      "source_location": "L6",
+      "id": "tests_gamedata_test_valid_energy_types",
+      "community": 5,
+      "norm_label": "valid_energy_types"
+    },
+    {
+      "label": "cards",
+      "file_type": "code",
+      "source_file": "__tests__/gameData.test.ts",
+      "source_location": "L7",
+      "id": "tests_gamedata_test_cards",
+      "community": 5,
+      "norm_label": "cards"
+    },
+    {
+      "label": "eevee",
+      "file_type": "code",
+      "source_file": "__tests__/gameData.test.ts",
+      "source_location": "L34",
+      "id": "tests_gamedata_test_eevee",
+      "community": 5,
+      "norm_label": "eevee"
+    },
+    {
+      "label": "nonEevee",
+      "file_type": "code",
+      "source_file": "__tests__/gameData.test.ts",
+      "source_location": "L38",
+      "id": "tests_gamedata_test_noneevee",
+      "community": 5,
+      "norm_label": "noneevee"
+    },
+    {
+      "label": "nums",
+      "file_type": "code",
+      "source_file": "__tests__/gameData.test.ts",
+      "source_location": "L46",
+      "id": "tests_gamedata_test_nums",
+      "community": 5,
+      "norm_label": "nums"
+    },
+    {
+      "label": "unique",
+      "file_type": "code",
+      "source_file": "__tests__/gameData.test.ts",
+      "source_location": "L47",
+      "id": "tests_gamedata_test_unique",
+      "community": 5,
+      "norm_label": "unique"
+    },
+    {
+      "label": "counts",
+      "file_type": "code",
+      "source_file": "__tests__/gameData.test.ts",
+      "source_location": "L53",
+      "id": "tests_gamedata_test_counts",
+      "community": 5,
+      "norm_label": "counts"
+    },
+    {
+      "label": "legs",
+      "file_type": "code",
+      "source_file": "__tests__/gameData.test.ts",
+      "source_location": "L66",
+      "id": "tests_gamedata_test_legs",
+      "community": 5,
+      "norm_label": "legs"
+    },
+    {
+      "label": "reqValues",
+      "file_type": "code",
+      "source_file": "__tests__/gameData.test.ts",
+      "source_location": "L73",
+      "id": "tests_gamedata_test_reqvalues",
+      "community": 5,
+      "norm_label": "reqvalues"
+    },
+    {
+      "label": "m",
+      "file_type": "code",
+      "source_file": "__tests__/gameData.test.ts",
+      "source_location": "L87",
+      "id": "tests_gamedata_test_m",
+      "community": 5,
+      "norm_label": "m"
+    },
+    {
+      "label": "trainCard.test.ts",
+      "file_type": "code",
+      "source_file": "__tests__/trainCard.test.ts",
+      "source_location": "L1",
+      "id": "tests_traincard_test_ts",
+      "community": 4,
+      "norm_label": "traincard.test.ts"
+    },
+    {
+      "label": "TWO_PLAYER",
+      "file_type": "code",
+      "source_file": "__tests__/trainCard.test.ts",
+      "source_location": "L4",
+      "id": "tests_traincard_test_two_player",
+      "community": 4,
+      "norm_label": "two_player"
+    },
+    {
+      "label": "BULBASAUR",
+      "file_type": "code",
+      "source_file": "__tests__/trainCard.test.ts",
+      "source_location": "L10",
+      "id": "tests_traincard_test_bulbasaur",
+      "community": 4,
+      "norm_label": "bulbasaur"
+    },
+    {
+      "label": "IVYSAUR",
+      "file_type": "code",
+      "source_file": "__tests__/trainCard.test.ts",
+      "source_location": "L16",
+      "id": "tests_traincard_test_ivysaur",
+      "community": 4,
+      "norm_label": "ivysaur"
+    },
+    {
+      "label": "VENUSAUR",
+      "file_type": "code",
+      "source_file": "__tests__/trainCard.test.ts",
+      "source_location": "L22",
+      "id": "tests_traincard_test_venusaur",
+      "community": 4,
+      "norm_label": "venusaur"
+    },
+    {
+      "label": "EEVEE",
+      "file_type": "code",
+      "source_file": "__tests__/trainCard.test.ts",
+      "source_location": "L28",
+      "id": "tests_traincard_test_eevee",
+      "community": 4,
+      "norm_label": "eevee"
+    },
+    {
+      "label": "givePlayerTokens()",
+      "file_type": "code",
+      "source_file": "__tests__/trainCard.test.ts",
+      "source_location": "L33",
+      "id": "tests_traincard_test_giveplayertokens",
+      "community": 4,
+      "norm_label": "giveplayertokens()"
+    },
+    {
+      "label": "putCardInFace()",
+      "file_type": "code",
+      "source_file": "__tests__/trainCard.test.ts",
+      "source_location": "L44",
+      "id": "tests_traincard_test_putcardinface",
+      "community": 4,
+      "norm_label": "putcardinface()"
+    },
+    {
+      "label": "putCardInScouted()",
+      "file_type": "code",
+      "source_file": "__tests__/trainCard.test.ts",
+      "source_location": "L54",
+      "id": "tests_traincard_test_putcardinscouted",
+      "community": 4,
+      "norm_label": "putcardinscouted()"
+    },
+    {
+      "label": "SCOUTED_ONLY",
+      "file_type": "code",
+      "source_file": "__tests__/trainCard.test.ts",
+      "source_location": "L111",
+      "id": "tests_traincard_test_scouted_only",
+      "community": 4,
+      "norm_label": "scouted_only"
+    },
+    {
+      "label": "deckBefore",
+      "file_type": "code",
+      "source_file": "__tests__/trainCard.test.ts",
+      "source_location": "L118",
+      "id": "tests_traincard_test_deckbefore",
+      "community": 4,
+      "norm_label": "deckbefore"
+    },
+    {
+      "label": "faceBefore",
+      "file_type": "code",
+      "source_file": "__tests__/trainCard.test.ts",
+      "source_location": "L119",
+      "id": "tests_traincard_test_facebefore",
+      "community": 4,
+      "norm_label": "facebefore"
+    },
+    {
+      "label": "{ game }",
+      "file_type": "code",
+      "source_file": "__tests__/trainCard.test.ts",
+      "source_location": "L123",
+      "id": "tests_traincard_test_game",
+      "community": 4,
+      "norm_label": "{ game }"
+    },
+    {
+      "label": "takeTokens.test.ts",
+      "file_type": "code",
+      "source_file": "__tests__/takeTokens.test.ts",
+      "source_location": "L1",
+      "id": "tests_taketokens_test_ts",
+      "community": 3,
+      "norm_label": "taketokens.test.ts"
+    },
+    {
+      "label": "TWO_PLAYER",
+      "file_type": "code",
+      "source_file": "__tests__/takeTokens.test.ts",
+      "source_location": "L4",
+      "id": "tests_taketokens_test_two_player",
+      "community": 3,
+      "norm_label": "two_player"
+    },
+    {
+      "label": "{ game }",
+      "file_type": "code",
+      "source_file": "__tests__/takeTokens.test.ts",
+      "source_location": "L17",
+      "id": "tests_taketokens_test_game",
+      "community": 3,
+      "norm_label": "{ game }"
+    },
+    {
+      "label": "{ takeTokens }",
+      "file_type": "code",
+      "source_file": "__tests__/takeTokens.test.ts",
+      "source_location": "L39",
+      "id": "tests_taketokens_test_taketokens",
+      "community": 3,
+      "norm_label": "{ taketokens }"
+    },
+    {
+      "label": "total",
+      "file_type": "code",
+      "source_file": "__tests__/takeTokens.test.ts",
+      "source_location": "L165",
+      "id": "tests_taketokens_test_total",
+      "community": 3,
+      "norm_label": "total"
+    },
+    {
+      "label": "totalAfter",
+      "file_type": "code",
+      "source_file": "__tests__/takeTokens.test.ts",
+      "source_location": "L171",
+      "id": "tests_taketokens_test_totalafter",
+      "community": 3,
+      "norm_label": "totalafter"
+    },
+    {
+      "label": "catchMew.test.ts",
+      "file_type": "code",
+      "source_file": "__tests__/catchMew.test.ts",
+      "source_location": "L1",
+      "id": "tests_catchmew_test_ts",
+      "community": 6,
+      "norm_label": "catchmew.test.ts"
+    },
+    {
+      "label": "TWO_PLAYER",
+      "file_type": "code",
+      "source_file": "__tests__/catchMew.test.ts",
+      "source_location": "L4",
+      "id": "tests_catchmew_test_two_player",
+      "community": 6,
+      "norm_label": "two_player"
+    },
+    {
+      "label": "MEW",
+      "file_type": "code",
+      "source_file": "__tests__/catchMew.test.ts",
+      "source_location": "L10",
+      "id": "tests_catchmew_test_mew",
+      "community": 6,
+      "norm_label": "mew"
+    },
+    {
+      "label": "ARTICUNO",
+      "file_type": "code",
+      "source_file": "__tests__/catchMew.test.ts",
+      "source_location": "L12",
+      "id": "tests_catchmew_test_articuno",
+      "community": 6,
+      "norm_label": "articuno"
+    },
+    {
+      "label": "ZAPDOS",
+      "file_type": "code",
+      "source_file": "__tests__/catchMew.test.ts",
+      "source_location": "L15",
+      "id": "tests_catchmew_test_zapdos",
+      "community": 6,
+      "norm_label": "zapdos"
+    },
+    {
+      "label": "MEWTWO",
+      "file_type": "code",
+      "source_file": "__tests__/catchMew.test.ts",
+      "source_location": "L18",
+      "id": "tests_catchmew_test_mewtwo",
+      "community": 6,
+      "norm_label": "mewtwo"
+    },
+    {
+      "label": "setupEligible()",
+      "file_type": "code",
+      "source_file": "__tests__/catchMew.test.ts",
+      "source_location": "L23",
+      "id": "tests_catchmew_test_setupeligible",
+      "community": 6,
+      "norm_label": "setupeligible()"
+    },
+    {
+      "label": "caught",
+      "file_type": "code",
+      "source_file": "__tests__/catchMew.test.ts",
+      "source_location": "L55",
+      "id": "tests_catchmew_test_caught",
+      "community": 6,
+      "norm_label": "caught"
+    },
+    {
+      "label": "{ game }",
+      "file_type": "code",
+      "source_file": "__tests__/catchMew.test.ts",
+      "source_location": "L57",
+      "id": "tests_catchmew_test_game",
+      "community": 6,
+      "norm_label": "{ game }"
+    },
+    {
+      "label": "spriteCache.test.ts",
+      "file_type": "code",
+      "source_file": "__tests__/spriteCache.test.ts",
+      "source_location": "L1",
+      "id": "tests_spritecache_test_ts",
+      "community": 9,
+      "norm_label": "spritecache.test.ts"
+    },
+    {
+      "label": "mockGetItem",
+      "file_type": "code",
+      "source_file": "__tests__/spriteCache.test.ts",
+      "source_location": "L10",
+      "id": "tests_spritecache_test_mockgetitem",
+      "community": 9,
+      "norm_label": "mockgetitem"
+    },
+    {
+      "label": "mockSetItem",
+      "file_type": "code",
+      "source_file": "__tests__/spriteCache.test.ts",
+      "source_location": "L11",
+      "id": "tests_spritecache_test_mocksetitem",
+      "community": 9,
+      "norm_label": "mocksetitem"
+    },
+    {
+      "label": "gameStore.test.ts",
+      "file_type": "code",
+      "source_file": "__tests__/gameStore.test.ts",
+      "source_location": "L1",
+      "id": "tests_gamestore_test_ts",
+      "community": 1,
+      "norm_label": "gamestore.test.ts"
+    },
+    {
+      "label": "TWO_PLAYER",
+      "file_type": "code",
+      "source_file": "__tests__/gameStore.test.ts",
+      "source_location": "L5",
+      "id": "tests_gamestore_test_two_player",
+      "community": 1,
+      "norm_label": "two_player"
+    },
+    {
+      "label": "{ game }",
+      "file_type": "code",
+      "source_file": "__tests__/gameStore.test.ts",
+      "source_location": "L17",
+      "id": "tests_gamestore_test_game",
+      "community": 1,
+      "norm_label": "{ game }"
+    },
+    {
+      "label": "names",
+      "file_type": "code",
+      "source_file": "__tests__/gameStore.test.ts",
+      "source_location": "L62",
+      "id": "tests_gamestore_test_names",
+      "community": 1,
+      "norm_label": "names"
+    },
+    {
+      "label": "player",
+      "file_type": "code",
+      "source_file": "__tests__/gameStore.test.ts",
+      "source_location": "L115",
+      "id": "tests_gamestore_test_player",
+      "community": 1,
+      "norm_label": "player"
+    },
+    {
+      "label": "legendaryCollection.test.ts",
+      "file_type": "code",
+      "source_file": "__tests__/legendaryCollection.test.ts",
+      "source_location": "L1",
+      "id": "tests_legendarycollection_test_ts",
+      "community": 3,
+      "norm_label": "legendarycollection.test.ts"
+    },
+    {
+      "label": "TWO_PLAYER",
+      "file_type": "code",
+      "source_file": "__tests__/legendaryCollection.test.ts",
+      "source_location": "L4",
+      "id": "tests_legendarycollection_test_two_player",
+      "community": 3,
+      "norm_label": "two_player"
+    },
+    {
+      "label": "ZAPDOS",
+      "file_type": "code",
+      "source_file": "__tests__/legendaryCollection.test.ts",
+      "source_location": "L11",
+      "id": "tests_legendarycollection_test_zapdos",
+      "community": 3,
+      "norm_label": "zapdos"
+    },
+    {
+      "label": "CHARMANDER",
+      "file_type": "code",
+      "source_file": "__tests__/legendaryCollection.test.ts",
+      "source_location": "L17",
+      "id": "tests_legendarycollection_test_charmander",
+      "community": 3,
+      "norm_label": "charmander"
+    },
+    {
+      "label": "SQUIRTLE",
+      "file_type": "code",
+      "source_file": "__tests__/legendaryCollection.test.ts",
+      "source_location": "L23",
+      "id": "tests_legendarycollection_test_squirtle",
+      "community": 3,
+      "norm_label": "squirtle"
+    },
+    {
+      "label": "putCardInFace()",
+      "file_type": "code",
+      "source_file": "__tests__/legendaryCollection.test.ts",
+      "source_location": "L28",
+      "id": "tests_legendarycollection_test_putcardinface",
+      "community": 3,
+      "norm_label": "putcardinface()"
+    },
+    {
+      "label": "setTypeBonuses()",
+      "file_type": "code",
+      "source_file": "__tests__/legendaryCollection.test.ts",
+      "source_location": "L38",
+      "id": "tests_legendarycollection_test_settypebonuses",
+      "community": 3,
+      "norm_label": "settypebonuses()"
+    },
+    {
+      "label": "MOLTRES",
+      "file_type": "code",
+      "source_file": "__tests__/legendaryCollection.test.ts",
+      "source_location": "L103",
+      "id": "tests_legendarycollection_test_moltres",
+      "community": 3,
+      "norm_label": "moltres"
+    },
+    {
+      "label": "gameRules.ts",
+      "file_type": "code",
+      "source_file": "store/gameRules.ts",
+      "source_location": "L1",
+      "id": "store_gamerules_ts",
+      "community": 0,
+      "norm_label": "gamerules.ts"
+    },
+    {
+      "label": "totalTokens()",
+      "file_type": "code",
+      "source_file": "store/gameRules.ts",
+      "source_location": "L6",
+      "id": "store_gamerules_totaltokens",
+      "community": 0,
+      "norm_label": "totaltokens()"
+    },
+    {
+      "label": "claimLegendaries()",
+      "file_type": "code",
+      "source_file": "store/gameRules.ts",
+      "source_location": "L10",
+      "id": "store_gamerules_claimlegendaries",
+      "community": 0,
+      "norm_label": "claimlegendaries()"
+    },
+    {
+      "label": "shuffle()",
+      "file_type": "code",
+      "source_file": "store/gameRules.ts",
+      "source_location": "L17",
+      "id": "store_gamerules_shuffle",
+      "community": 0,
+      "norm_label": "shuffle()"
+    },
+    {
+      "label": "buildDecks()",
+      "file_type": "code",
+      "source_file": "store/gameRules.ts",
+      "source_location": "L26",
+      "id": "store_gamerules_builddecks",
+      "community": 0,
+      "norm_label": "builddecks()"
+    },
+    {
+      "label": "makePlayer()",
+      "file_type": "code",
+      "source_file": "store/gameRules.ts",
+      "source_location": "L35",
+      "id": "store_gamerules_makeplayer",
+      "community": 0,
+      "norm_label": "makeplayer()"
+    },
+    {
+      "label": "tierFaceKey()",
+      "file_type": "code",
+      "source_file": "store/gameRules.ts",
+      "source_location": "L50",
+      "id": "store_gamerules_tierfacekey",
+      "community": 0,
+      "norm_label": "tierfacekey()"
+    },
+    {
+      "label": "tierDeckKey()",
+      "file_type": "code",
+      "source_file": "store/gameRules.ts",
+      "source_location": "L54",
+      "id": "store_gamerules_tierdeckkey",
+      "community": 0,
+      "norm_label": "tierdeckkey()"
+    },
+    {
+      "label": "applyScout()",
+      "file_type": "code",
+      "source_file": "store/gameRules.ts",
+      "source_location": "L59",
+      "id": "store_gamerules_applyscout",
+      "community": 0,
+      "norm_label": "applyscout()"
+    },
+    {
+      "label": "selectors.ts",
+      "file_type": "code",
+      "source_file": "store/selectors.ts",
+      "source_location": "L1",
+      "id": "store_selectors_ts",
+      "community": 1,
+      "norm_label": "selectors.ts"
+    },
+    {
+      "label": "currentPlayer()",
+      "file_type": "code",
+      "source_file": "store/selectors.ts",
+      "source_location": "L3",
+      "id": "store_selectors_currentplayer",
+      "community": 1,
+      "norm_label": "currentplayer()"
+    },
+    {
+      "label": "trainerPoints()",
+      "file_type": "code",
+      "source_file": "store/selectors.ts",
+      "source_location": "L7",
+      "id": "store_selectors_trainerpoints",
+      "community": 1,
+      "norm_label": "trainerpoints()"
+    },
+    {
+      "label": "canAfford()",
+      "file_type": "code",
+      "source_file": "store/selectors.ts",
+      "source_location": "L14",
+      "id": "store_selectors_canafford",
+      "community": 1,
+      "norm_label": "canafford()"
+    },
+    {
+      "label": "canClaimLegendary()",
+      "file_type": "code",
+      "source_file": "store/selectors.ts",
+      "source_location": "L27",
+      "id": "store_selectors_canclaimlegendary",
+      "community": 1,
+      "norm_label": "canclaimlegendary()"
+    },
+    {
+      "label": "canCatchMew()",
+      "file_type": "code",
+      "source_file": "store/selectors.ts",
+      "source_location": "L33",
+      "id": "store_selectors_cancatchmew",
+      "community": 1,
+      "norm_label": "cancatchmew()"
+    },
+    {
+      "label": "useGameStore.ts",
+      "file_type": "code",
+      "source_file": "store/useGameStore.ts",
+      "source_location": "L1",
+      "id": "store_usegamestore_ts",
+      "community": 0,
+      "norm_label": "usegamestore.ts"
+    },
+    {
+      "label": "TokenSelection",
+      "file_type": "code",
+      "source_file": "store/useGameStore.ts",
+      "source_location": "L13",
+      "id": "store_usegamestore_tokenselection",
+      "community": 0,
+      "norm_label": "tokenselection"
+    },
+    {
+      "label": "DiscardSelection",
+      "file_type": "code",
+      "source_file": "store/useGameStore.ts",
+      "source_location": "L14",
+      "id": "store_usegamestore_discardselection",
+      "community": 0,
+      "norm_label": "discardselection"
+    },
+    {
+      "label": "GameStore",
+      "file_type": "code",
+      "source_file": "store/useGameStore.ts",
+      "source_location": "L16",
+      "id": "store_usegamestore_gamestore",
+      "community": 0,
+      "norm_label": "gamestore"
+    },
+    {
+      "label": "useGameStore",
+      "file_type": "code",
+      "source_file": "store/useGameStore.ts",
+      "source_location": "L33",
+      "id": "store_usegamestore_usegamestore",
+      "community": 3,
+      "norm_label": "usegamestore"
+    }
+  ],
+  "links": [
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "constants.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "constants_ts",
+      "target": "types_game_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "constants.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "constants_ts",
+      "target": "types_game_pokeballtier",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "constants.ts",
+      "source_location": "L23",
+      "weight": 1.0,
+      "source": "constants_ts",
+      "target": "src_constants_base_catch_rates",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "constants.ts",
+      "source_location": "L30",
+      "weight": 1.0,
+      "source": "constants_ts",
+      "target": "src_constants_phase",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store/gameRules.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "store_gamerules_ts",
+      "target": "constants_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store/useGameStore.ts",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "store_usegamestore_ts",
+      "target": "constants_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store/useGameStore.ts",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "store_usegamestore_ts",
+      "target": "src_constants_base_catch_rates",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store/gameRules.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "store_gamerules_ts",
+      "target": "src_constants_phase",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store/useGameStore.ts",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "store_usegamestore_ts",
+      "target": "src_constants_phase",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "types/game.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "types_game_ts",
+      "target": "types_game_energytype",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "types/game.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "types_game_ts",
+      "target": "types_game_tokentype",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "types/game.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "types_game_ts",
+      "target": "types_game_evolutiontier",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "types/game.ts",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "types_game_ts",
+      "target": "types_game_cardcost",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "types/game.ts",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "types_game_ts",
+      "target": "types_game_pokemoncard",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "types/game.ts",
+      "source_location": "L19",
+      "weight": 1.0,
+      "source": "types_game_ts",
+      "target": "types_game_legendaryrequirements",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "types/game.ts",
+      "source_location": "L21",
+      "weight": 1.0,
+      "source": "types_game_ts",
+      "target": "types_game_legendary",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "types/game.ts",
+      "source_location": "L28",
+      "weight": 1.0,
+      "source": "types_game_ts",
+      "target": "types_game_mythical",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "types/game.ts",
+      "source_location": "L35",
+      "weight": 1.0,
+      "source": "types_game_ts",
+      "target": "types_game_pokeballtier",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "types/game.ts",
+      "source_location": "L37",
+      "weight": 1.0,
+      "source": "types_game_ts",
+      "target": "types_game_deckmode",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "types/game.ts",
+      "source_location": "L39",
+      "weight": 1.0,
+      "source": "types_game_ts",
+      "target": "types_game_gameconfig",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "types/game.ts",
+      "source_location": "L45",
+      "weight": 1.0,
+      "source": "types_game_ts",
+      "target": "types_game_playerstate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "types/game.ts",
+      "source_location": "L58",
+      "weight": 1.0,
+      "source": "types_game_ts",
+      "target": "types_game_boardstate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "types/game.ts",
+      "source_location": "L71",
+      "weight": 1.0,
+      "source": "types_game_ts",
+      "target": "types_game_gamephase",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "types/game.ts",
+      "source_location": "L73",
+      "weight": 1.0,
+      "source": "types_game_ts",
+      "target": "types_game_gamestate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/turnLoop.test.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "tests_turnloop_test_ts",
+      "target": "types_game_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/scoutCard.test.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "tests_scoutcard_test_ts",
+      "target": "types_game_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/selectors.test.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "tests_selectors_test_ts",
+      "target": "types_game_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/gameData.test.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "tests_gamedata_test_ts",
+      "target": "types_game_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/trainCard.test.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "tests_traincard_test_ts",
+      "target": "types_game_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/takeTokens.test.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "tests_taketokens_test_ts",
+      "target": "types_game_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/catchMew.test.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "tests_catchmew_test_ts",
+      "target": "types_game_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/gameStore.test.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "tests_gamestore_test_ts",
+      "target": "types_game_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/legendaryCollection.test.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "tests_legendarycollection_test_ts",
+      "target": "types_game_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store/gameRules.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "store_gamerules_ts",
+      "target": "types_game_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store/selectors.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "store_selectors_ts",
+      "target": "types_game_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store/useGameStore.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "store_usegamestore_ts",
+      "target": "types_game_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/gameData.test.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "tests_gamedata_test_ts",
+      "target": "types_game_energytype",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store/gameRules.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "store_gamerules_ts",
+      "target": "types_game_energytype",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store/selectors.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "store_selectors_ts",
+      "target": "types_game_energytype",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store/useGameStore.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "store_usegamestore_ts",
+      "target": "types_game_energytype",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store/gameRules.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "store_gamerules_ts",
+      "target": "types_game_tokentype",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store/useGameStore.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "store_usegamestore_ts",
+      "target": "types_game_tokentype",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store/gameRules.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "store_gamerules_ts",
+      "target": "types_game_evolutiontier",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store/useGameStore.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "store_usegamestore_ts",
+      "target": "types_game_evolutiontier",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/turnLoop.test.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "tests_turnloop_test_ts",
+      "target": "types_game_pokemoncard",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/scoutCard.test.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "tests_scoutcard_test_ts",
+      "target": "types_game_pokemoncard",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/selectors.test.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "tests_selectors_test_ts",
+      "target": "types_game_pokemoncard",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/gameData.test.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "tests_gamedata_test_ts",
+      "target": "types_game_pokemoncard",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/trainCard.test.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "tests_traincard_test_ts",
+      "target": "types_game_pokemoncard",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/legendaryCollection.test.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "tests_legendarycollection_test_ts",
+      "target": "types_game_pokemoncard",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store/gameRules.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "store_gamerules_ts",
+      "target": "types_game_pokemoncard",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store/selectors.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "store_selectors_ts",
+      "target": "types_game_pokemoncard",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store/useGameStore.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "store_usegamestore_ts",
+      "target": "types_game_pokemoncard",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/selectors.test.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "tests_selectors_test_ts",
+      "target": "types_game_legendary",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/gameData.test.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "tests_gamedata_test_ts",
+      "target": "types_game_legendary",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/catchMew.test.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "tests_catchmew_test_ts",
+      "target": "types_game_legendary",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/legendaryCollection.test.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "tests_legendarycollection_test_ts",
+      "target": "types_game_legendary",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store/gameRules.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "store_gamerules_ts",
+      "target": "types_game_legendary",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store/selectors.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "store_selectors_ts",
+      "target": "types_game_legendary",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store/useGameStore.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "store_usegamestore_ts",
+      "target": "types_game_legendary",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/selectors.test.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "tests_selectors_test_ts",
+      "target": "types_game_mythical",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/gameData.test.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "tests_gamedata_test_ts",
+      "target": "types_game_mythical",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/catchMew.test.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "tests_catchmew_test_ts",
+      "target": "types_game_mythical",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store/selectors.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "store_selectors_ts",
+      "target": "types_game_mythical",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store/useGameStore.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "store_usegamestore_ts",
+      "target": "types_game_mythical",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store/useGameStore.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "store_usegamestore_ts",
+      "target": "types_game_pokeballtier",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store/gameRules.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "store_gamerules_ts",
+      "target": "types_game_deckmode",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/turnLoop.test.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "tests_turnloop_test_ts",
+      "target": "types_game_gameconfig",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/scoutCard.test.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "tests_scoutcard_test_ts",
+      "target": "types_game_gameconfig",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/trainCard.test.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "tests_traincard_test_ts",
+      "target": "types_game_gameconfig",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/takeTokens.test.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "tests_taketokens_test_ts",
+      "target": "types_game_gameconfig",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/catchMew.test.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "tests_catchmew_test_ts",
+      "target": "types_game_gameconfig",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/gameStore.test.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "tests_gamestore_test_ts",
+      "target": "types_game_gameconfig",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/legendaryCollection.test.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "tests_legendarycollection_test_ts",
+      "target": "types_game_gameconfig",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store/useGameStore.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "store_usegamestore_ts",
+      "target": "types_game_gameconfig",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/selectors.test.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "tests_selectors_test_ts",
+      "target": "types_game_playerstate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/gameStore.test.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "tests_gamestore_test_ts",
+      "target": "types_game_playerstate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store/gameRules.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "store_gamerules_ts",
+      "target": "types_game_playerstate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store/selectors.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "store_selectors_ts",
+      "target": "types_game_playerstate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store/gameRules.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "store_gamerules_ts",
+      "target": "types_game_boardstate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store/useGameStore.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "store_usegamestore_ts",
+      "target": "types_game_gamephase",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store/gameRules.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "store_gamerules_ts",
+      "target": "types_game_gamestate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store/selectors.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "store_selectors_ts",
+      "target": "types_game_gamestate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store/useGameStore.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "store_usegamestore_ts",
+      "target": "types_game_gamestate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "screens/HomeScreen.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "screens_homescreen_tsx",
+      "target": "navigation_appnavigator_tsx",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "navigation/AppNavigator.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "navigation_appnavigator_tsx",
+      "target": "screens_gameboardscreen_tsx",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "navigation/AppNavigator.tsx",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "navigation_appnavigator_tsx",
+      "target": "screens_rulebookscreen_tsx",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "navigation/AppNavigator.tsx",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "navigation_appnavigator_tsx",
+      "target": "screens_statsscreen_tsx",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "navigation/AppNavigator.tsx",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "navigation_appnavigator_tsx",
+      "target": "screens_pokedexscreen_tsx",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "navigation/AppNavigator.tsx",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "navigation_appnavigator_tsx",
+      "target": "screens_settingsscreen_tsx",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "navigation/AppNavigator.tsx",
+      "source_location": "L11",
+      "weight": 1.0,
+      "source": "navigation_appnavigator_tsx",
+      "target": "navigation_appnavigator_rootstackparamlist",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "navigation/AppNavigator.tsx",
+      "source_location": "L20",
+      "weight": 1.0,
+      "source": "navigation_appnavigator_tsx",
+      "target": "navigation_appnavigator_stack",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "navigation/AppNavigator.tsx",
+      "source_location": "L22",
+      "weight": 1.0,
+      "source": "navigation_appnavigator_tsx",
+      "target": "navigation_appnavigator_appnavigator",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "screens/HomeScreen.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "screens_homescreen_tsx",
+      "target": "navigation_appnavigator_rootstackparamlist",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "utils/spriteUriCache.ts",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "utils_spriteuricache_ts",
+      "target": "utils_spriteuricache_getspriteuri",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/spriteCache.test.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "tests_spritecache_test_ts",
+      "target": "utils_spriteuricache_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/spriteCache.test.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "tests_spritecache_test_ts",
+      "target": "utils_spriteuricache_getspriteuri",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "screens/StatsScreen.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "screens_statsscreen_tsx",
+      "target": "screens_statsscreen_statsscreen",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "screens/StatsScreen.tsx",
+      "source_location": "L12",
+      "weight": 1.0,
+      "source": "screens_statsscreen_tsx",
+      "target": "screens_statsscreen_styles",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "screens/GameBoardScreen.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "screens_gameboardscreen_tsx",
+      "target": "screens_gameboardscreen_gameboardscreen",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "screens/GameBoardScreen.tsx",
+      "source_location": "L12",
+      "weight": 1.0,
+      "source": "screens_gameboardscreen_tsx",
+      "target": "screens_gameboardscreen_styles",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "screens/PokedexScreen.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "screens_pokedexscreen_tsx",
+      "target": "screens_pokedexscreen_pokedexscreen",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "screens/PokedexScreen.tsx",
+      "source_location": "L12",
+      "weight": 1.0,
+      "source": "screens_pokedexscreen_tsx",
+      "target": "screens_pokedexscreen_styles",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "screens/RulebookScreen.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "screens_rulebookscreen_tsx",
+      "target": "screens_rulebookscreen_rulebookscreen",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "screens/RulebookScreen.tsx",
+      "source_location": "L12",
+      "weight": 1.0,
+      "source": "screens_rulebookscreen_tsx",
+      "target": "screens_rulebookscreen_styles",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "screens/SettingsScreen.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "screens_settingsscreen_tsx",
+      "target": "store_usegamestore_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "screens/SettingsScreen.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "screens_settingsscreen_tsx",
+      "target": "store_usegamestore_usegamestore",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "screens/SettingsScreen.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "screens_settingsscreen_tsx",
+      "target": "screens_settingsscreen_settingsscreen",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "screens/SettingsScreen.tsx",
+      "source_location": "L18",
+      "weight": 1.0,
+      "source": "screens_settingsscreen_tsx",
+      "target": "screens_settingsscreen_styles",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "screens/SettingsScreen.tsx",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "screens_settingsscreen_settingsscreen",
+      "target": "store_usegamestore_usegamestore"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "screens/HomeScreen.tsx",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "screens_homescreen_tsx",
+      "target": "screens_homescreen_props",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "screens/HomeScreen.tsx",
+      "source_location": "L10",
+      "weight": 1.0,
+      "source": "screens_homescreen_tsx",
+      "target": "screens_homescreen_homescreen",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "screens/HomeScreen.tsx",
+      "source_location": "L33",
+      "weight": 1.0,
+      "source": "screens_homescreen_tsx",
+      "target": "screens_homescreen_styles",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/turnLoop.test.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "tests_turnloop_test_ts",
+      "target": "store_usegamestore_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/turnLoop.test.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "tests_turnloop_test_ts",
+      "target": "store_usegamestore_usegamestore",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/turnLoop.test.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "tests_turnloop_test_ts",
+      "target": "tests_turnloop_test_two_player",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/turnLoop.test.ts",
+      "source_location": "L10",
+      "weight": 1.0,
+      "source": "tests_turnloop_test_ts",
+      "target": "tests_turnloop_test_two_player_pnp",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/turnLoop.test.ts",
+      "source_location": "L12",
+      "weight": 1.0,
+      "source": "tests_turnloop_test_ts",
+      "target": "tests_turnloop_test_bulbasaur",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/turnLoop.test.ts",
+      "source_location": "L18",
+      "weight": 1.0,
+      "source": "tests_turnloop_test_ts",
+      "target": "tests_turnloop_test_high_tp_card",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/turnLoop.test.ts",
+      "source_location": "L23",
+      "weight": 1.0,
+      "source": "tests_turnloop_test_ts",
+      "target": "tests_turnloop_test_giveplayertokens",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/turnLoop.test.ts",
+      "source_location": "L120",
+      "weight": 1.0,
+      "source": "tests_turnloop_test_ts",
+      "target": "tests_turnloop_test_game",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/turnLoop.test.ts",
+      "source_location": "L171",
+      "weight": 1.0,
+      "source": "tests_turnloop_test_ts",
+      "target": "tests_turnloop_test_three_player",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/turnLoop.test.ts",
+      "source_location": "L244",
+      "weight": 1.0,
+      "source": "tests_turnloop_test_ts",
+      "target": "tests_turnloop_test_four_player",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/scoutCard.test.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "tests_scoutcard_test_ts",
+      "target": "store_usegamestore_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/scoutCard.test.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "tests_scoutcard_test_ts",
+      "target": "store_usegamestore_usegamestore",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/scoutCard.test.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "tests_scoutcard_test_ts",
+      "target": "tests_scoutcard_test_two_player",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/scoutCard.test.ts",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "tests_scoutcard_test_ts",
+      "target": "tests_scoutcard_test_bulbasaur",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/scoutCard.test.ts",
+      "source_location": "L14",
+      "weight": 1.0,
+      "source": "tests_scoutcard_test_ts",
+      "target": "tests_scoutcard_test_putcardinface",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/scoutCard.test.ts",
+      "source_location": "L74",
+      "weight": 1.0,
+      "source": "tests_scoutcard_test_ts",
+      "target": "tests_scoutcard_test_game",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/scoutCard.test.ts",
+      "source_location": "L128",
+      "weight": 1.0,
+      "source": "tests_scoutcard_test_ts",
+      "target": "tests_scoutcard_test_not_on_board",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/scoutCard.test.ts",
+      "source_location": "L156",
+      "weight": 1.0,
+      "source": "tests_scoutcard_test_ts",
+      "target": "tests_scoutcard_test_maxcost",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/selectors.test.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "tests_selectors_test_ts",
+      "target": "store_selectors_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/selectors.test.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "tests_selectors_test_ts",
+      "target": "store_selectors_canafford",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/selectors.test.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "tests_selectors_test_ts",
+      "target": "store_selectors_cancatchmew",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/selectors.test.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "tests_selectors_test_ts",
+      "target": "store_selectors_canclaimlegendary",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/selectors.test.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "tests_selectors_test_ts",
+      "target": "tests_selectors_test_makeplayer",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/selectors.test.ts",
+      "source_location": "L14",
+      "weight": 1.0,
+      "source": "tests_selectors_test_ts",
+      "target": "tests_selectors_test_mew",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/selectors.test.ts",
+      "source_location": "L15",
+      "weight": 1.0,
+      "source": "tests_selectors_test_ts",
+      "target": "tests_selectors_test_articuno",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/selectors.test.ts",
+      "source_location": "L19",
+      "weight": 1.0,
+      "source": "tests_selectors_test_ts",
+      "target": "tests_selectors_test_card",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/selectors.test.ts",
+      "source_location": "L104",
+      "weight": 1.0,
+      "source": "tests_selectors_test_ts",
+      "target": "tests_selectors_test_player",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/selectors.test.ts",
+      "source_location": "L51",
+      "weight": 1.0,
+      "source": "tests_selectors_test_ts",
+      "target": "tests_selectors_test_free",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/gameData.test.ts",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "tests_gamedata_test_ts",
+      "target": "tests_gamedata_test_valid_energy_types",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/gameData.test.ts",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "tests_gamedata_test_ts",
+      "target": "tests_gamedata_test_cards",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/gameData.test.ts",
+      "source_location": "L34",
+      "weight": 1.0,
+      "source": "tests_gamedata_test_ts",
+      "target": "tests_gamedata_test_eevee",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/gameData.test.ts",
+      "source_location": "L38",
+      "weight": 1.0,
+      "source": "tests_gamedata_test_ts",
+      "target": "tests_gamedata_test_noneevee",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/gameData.test.ts",
+      "source_location": "L46",
+      "weight": 1.0,
+      "source": "tests_gamedata_test_ts",
+      "target": "tests_gamedata_test_nums",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/gameData.test.ts",
+      "source_location": "L47",
+      "weight": 1.0,
+      "source": "tests_gamedata_test_ts",
+      "target": "tests_gamedata_test_unique",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/gameData.test.ts",
+      "source_location": "L53",
+      "weight": 1.0,
+      "source": "tests_gamedata_test_ts",
+      "target": "tests_gamedata_test_counts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/gameData.test.ts",
+      "source_location": "L66",
+      "weight": 1.0,
+      "source": "tests_gamedata_test_ts",
+      "target": "tests_gamedata_test_legs",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/gameData.test.ts",
+      "source_location": "L73",
+      "weight": 1.0,
+      "source": "tests_gamedata_test_ts",
+      "target": "tests_gamedata_test_reqvalues",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/gameData.test.ts",
+      "source_location": "L87",
+      "weight": 1.0,
+      "source": "tests_gamedata_test_ts",
+      "target": "tests_gamedata_test_m",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/trainCard.test.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "tests_traincard_test_ts",
+      "target": "store_usegamestore_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/trainCard.test.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "tests_traincard_test_ts",
+      "target": "store_usegamestore_usegamestore",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/trainCard.test.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "tests_traincard_test_ts",
+      "target": "tests_traincard_test_two_player",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/trainCard.test.ts",
+      "source_location": "L10",
+      "weight": 1.0,
+      "source": "tests_traincard_test_ts",
+      "target": "tests_traincard_test_bulbasaur",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/trainCard.test.ts",
+      "source_location": "L16",
+      "weight": 1.0,
+      "source": "tests_traincard_test_ts",
+      "target": "tests_traincard_test_ivysaur",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/trainCard.test.ts",
+      "source_location": "L22",
+      "weight": 1.0,
+      "source": "tests_traincard_test_ts",
+      "target": "tests_traincard_test_venusaur",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/trainCard.test.ts",
+      "source_location": "L28",
+      "weight": 1.0,
+      "source": "tests_traincard_test_ts",
+      "target": "tests_traincard_test_eevee",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/trainCard.test.ts",
+      "source_location": "L33",
+      "weight": 1.0,
+      "source": "tests_traincard_test_ts",
+      "target": "tests_traincard_test_giveplayertokens",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/trainCard.test.ts",
+      "source_location": "L44",
+      "weight": 1.0,
+      "source": "tests_traincard_test_ts",
+      "target": "tests_traincard_test_putcardinface",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/trainCard.test.ts",
+      "source_location": "L54",
+      "weight": 1.0,
+      "source": "tests_traincard_test_ts",
+      "target": "tests_traincard_test_putcardinscouted",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/trainCard.test.ts",
+      "source_location": "L111",
+      "weight": 1.0,
+      "source": "tests_traincard_test_ts",
+      "target": "tests_traincard_test_scouted_only",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/trainCard.test.ts",
+      "source_location": "L118",
+      "weight": 1.0,
+      "source": "tests_traincard_test_ts",
+      "target": "tests_traincard_test_deckbefore",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/trainCard.test.ts",
+      "source_location": "L119",
+      "weight": 1.0,
+      "source": "tests_traincard_test_ts",
+      "target": "tests_traincard_test_facebefore",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/trainCard.test.ts",
+      "source_location": "L204",
+      "weight": 1.0,
+      "source": "tests_traincard_test_ts",
+      "target": "tests_traincard_test_game",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/takeTokens.test.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "tests_taketokens_test_ts",
+      "target": "store_usegamestore_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/takeTokens.test.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "tests_taketokens_test_ts",
+      "target": "store_usegamestore_usegamestore",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/takeTokens.test.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "tests_taketokens_test_ts",
+      "target": "tests_taketokens_test_two_player",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/takeTokens.test.ts",
+      "source_location": "L87",
+      "weight": 1.0,
+      "source": "tests_taketokens_test_ts",
+      "target": "tests_taketokens_test_game",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/takeTokens.test.ts",
+      "source_location": "L39",
+      "weight": 1.0,
+      "source": "tests_taketokens_test_ts",
+      "target": "tests_taketokens_test_taketokens",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/takeTokens.test.ts",
+      "source_location": "L165",
+      "weight": 1.0,
+      "source": "tests_taketokens_test_ts",
+      "target": "tests_taketokens_test_total",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/takeTokens.test.ts",
+      "source_location": "L171",
+      "weight": 1.0,
+      "source": "tests_taketokens_test_ts",
+      "target": "tests_taketokens_test_totalafter",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/catchMew.test.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "tests_catchmew_test_ts",
+      "target": "store_usegamestore_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/catchMew.test.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "tests_catchmew_test_ts",
+      "target": "store_usegamestore_usegamestore",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/catchMew.test.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "tests_catchmew_test_ts",
+      "target": "tests_catchmew_test_two_player",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/catchMew.test.ts",
+      "source_location": "L10",
+      "weight": 1.0,
+      "source": "tests_catchmew_test_ts",
+      "target": "tests_catchmew_test_mew",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/catchMew.test.ts",
+      "source_location": "L12",
+      "weight": 1.0,
+      "source": "tests_catchmew_test_ts",
+      "target": "tests_catchmew_test_articuno",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/catchMew.test.ts",
+      "source_location": "L15",
+      "weight": 1.0,
+      "source": "tests_catchmew_test_ts",
+      "target": "tests_catchmew_test_zapdos",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/catchMew.test.ts",
+      "source_location": "L18",
+      "weight": 1.0,
+      "source": "tests_catchmew_test_ts",
+      "target": "tests_catchmew_test_mewtwo",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/catchMew.test.ts",
+      "source_location": "L23",
+      "weight": 1.0,
+      "source": "tests_catchmew_test_ts",
+      "target": "tests_catchmew_test_setupeligible",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/catchMew.test.ts",
+      "source_location": "L128",
+      "weight": 1.0,
+      "source": "tests_catchmew_test_ts",
+      "target": "tests_catchmew_test_caught",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/catchMew.test.ts",
+      "source_location": "L130",
+      "weight": 1.0,
+      "source": "tests_catchmew_test_ts",
+      "target": "tests_catchmew_test_game",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/spriteCache.test.ts",
+      "source_location": "L10",
+      "weight": 1.0,
+      "source": "tests_spritecache_test_ts",
+      "target": "tests_spritecache_test_mockgetitem",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/spriteCache.test.ts",
+      "source_location": "L11",
+      "weight": 1.0,
+      "source": "tests_spritecache_test_ts",
+      "target": "tests_spritecache_test_mocksetitem",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/gameStore.test.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "tests_gamestore_test_ts",
+      "target": "store_usegamestore_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/gameStore.test.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "tests_gamestore_test_ts",
+      "target": "store_usegamestore_usegamestore",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/gameStore.test.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "tests_gamestore_test_ts",
+      "target": "store_selectors_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/gameStore.test.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "tests_gamestore_test_ts",
+      "target": "store_selectors_currentplayer",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/gameStore.test.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "tests_gamestore_test_ts",
+      "target": "store_selectors_trainerpoints",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/gameStore.test.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "tests_gamestore_test_ts",
+      "target": "tests_gamestore_test_two_player",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/gameStore.test.ts",
+      "source_location": "L17",
+      "weight": 1.0,
+      "source": "tests_gamestore_test_ts",
+      "target": "tests_gamestore_test_game",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/gameStore.test.ts",
+      "source_location": "L62",
+      "weight": 1.0,
+      "source": "tests_gamestore_test_ts",
+      "target": "tests_gamestore_test_names",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/gameStore.test.ts",
+      "source_location": "L115",
+      "weight": 1.0,
+      "source": "tests_gamestore_test_ts",
+      "target": "tests_gamestore_test_player",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/legendaryCollection.test.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "tests_legendarycollection_test_ts",
+      "target": "store_usegamestore_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/legendaryCollection.test.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "tests_legendarycollection_test_ts",
+      "target": "store_usegamestore_usegamestore",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/legendaryCollection.test.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "tests_legendarycollection_test_ts",
+      "target": "tests_legendarycollection_test_two_player",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/legendaryCollection.test.ts",
+      "source_location": "L11",
+      "weight": 1.0,
+      "source": "tests_legendarycollection_test_ts",
+      "target": "tests_legendarycollection_test_zapdos",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/legendaryCollection.test.ts",
+      "source_location": "L17",
+      "weight": 1.0,
+      "source": "tests_legendarycollection_test_ts",
+      "target": "tests_legendarycollection_test_charmander",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/legendaryCollection.test.ts",
+      "source_location": "L23",
+      "weight": 1.0,
+      "source": "tests_legendarycollection_test_ts",
+      "target": "tests_legendarycollection_test_squirtle",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/legendaryCollection.test.ts",
+      "source_location": "L28",
+      "weight": 1.0,
+      "source": "tests_legendarycollection_test_ts",
+      "target": "tests_legendarycollection_test_putcardinface",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/legendaryCollection.test.ts",
+      "source_location": "L38",
+      "weight": 1.0,
+      "source": "tests_legendarycollection_test_ts",
+      "target": "tests_legendarycollection_test_settypebonuses",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "__tests__/legendaryCollection.test.ts",
+      "source_location": "L202",
+      "weight": 1.0,
+      "source": "tests_legendarycollection_test_ts",
+      "target": "tests_legendarycollection_test_moltres",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store/gameRules.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "store_gamerules_ts",
+      "target": "store_selectors_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store/gameRules.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "store_gamerules_ts",
+      "target": "store_selectors_canclaimlegendary",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "store/gameRules.ts",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "store_gamerules_ts",
+      "target": "store_gamerules_totaltokens",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "store/gameRules.ts",
+      "source_location": "L10",
+      "weight": 1.0,
+      "source": "store_gamerules_ts",
+      "target": "store_gamerules_claimlegendaries",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "store/gameRules.ts",
+      "source_location": "L17",
+      "weight": 1.0,
+      "source": "store_gamerules_ts",
+      "target": "store_gamerules_shuffle",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "store/gameRules.ts",
+      "source_location": "L26",
+      "weight": 1.0,
+      "source": "store_gamerules_ts",
+      "target": "store_gamerules_builddecks",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "store/gameRules.ts",
+      "source_location": "L35",
+      "weight": 1.0,
+      "source": "store_gamerules_ts",
+      "target": "store_gamerules_makeplayer",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "store/gameRules.ts",
+      "source_location": "L50",
+      "weight": 1.0,
+      "source": "store_gamerules_ts",
+      "target": "store_gamerules_tierfacekey",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "store/gameRules.ts",
+      "source_location": "L54",
+      "weight": 1.0,
+      "source": "store_gamerules_ts",
+      "target": "store_gamerules_tierdeckkey",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "store/gameRules.ts",
+      "source_location": "L59",
+      "weight": 1.0,
+      "source": "store_gamerules_ts",
+      "target": "store_gamerules_applyscout",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store/useGameStore.ts",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "store_usegamestore_ts",
+      "target": "store_gamerules_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "store/gameRules.ts",
+      "source_location": "L78",
+      "weight": 1.0,
+      "source": "store_gamerules_applyscout",
+      "target": "store_gamerules_totaltokens",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store/useGameStore.ts",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "store_usegamestore_ts",
+      "target": "store_gamerules_totaltokens",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store/useGameStore.ts",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "store_usegamestore_ts",
+      "target": "store_gamerules_claimlegendaries",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "store/gameRules.ts",
+      "source_location": "L29",
+      "weight": 1.0,
+      "source": "store_gamerules_builddecks",
+      "target": "store_gamerules_shuffle",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store/useGameStore.ts",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "store_usegamestore_ts",
+      "target": "store_gamerules_builddecks",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store/useGameStore.ts",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "store_usegamestore_ts",
+      "target": "store_gamerules_makeplayer",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store/useGameStore.ts",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "store_usegamestore_ts",
+      "target": "store_gamerules_tierfacekey",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store/useGameStore.ts",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "store_usegamestore_ts",
+      "target": "store_gamerules_tierdeckkey",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store/useGameStore.ts",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "store_usegamestore_ts",
+      "target": "store_gamerules_applyscout",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "store/selectors.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "store_selectors_ts",
+      "target": "store_selectors_currentplayer",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "store/selectors.ts",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "store_selectors_ts",
+      "target": "store_selectors_trainerpoints",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "store/selectors.ts",
+      "source_location": "L14",
+      "weight": 1.0,
+      "source": "store_selectors_ts",
+      "target": "store_selectors_canafford",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "store/selectors.ts",
+      "source_location": "L27",
+      "weight": 1.0,
+      "source": "store_selectors_ts",
+      "target": "store_selectors_canclaimlegendary",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "store/selectors.ts",
+      "source_location": "L33",
+      "weight": 1.0,
+      "source": "store_selectors_ts",
+      "target": "store_selectors_cancatchmew",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store/useGameStore.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "store_usegamestore_ts",
+      "target": "store_selectors_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store/useGameStore.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "store_usegamestore_ts",
+      "target": "store_selectors_trainerpoints",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store/useGameStore.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "store_usegamestore_ts",
+      "target": "store_selectors_canafford",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "store/useGameStore.ts",
+      "source_location": "L13",
+      "weight": 1.0,
+      "source": "store_usegamestore_ts",
+      "target": "store_usegamestore_tokenselection",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "store/useGameStore.ts",
+      "source_location": "L14",
+      "weight": 1.0,
+      "source": "store_usegamestore_ts",
+      "target": "store_usegamestore_discardselection",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "store/useGameStore.ts",
+      "source_location": "L16",
+      "weight": 1.0,
+      "source": "store_usegamestore_ts",
+      "target": "store_usegamestore_gamestore",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "store/useGameStore.ts",
+      "source_location": "L33",
+      "weight": 1.0,
+      "source": "store_usegamestore_ts",
+      "target": "store_usegamestore_usegamestore",
+      "confidence_score": 1.0
+    }
+  ],
+  "hyperedges": [],
+  "built_at_commit": "a96206704d9c11385357df01672391d702f44d2f"
+}

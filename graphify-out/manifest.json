@@ -1,0 +1,94 @@
+{
+  "/Users/ehau/Documents/Personal/github/pokemon-splendor/src/constants.ts": {
+    "mtime": 1778465832.2096763,
+    "hash": "f78a5691caf0a415d00d7e3344c9d148"
+  },
+  "/Users/ehau/Documents/Personal/github/pokemon-splendor/src/types/game.ts": {
+    "mtime": 1778465838.595661,
+    "hash": "96b15dcb53e4215a86e838e0b8c6d9f6"
+  },
+  "/Users/ehau/Documents/Personal/github/pokemon-splendor/src/navigation/AppNavigator.tsx": {
+    "mtime": 1778392016.1656637,
+    "hash": "26c6b5ebaa72743cd289d4a9bbbc17e5"
+  },
+  "/Users/ehau/Documents/Personal/github/pokemon-splendor/src/utils/spriteUriCache.ts": {
+    "mtime": 1778537608.2214804,
+    "hash": "3c0eb0a074673857f6f37967e7ed29db"
+  },
+  "/Users/ehau/Documents/Personal/github/pokemon-splendor/src/screens/StatsScreen.tsx": {
+    "mtime": 1778392000.2117195,
+    "hash": "cfacf176146a876a11b3c887cec22eed"
+  },
+  "/Users/ehau/Documents/Personal/github/pokemon-splendor/src/screens/GameBoardScreen.tsx": {
+    "mtime": 1778391992.3582888,
+    "hash": "878f219bd4e10cd88633220f4c380d33"
+  },
+  "/Users/ehau/Documents/Personal/github/pokemon-splendor/src/screens/PokedexScreen.tsx": {
+    "mtime": 1778392004.0516748,
+    "hash": "7e9707adef450819f4d9f252f2b52f95"
+  },
+  "/Users/ehau/Documents/Personal/github/pokemon-splendor/src/screens/RulebookScreen.tsx": {
+    "mtime": 1778391996.331491,
+    "hash": "47b62f7d7cdd29fd9654a5eb5a13dd3f"
+  },
+  "/Users/ehau/Documents/Personal/github/pokemon-splendor/src/screens/SettingsScreen.tsx": {
+    "mtime": 1778392009.4335613,
+    "hash": "fd74b6dc2a8a276cb5f23025f603fbd9"
+  },
+  "/Users/ehau/Documents/Personal/github/pokemon-splendor/src/screens/HomeScreen.tsx": {
+    "mtime": 1778391986.5427732,
+    "hash": "cd1bc8d2d98290f58482262969c27278"
+  },
+  "/Users/ehau/Documents/Personal/github/pokemon-splendor/src/__tests__/turnLoop.test.ts": {
+    "mtime": 1778467552.7154503,
+    "hash": "33b665e792012d6572534275a81e1d01"
+  },
+  "/Users/ehau/Documents/Personal/github/pokemon-splendor/src/__tests__/scoutCard.test.ts": {
+    "mtime": 1778537060.5084424,
+    "hash": "07a96c360bc1d780db7fff111c4654f0"
+  },
+  "/Users/ehau/Documents/Personal/github/pokemon-splendor/src/__tests__/selectors.test.ts": {
+    "mtime": 1778469034.9490662,
+    "hash": "da4c37cee15679adf1bcac87c710dad4"
+  },
+  "/Users/ehau/Documents/Personal/github/pokemon-splendor/src/__tests__/gameData.test.ts": {
+    "mtime": 1778394376.2789817,
+    "hash": "a238e0fc13c286f8fff14f0c4cb7f1c2"
+  },
+  "/Users/ehau/Documents/Personal/github/pokemon-splendor/src/__tests__/trainCard.test.ts": {
+    "mtime": 1778537055.8235319,
+    "hash": "1b5221ddcc159638c3674ce7072567c2"
+  },
+  "/Users/ehau/Documents/Personal/github/pokemon-splendor/src/__tests__/takeTokens.test.ts": {
+    "mtime": 1778536839.8452995,
+    "hash": "ee7d9f9ae85f11bb4f792e99f4eb8918"
+  },
+  "/Users/ehau/Documents/Personal/github/pokemon-splendor/src/__tests__/catchMew.test.ts": {
+    "mtime": 1778467541.6284676,
+    "hash": "768a9ce419d4b46c15c74328036cf1a5"
+  },
+  "/Users/ehau/Documents/Personal/github/pokemon-splendor/src/__tests__/spriteCache.test.ts": {
+    "mtime": 1778463613.1087651,
+    "hash": "0668b1fc0b860c3897eb457a66581ac7"
+  },
+  "/Users/ehau/Documents/Personal/github/pokemon-splendor/src/__tests__/gameStore.test.ts": {
+    "mtime": 1778463644.6789045,
+    "hash": "563961b6b15817e956eddb9242315576"
+  },
+  "/Users/ehau/Documents/Personal/github/pokemon-splendor/src/__tests__/legendaryCollection.test.ts": {
+    "mtime": 1778537065.2215369,
+    "hash": "312413c2b84a70461178a100baf598be"
+  },
+  "/Users/ehau/Documents/Personal/github/pokemon-splendor/src/store/gameRules.ts": {
+    "mtime": 1778537708.1119964,
+    "hash": "470200efd6fc14fde8ed912b7c59d0ff"
+  },
+  "/Users/ehau/Documents/Personal/github/pokemon-splendor/src/store/selectors.ts": {
+    "mtime": 1778537700.468247,
+    "hash": "e12ed81f0a0ba08595e566e2355f2836"
+  },
+  "/Users/ehau/Documents/Personal/github/pokemon-splendor/src/store/useGameStore.ts": {
+    "mtime": 1778536588.0530474,
+    "hash": "6f6a9a75f24d2a287401c9e632299299"
+  }
+}
