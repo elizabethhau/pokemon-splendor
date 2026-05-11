@@ -156,6 +156,16 @@ test('actions throw when phase is gameOver', () => {
   expect(() => useGameStore.getState().advanceTurn()).toThrow();
 });
 
+// ─── Test 11 ──────────────────────────────────────────────────────────────────
+test('second action in the same turn throws', () => {
+  useGameStore.getState().takeTokens({ Fire: 1, Water: 1, Grass: 1 });
+
+  expect(() => useGameStore.getState().takeTokens({ Fire: 1, Water: 1, Grass: 1 }))
+    .toThrow('Action already taken this turn');
+  expect(() => useGameStore.getState().scoutFromDeck(1))
+    .toThrow('Action already taken this turn');
+});
+
 // ─── Test 8 ───────────────────────────────────────────────────────────────────
 test('3-player final round: all remaining players complete their turns before gameOver', () => {
   const THREE_PLAYER: GameConfig = {

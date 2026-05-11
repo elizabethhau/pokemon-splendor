@@ -96,7 +96,7 @@ test('training a face-up card replaces it from the deck; empty deck leaves the s
 
   // When deck is empty the slot disappears (face shrinks by 1)
   useGameStore.setState((s) => ({
-    game: { ...s.game!, board: { ...s.game!.board, tier1Deck: [] } },
+    game: { ...s.game!, actionTakenThisTurn: false, board: { ...s.game!.board, tier1Deck: [] } },
   }));
   const faceCountBefore = useGameStore.getState().game!.board.tier1Face.length;
   putCardInFace(BULBASAUR);
@@ -106,17 +106,23 @@ test('training a face-up card replaces it from the deck; empty deck leaves the s
 
 // ─── Test 3 ───────────────────────────────────────────────────────────────────
 test('training a scouted card removes it from scoutedCards without touching the deck', () => {
-  putCardInScouted(BULBASAUR);
+  // Use a fake pokedex number so this card is guaranteed not to appear in the
+  // shuffled face-up rows — otherwise trainCard would take the face path instead.
+  const SCOUTED_ONLY: PokemonCard = {
+    pokedexNumber: 9999, name: 'TestCard', energyType: 'Grass',
+    evolutionTier: 1, cost: { Grass: 2 }, trainerPoints: 0, typeBonus: 'Grass',
+  };
+  putCardInScouted(SCOUTED_ONLY);
   givePlayerTokens({ Grass: 2 });
 
   const deckBefore = [...useGameStore.getState().game!.board.tier1Deck];
   const faceBefore = [...useGameStore.getState().game!.board.tier1Face];
 
-  useGameStore.getState().trainCard(BULBASAUR);
+  useGameStore.getState().trainCard(SCOUTED_ONLY);
 
   const { game } = useGameStore.getState();
   expect(game!.players[0].scoutedCards).toHaveLength(0);
-  expect(game!.players[0].trainedCards).toContainEqual(BULBASAUR);
+  expect(game!.players[0].trainedCards).toContainEqual(SCOUTED_ONLY);
   expect(game!.board.tier1Deck).toEqual(deckBefore);
   expect(game!.board.tier1Face).toEqual(faceBefore);
 });

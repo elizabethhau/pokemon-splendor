@@ -147,6 +147,7 @@ test('second player cannot catch Mew after first player already caught it', () =
     game: {
       ...s.game!,
       currentPlayerIndex: 1,
+      actionTakenThisTurn: false,
       players: s.game!.players.map((p, i) =>
         i === 1
           ? { ...p, legendaries: [ARTICUNO, ZAPDOS], pokeballs: { Pokeball: 1 } }

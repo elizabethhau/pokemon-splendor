@@ -250,3 +250,90 @@ The pattern `(['tier1Face', 'tier2Face', 'tier3Face'] as const)[tier - 1]` appea
 |-----|------|----------------|
 | `discardTokens` during `finalRound` restores `finalRound`, not `'playing'` | `turnLoop.test.ts` | The critical endgame bug was reachable and untested; without the test the fix can regress silently |
 | `discardTokens` throws when called outside `'discarding'` phase | `takeTokens.test.ts` | Guards are only valuable if tested — this one was missing entirely |
+
+---
+
+# Lessons Learned — Fourth Review (One-Action Enforcement + Selector Cleanup)
+
+Findings from the staff engineer review of the third implementation. All items below were fixed.
+
+---
+
+## Bugs Fixed
+
+### 12. One action per turn was not enforced at the action level
+
+**Files:** `src/store/useGameStore.ts` (all five action handlers)
+
+`design.md` states: *"Each turn, a player takes exactly one of five actions."* The code enforced the minimum (at least one action before advancing via `actionTakenThisTurn`) but not the maximum. Nothing prevented a player from calling `takeTokens` and then `trainCard` in the same turn, or scouting three times before advancing.
+
+**Fix:** Added `if (game.actionTakenThisTurn) throw new Error('Action already taken this turn')` to `takeTokens`, `trainCard`, `scoutFaceUp`, `scoutFromDeck`, and `catchMew`. `discardTokens` and `acknowledgeHandoff` are not actions and correctly do not set `actionTakenThisTurn`.
+
+**Rule:** If the game contract says "exactly one," enforce it at both ends — minimum (can't skip) and maximum (can't double-dip). `actionTakenThisTurn` was only ever checking the minimum.
+
+---
+
+### 13. `trainCard.test.ts` Test 3 was a flaky test
+
+**File:** `src/__tests__/trainCard.test.ts`
+
+Test 3 ("training a scouted card removes it from scoutedCards") injected BULBASAUR (#1) into the player's scouted hand, then called `trainCard(BULBASAUR)`. If the game's shuffle had put BULBASAUR into `tier1Face` (probability ≈ 4/70 ≈ 6%), `trainCard` would find `faceIdx !== -1` and take the face path instead, leaving the scouted copy unremoved — causing the test to fail.
+
+This was a pre-existing flaky test, exposed by the one-action guard which changed test isolation in this run.
+
+**Fix:** Replaced BULBASAUR with a card bearing pokedex number `9999` — a value that cannot appear in any shuffled deck, guaranteeing `faceIdx === -1` and forcing the scouted path every time.
+
+**Rule:** Tests that exercise a specific code path (scouted vs face-up) must ensure that path is taken deterministically. Don't rely on real game data cards when what you need is "a card that isn't on the board."
+
+---
+
+## Design Improvements
+
+### `canClaimLegendary` now delegates to `claimLegendaries`
+
+**File:** `src/store/selectors.ts`
+
+`canClaimLegendary(player, legendary)` and `claimLegendaries(typeBonuses, available)` implemented the same predicate independently. If the claim condition ever changed (e.g., a requirement threshold tweak), both would need updating in sync.
+
+`canClaimLegendary` now delegates: `return claimLegendaries(player.typeBonuses, [legendary]).length > 0`. Single source of truth.
+
+### `dittoAvailable` decrement pattern in `canAfford`
+
+**File:** `src/store/selectors.ts:15`
+
+The original `canAfford` accumulated a separate `dittoNeeded` counter across the loop and compared it against `dittoAvailable` at the end. Refactored to decrement `playerDitto` directly each iteration instead, which mirrors how `trainCard` treats payment and makes the Ditto draw-down explicit at the point of consumption. (See Fifth Review for the subsequent rename.)
+
+---
+
+## Testing Gaps Filled
+
+| Gap | File | Why it matters |
+|-----|------|----------------|
+| Second action in same turn throws | `turnLoop.test.ts` | The "exactly one action" rule was untested at the max end |
+| Tests that took multiple actions now use state injection or reset `actionTakenThisTurn` | `scoutCard.test.ts`, `trainCard.test.ts`, `legendaryCollection.test.ts`, `catchMew.test.ts` | Tests were inadvertently exercising illegal game states; fixing them makes the test scenarios match real game flow |
+
+---
+
+# Lessons Learned — Fifth Review (Ditto Naming Clarity)
+
+---
+
+## Naming Fixes
+
+### `dittoAvailable` / `dittoInSupply` renamed for clarity
+
+**Files:** `src/store/selectors.ts`, `src/store/gameRules.ts`
+
+Two separate Ditto quantities existed in the codebase under similar-sounding names, making it easy to confuse them:
+
+- `dittoAvailable` in `canAfford` — the **player's** Ditto tokens in hand, drawn down as each energy type's shortfall is covered
+- `dittoInSupply` in `applyScout` — the **board's** Ditto pool, decremented when a scout grant is awarded
+
+Both were renamed to make the distinction unambiguous:
+
+| Before | After | Represents |
+|--------|-------|------------|
+| `dittoAvailable` | `playerDitto` | Tokens in the player's hand; decrements as card cost is paid |
+| `dittoInSupply` | `boardDittoSupply` | Tokens on the board; decrements when a scout grants one to the player |
+
+**Rule:** When two variables represent the same game concept (Ditto tokens) but from different perspectives (player vs. board), the name must make the perspective explicit. Generic names like `dittoAvailable` invite silent mix-ups — a reader can't tell at a glance whether "available" means "in my hand" or "in the supply."

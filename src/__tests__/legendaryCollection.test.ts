@@ -179,6 +179,7 @@ test('first player to claim a Legendary earns a MasterBall; subsequent claims do
     game: {
       ...s.game!,
       currentPlayerIndex: 1,
+      actionTakenThisTurn: false,
       board: { ...s.game!.board, availableLegendaries: [MOLTRES] },
       players: s.game!.players.map((p, i) =>
         i === 1 ? { ...p, energyTokens: { Water: 5 }, typeBonuses: {} } : p

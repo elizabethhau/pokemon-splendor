@@ -68,8 +68,8 @@ export function applyScout(
   const player = game.players[playerIdx];
   const playerWithScout = { ...player, scoutedCards: [...player.scoutedCards, card] };
 
-  const dittoInSupply = updatedBoard.energySupply.Ditto ?? 0;
-  const dittoGain = dittoInSupply > 0 ? 1 : 0;
+  const boardDittoSupply = updatedBoard.energySupply.Ditto ?? 0;
+  const dittoGain = boardDittoSupply > 0 ? 1 : 0;
   const newPlayer = {
     ...playerWithScout,
     energyTokens: {
@@ -85,6 +85,6 @@ export function applyScout(
     phase: newPhase,
     actionTakenThisTurn: true,
     players: game.players.map((p, i) => i === playerIdx ? newPlayer : p),
-    board: { ...updatedBoard, energySupply: { ...updatedBoard.energySupply, Ditto: dittoInSupply - dittoGain } },
+    board: { ...updatedBoard, energySupply: { ...updatedBoard.energySupply, Ditto: boardDittoSupply - dittoGain } },
   };
 }

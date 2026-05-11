@@ -122,6 +122,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     if (game.pendingHandoff) throw new Error('Acknowledge handoff before acting');
     if (game.phase === PHASE.DISCARDING) throw new Error('Must discard tokens first');
     if (game.phase === PHASE.GAME_OVER) throw new Error('Game is over');
+    if (game.actionTakenThisTurn) throw new Error('Action already taken this turn');
 
     const entries = Object.entries(tokens) as [EnergyType, number][];
     const supply = game.board.energySupply;
@@ -197,6 +198,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     if (game.pendingHandoff) throw new Error('Acknowledge handoff before acting');
     if (game.phase === PHASE.DISCARDING) throw new Error('Must discard tokens first');
     if (game.phase === PHASE.GAME_OVER) throw new Error('Game is over');
+    if (game.actionTakenThisTurn) throw new Error('Action already taken this turn');
 
     const idx = game.currentPlayerIndex;
     const player = game.players[idx];
@@ -297,6 +299,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     if (game.pendingHandoff) throw new Error('Acknowledge handoff before acting');
     if (game.phase === PHASE.DISCARDING) throw new Error('Must discard tokens first');
     if (game.phase === PHASE.GAME_OVER) throw new Error('Game is over');
+    if (game.actionTakenThisTurn) throw new Error('Action already taken this turn');
 
     const idx = game.currentPlayerIndex;
     if (game.players[idx].scoutedCards.length >= SCOUT_HAND_LIMIT) {
@@ -324,6 +327,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     if (game.pendingHandoff) throw new Error('Acknowledge handoff before acting');
     if (game.phase === PHASE.DISCARDING) throw new Error('Must discard tokens first');
     if (game.phase === PHASE.GAME_OVER) throw new Error('Game is over');
+    if (game.actionTakenThisTurn) throw new Error('Action already taken this turn');
 
     const idx = game.currentPlayerIndex;
     if (game.players[idx].scoutedCards.length >= SCOUT_HAND_LIMIT) {
@@ -344,6 +348,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     if (game.pendingHandoff) throw new Error('Acknowledge handoff before acting');
     if (game.phase === PHASE.DISCARDING) throw new Error('Must discard tokens first');
     if (game.phase === PHASE.GAME_OVER) throw new Error('Game is over');
+    if (game.actionTakenThisTurn) throw new Error('Action already taken this turn');
 
     const idx = game.currentPlayerIndex;
     const player = game.players[idx];

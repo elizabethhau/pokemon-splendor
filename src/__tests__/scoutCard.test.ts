@@ -56,7 +56,7 @@ test('scouted face-up card slot is refilled from the deck; empty deck leaves slo
 
   // When deck is empty the slot disappears
   useGameStore.setState((s) => ({
-    game: { ...s.game!, board: { ...s.game!.board, tier1Deck: [] } },
+    game: { ...s.game!, actionTakenThisTurn: false, board: { ...s.game!.board, tier1Deck: [] } },
   }));
   const faceCount = useGameStore.getState().game!.board.tier1Face.length;
   putCardInFace(BULBASAUR);
@@ -135,20 +135,29 @@ test('scoutFaceUp throws if the card is not currently face-up on the board', () 
 
 // ─── Test 8 ───────────────────────────────────────────────────────────────────
 test('after scouting 3 cards and training 1, player can scout a 4th', () => {
-  // Scout 3 cards from the deck
-  useGameStore.getState().scoutFromDeck(1);
-  useGameStore.getState().scoutFromDeck(2);
-  useGameStore.getState().scoutFromDeck(3);
+  // Inject 3 scouted cards directly (each scoutFromDeck is a separate turn action)
+  const deck = useGameStore.getState().game!.board.tier1Deck;
+  const [c1, c2, c3] = deck;
+  useGameStore.setState((s) => ({
+    game: {
+      ...s.game!,
+      players: s.game!.players.map((p, i) =>
+        i === 0 ? { ...p, scoutedCards: [c1, c2, c3], energyTokens: { Ditto: 3 } } : p
+      ),
+      board: { ...s.game!.board, tier1Deck: deck.slice(3) },
+    },
+  }));
 
   expect(useGameStore.getState().game!.players[0].scoutedCards).toHaveLength(3);
   expect(() => useGameStore.getState().scoutFromDeck(1)).toThrow('already holding 3');
 
-  // Train the first scouted card (give player enough tokens)
+  // Train the first scouted card — give player enough tokens and reset the action flag
   const scoutedCard = useGameStore.getState().game!.players[0].scoutedCards[0];
   const maxCost = Object.values(scoutedCard.cost).reduce((s, n) => s + (n ?? 0), 0);
   useGameStore.setState((s) => ({
     game: {
       ...s.game!,
+      actionTakenThisTurn: false,
       players: s.game!.players.map((p, i) =>
         i === 0 ? { ...p, energyTokens: { Fire: maxCost + 5, Water: maxCost + 5, Grass: maxCost + 5, Electric: maxCost + 5, Psychic: maxCost + 5 } } : p
       ),
@@ -158,7 +167,8 @@ test('after scouting 3 cards and training 1, player can scout a 4th', () => {
 
   expect(useGameStore.getState().game!.players[0].scoutedCards).toHaveLength(2);
 
-  // Now can scout again
+  // After advancing to a fresh turn, Alice can scout again
+  useGameStore.setState((s) => ({ game: { ...s.game!, actionTakenThisTurn: false } }));
   useGameStore.getState().scoutFromDeck(1);
   expect(useGameStore.getState().game!.players[0].scoutedCards).toHaveLength(3);
 });

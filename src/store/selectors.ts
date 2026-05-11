@@ -1,4 +1,5 @@
 import { EnergyType, GameState, Legendary, Mythical, PlayerState, PokemonCard } from '../types/game';
+import { claimLegendaries } from './gameRules';
 
 export function currentPlayer(game: GameState): PlayerState {
   return game.players[game.currentPlayerIndex];
@@ -12,23 +13,20 @@ export function trainerPoints(player: PlayerState): number {
 }
 
 export function canAfford(player: PlayerState, card: PokemonCard): boolean {
-  let dittoAvailable = player.energyTokens.Ditto ?? 0;
-  let dittoNeeded = 0;
+  let playerDitto = player.energyTokens.Ditto ?? 0;
 
   for (const [type, rawCost] of Object.entries(card.cost) as [EnergyType, number][]) {
     const bonus = player.typeBonuses[type] ?? 0;
     const effective = Math.max(0, rawCost - bonus);
     const tokensPay = Math.min(effective, player.energyTokens[type] ?? 0);
-    dittoNeeded += effective - tokensPay;
+    playerDitto -= effective - tokensPay;
   }
 
-  return dittoNeeded <= dittoAvailable;
+  return playerDitto >= 0;
 }
 
 export function canClaimLegendary(player: PlayerState, legendary: Legendary): boolean {
-  return (Object.entries(legendary.requirements) as [EnergyType, number][]).every(
-    ([type, required]) => (player.typeBonuses[type] ?? 0) >= required
-  );
+  return claimLegendaries(player.typeBonuses, [legendary]).length > 0;
 }
 
 export function canCatchMew(player: PlayerState, mew: Mythical): boolean {
