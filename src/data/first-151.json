@@ -1,0 +1,1601 @@
+{
+  "cards": [
+    {
+      "pokedexNumber": 1,
+      "name": "Bulbasaur",
+      "energyType": "Grass",
+      "evolutionTier": 1,
+      "cost": {
+        "Grass": 2
+      },
+      "trainerPoints": 0,
+      "typeBonus": "Grass"
+    },
+    {
+      "pokedexNumber": 2,
+      "name": "Ivysaur",
+      "energyType": "Grass",
+      "evolutionTier": 2,
+      "cost": {
+        "Grass": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Grass"
+    },
+    {
+      "pokedexNumber": 3,
+      "name": "Venusaur",
+      "energyType": "Grass",
+      "evolutionTier": 3,
+      "cost": {
+        "Grass": 7,
+        "Fire": 3
+      },
+      "trainerPoints": 5,
+      "typeBonus": "Grass"
+    },
+    {
+      "pokedexNumber": 4,
+      "name": "Charmander",
+      "energyType": "Fire",
+      "evolutionTier": 1,
+      "cost": {
+        "Fire": 2
+      },
+      "trainerPoints": 0,
+      "typeBonus": "Fire"
+    },
+    {
+      "pokedexNumber": 5,
+      "name": "Charmeleon",
+      "energyType": "Fire",
+      "evolutionTier": 2,
+      "cost": {
+        "Fire": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Fire"
+    },
+    {
+      "pokedexNumber": 6,
+      "name": "Charizard",
+      "energyType": "Fire",
+      "evolutionTier": 3,
+      "cost": {
+        "Fire": 7,
+        "Water": 3
+      },
+      "trainerPoints": 5,
+      "typeBonus": "Fire"
+    },
+    {
+      "pokedexNumber": 7,
+      "name": "Squirtle",
+      "energyType": "Water",
+      "evolutionTier": 1,
+      "cost": {
+        "Water": 2
+      },
+      "trainerPoints": 0,
+      "typeBonus": "Water"
+    },
+    {
+      "pokedexNumber": 8,
+      "name": "Wartortle",
+      "energyType": "Water",
+      "evolutionTier": 2,
+      "cost": {
+        "Water": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Water"
+    },
+    {
+      "pokedexNumber": 9,
+      "name": "Blastoise",
+      "energyType": "Water",
+      "evolutionTier": 3,
+      "cost": {
+        "Water": 7,
+        "Grass": 3
+      },
+      "trainerPoints": 5,
+      "typeBonus": "Water"
+    },
+    {
+      "pokedexNumber": 10,
+      "name": "Caterpie",
+      "energyType": "Grass",
+      "evolutionTier": 1,
+      "cost": {
+        "Grass": 2
+      },
+      "trainerPoints": 0,
+      "typeBonus": "Grass"
+    },
+    {
+      "pokedexNumber": 11,
+      "name": "Metapod",
+      "energyType": "Grass",
+      "evolutionTier": 2,
+      "cost": {
+        "Grass": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Grass"
+    },
+    {
+      "pokedexNumber": 12,
+      "name": "Butterfree",
+      "energyType": "Grass",
+      "evolutionTier": 3,
+      "cost": {
+        "Grass": 5,
+        "Fire": 2
+      },
+      "trainerPoints": 3,
+      "typeBonus": "Grass"
+    },
+    {
+      "pokedexNumber": 13,
+      "name": "Weedle",
+      "energyType": "Grass",
+      "evolutionTier": 1,
+      "cost": {
+        "Grass": 2
+      },
+      "trainerPoints": 0,
+      "typeBonus": "Grass"
+    },
+    {
+      "pokedexNumber": 14,
+      "name": "Kakuna",
+      "energyType": "Grass",
+      "evolutionTier": 2,
+      "cost": {
+        "Grass": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Grass"
+    },
+    {
+      "pokedexNumber": 15,
+      "name": "Beedrill",
+      "energyType": "Grass",
+      "evolutionTier": 3,
+      "cost": {
+        "Grass": 5,
+        "Fire": 2
+      },
+      "trainerPoints": 3,
+      "typeBonus": "Grass"
+    },
+    {
+      "pokedexNumber": 16,
+      "name": "Pidgey",
+      "energyType": "Electric",
+      "evolutionTier": 1,
+      "cost": {
+        "Electric": 2
+      },
+      "trainerPoints": 0,
+      "typeBonus": "Electric"
+    },
+    {
+      "pokedexNumber": 17,
+      "name": "Pidgeotto",
+      "energyType": "Electric",
+      "evolutionTier": 2,
+      "cost": {
+        "Electric": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Electric"
+    },
+    {
+      "pokedexNumber": 18,
+      "name": "Pidgeot",
+      "energyType": "Electric",
+      "evolutionTier": 3,
+      "cost": {
+        "Electric": 5,
+        "Psychic": 2
+      },
+      "trainerPoints": 3,
+      "typeBonus": "Electric"
+    },
+    {
+      "pokedexNumber": 19,
+      "name": "Rattata",
+      "energyType": "Electric",
+      "evolutionTier": 1,
+      "cost": {
+        "Electric": 2
+      },
+      "trainerPoints": 0,
+      "typeBonus": "Electric"
+    },
+    {
+      "pokedexNumber": 20,
+      "name": "Raticate",
+      "energyType": "Electric",
+      "evolutionTier": 2,
+      "cost": {
+        "Electric": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Electric"
+    },
+    {
+      "pokedexNumber": 21,
+      "name": "Spearow",
+      "energyType": "Electric",
+      "evolutionTier": 1,
+      "cost": {
+        "Electric": 2
+      },
+      "trainerPoints": 0,
+      "typeBonus": "Electric"
+    },
+    {
+      "pokedexNumber": 22,
+      "name": "Fearow",
+      "energyType": "Electric",
+      "evolutionTier": 2,
+      "cost": {
+        "Electric": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Electric"
+    },
+    {
+      "pokedexNumber": 23,
+      "name": "Ekans",
+      "energyType": "Grass",
+      "evolutionTier": 1,
+      "cost": {
+        "Grass": 2
+      },
+      "trainerPoints": 0,
+      "typeBonus": "Grass"
+    },
+    {
+      "pokedexNumber": 24,
+      "name": "Arbok",
+      "energyType": "Grass",
+      "evolutionTier": 2,
+      "cost": {
+        "Grass": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Grass"
+    },
+    {
+      "pokedexNumber": 25,
+      "name": "Pikachu",
+      "energyType": "Electric",
+      "evolutionTier": 1,
+      "cost": {
+        "Electric": 2
+      },
+      "trainerPoints": 0,
+      "typeBonus": "Electric"
+    },
+    {
+      "pokedexNumber": 26,
+      "name": "Raichu",
+      "energyType": "Electric",
+      "evolutionTier": 2,
+      "cost": {
+        "Electric": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Electric"
+    },
+    {
+      "pokedexNumber": 27,
+      "name": "Sandshrew",
+      "energyType": "Electric",
+      "evolutionTier": 1,
+      "cost": {
+        "Electric": 2
+      },
+      "trainerPoints": 0,
+      "typeBonus": "Electric"
+    },
+    {
+      "pokedexNumber": 28,
+      "name": "Sandslash",
+      "energyType": "Electric",
+      "evolutionTier": 2,
+      "cost": {
+        "Electric": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Electric"
+    },
+    {
+      "pokedexNumber": 29,
+      "name": "Nidoran-F",
+      "energyType": "Grass",
+      "evolutionTier": 1,
+      "cost": {
+        "Grass": 2
+      },
+      "trainerPoints": 0,
+      "typeBonus": "Grass"
+    },
+    {
+      "pokedexNumber": 30,
+      "name": "Nidorina",
+      "energyType": "Grass",
+      "evolutionTier": 2,
+      "cost": {
+        "Grass": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Grass"
+    },
+    {
+      "pokedexNumber": 31,
+      "name": "Nidoqueen",
+      "energyType": "Grass",
+      "evolutionTier": 3,
+      "cost": {
+        "Grass": 5,
+        "Fire": 2
+      },
+      "trainerPoints": 3,
+      "typeBonus": "Grass"
+    },
+    {
+      "pokedexNumber": 32,
+      "name": "Nidoran-M",
+      "energyType": "Grass",
+      "evolutionTier": 1,
+      "cost": {
+        "Grass": 2
+      },
+      "trainerPoints": 0,
+      "typeBonus": "Grass"
+    },
+    {
+      "pokedexNumber": 33,
+      "name": "Nidorino",
+      "energyType": "Grass",
+      "evolutionTier": 2,
+      "cost": {
+        "Grass": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Grass"
+    },
+    {
+      "pokedexNumber": 34,
+      "name": "Nidoking",
+      "energyType": "Grass",
+      "evolutionTier": 3,
+      "cost": {
+        "Grass": 5,
+        "Fire": 2
+      },
+      "trainerPoints": 3,
+      "typeBonus": "Grass"
+    },
+    {
+      "pokedexNumber": 35,
+      "name": "Clefairy",
+      "energyType": "Psychic",
+      "evolutionTier": 1,
+      "cost": {
+        "Psychic": 2
+      },
+      "trainerPoints": 0,
+      "typeBonus": "Psychic"
+    },
+    {
+      "pokedexNumber": 36,
+      "name": "Clefable",
+      "energyType": "Psychic",
+      "evolutionTier": 2,
+      "cost": {
+        "Psychic": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Psychic"
+    },
+    {
+      "pokedexNumber": 37,
+      "name": "Vulpix",
+      "energyType": "Fire",
+      "evolutionTier": 1,
+      "cost": {
+        "Fire": 2
+      },
+      "trainerPoints": 0,
+      "typeBonus": "Fire"
+    },
+    {
+      "pokedexNumber": 38,
+      "name": "Ninetales",
+      "energyType": "Fire",
+      "evolutionTier": 2,
+      "cost": {
+        "Fire": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Fire"
+    },
+    {
+      "pokedexNumber": 39,
+      "name": "Jigglypuff",
+      "energyType": "Psychic",
+      "evolutionTier": 1,
+      "cost": {
+        "Psychic": 2
+      },
+      "trainerPoints": 0,
+      "typeBonus": "Psychic"
+    },
+    {
+      "pokedexNumber": 40,
+      "name": "Wigglytuff",
+      "energyType": "Psychic",
+      "evolutionTier": 2,
+      "cost": {
+        "Psychic": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Psychic"
+    },
+    {
+      "pokedexNumber": 41,
+      "name": "Zubat",
+      "energyType": "Grass",
+      "evolutionTier": 1,
+      "cost": {
+        "Grass": 2
+      },
+      "trainerPoints": 0,
+      "typeBonus": "Grass"
+    },
+    {
+      "pokedexNumber": 42,
+      "name": "Golbat",
+      "energyType": "Grass",
+      "evolutionTier": 2,
+      "cost": {
+        "Grass": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Grass"
+    },
+    {
+      "pokedexNumber": 43,
+      "name": "Oddish",
+      "energyType": "Grass",
+      "evolutionTier": 1,
+      "cost": {
+        "Grass": 2
+      },
+      "trainerPoints": 0,
+      "typeBonus": "Grass"
+    },
+    {
+      "pokedexNumber": 44,
+      "name": "Gloom",
+      "energyType": "Grass",
+      "evolutionTier": 2,
+      "cost": {
+        "Grass": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Grass"
+    },
+    {
+      "pokedexNumber": 45,
+      "name": "Vileplume",
+      "energyType": "Grass",
+      "evolutionTier": 3,
+      "cost": {
+        "Grass": 5,
+        "Fire": 2
+      },
+      "trainerPoints": 3,
+      "typeBonus": "Grass"
+    },
+    {
+      "pokedexNumber": 46,
+      "name": "Paras",
+      "energyType": "Grass",
+      "evolutionTier": 1,
+      "cost": {
+        "Grass": 2
+      },
+      "trainerPoints": 0,
+      "typeBonus": "Grass"
+    },
+    {
+      "pokedexNumber": 47,
+      "name": "Parasect",
+      "energyType": "Grass",
+      "evolutionTier": 2,
+      "cost": {
+        "Grass": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Grass"
+    },
+    {
+      "pokedexNumber": 48,
+      "name": "Venonat",
+      "energyType": "Grass",
+      "evolutionTier": 1,
+      "cost": {
+        "Grass": 2
+      },
+      "trainerPoints": 0,
+      "typeBonus": "Grass"
+    },
+    {
+      "pokedexNumber": 49,
+      "name": "Venomoth",
+      "energyType": "Grass",
+      "evolutionTier": 2,
+      "cost": {
+        "Grass": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Grass"
+    },
+    {
+      "pokedexNumber": 50,
+      "name": "Diglett",
+      "energyType": "Electric",
+      "evolutionTier": 1,
+      "cost": {
+        "Electric": 2
+      },
+      "trainerPoints": 0,
+      "typeBonus": "Electric"
+    },
+    {
+      "pokedexNumber": 51,
+      "name": "Dugtrio",
+      "energyType": "Electric",
+      "evolutionTier": 2,
+      "cost": {
+        "Electric": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Electric"
+    },
+    {
+      "pokedexNumber": 52,
+      "name": "Meowth",
+      "energyType": "Electric",
+      "evolutionTier": 1,
+      "cost": {
+        "Electric": 2
+      },
+      "trainerPoints": 0,
+      "typeBonus": "Electric"
+    },
+    {
+      "pokedexNumber": 53,
+      "name": "Persian",
+      "energyType": "Electric",
+      "evolutionTier": 2,
+      "cost": {
+        "Electric": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Electric"
+    },
+    {
+      "pokedexNumber": 54,
+      "name": "Psyduck",
+      "energyType": "Water",
+      "evolutionTier": 1,
+      "cost": {
+        "Water": 2
+      },
+      "trainerPoints": 0,
+      "typeBonus": "Water"
+    },
+    {
+      "pokedexNumber": 55,
+      "name": "Golduck",
+      "energyType": "Water",
+      "evolutionTier": 2,
+      "cost": {
+        "Water": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Water"
+    },
+    {
+      "pokedexNumber": 56,
+      "name": "Mankey",
+      "energyType": "Fire",
+      "evolutionTier": 1,
+      "cost": {
+        "Fire": 2
+      },
+      "trainerPoints": 0,
+      "typeBonus": "Fire"
+    },
+    {
+      "pokedexNumber": 57,
+      "name": "Primeape",
+      "energyType": "Fire",
+      "evolutionTier": 2,
+      "cost": {
+        "Fire": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Fire"
+    },
+    {
+      "pokedexNumber": 58,
+      "name": "Growlithe",
+      "energyType": "Fire",
+      "evolutionTier": 1,
+      "cost": {
+        "Fire": 2
+      },
+      "trainerPoints": 0,
+      "typeBonus": "Fire"
+    },
+    {
+      "pokedexNumber": 59,
+      "name": "Arcanine",
+      "energyType": "Fire",
+      "evolutionTier": 2,
+      "cost": {
+        "Fire": 4
+      },
+      "trainerPoints": 2,
+      "typeBonus": "Fire"
+    },
+    {
+      "pokedexNumber": 60,
+      "name": "Poliwag",
+      "energyType": "Water",
+      "evolutionTier": 1,
+      "cost": {
+        "Water": 2
+      },
+      "trainerPoints": 0,
+      "typeBonus": "Water"
+    },
+    {
+      "pokedexNumber": 61,
+      "name": "Poliwhirl",
+      "energyType": "Water",
+      "evolutionTier": 2,
+      "cost": {
+        "Water": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Water"
+    },
+    {
+      "pokedexNumber": 62,
+      "name": "Poliwrath",
+      "energyType": "Water",
+      "evolutionTier": 3,
+      "cost": {
+        "Water": 5,
+        "Grass": 2
+      },
+      "trainerPoints": 3,
+      "typeBonus": "Water"
+    },
+    {
+      "pokedexNumber": 63,
+      "name": "Abra",
+      "energyType": "Psychic",
+      "evolutionTier": 1,
+      "cost": {
+        "Psychic": 2
+      },
+      "trainerPoints": 0,
+      "typeBonus": "Psychic"
+    },
+    {
+      "pokedexNumber": 64,
+      "name": "Kadabra",
+      "energyType": "Psychic",
+      "evolutionTier": 2,
+      "cost": {
+        "Psychic": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Psychic"
+    },
+    {
+      "pokedexNumber": 65,
+      "name": "Alakazam",
+      "energyType": "Psychic",
+      "evolutionTier": 3,
+      "cost": {
+        "Psychic": 5,
+        "Water": 2
+      },
+      "trainerPoints": 3,
+      "typeBonus": "Psychic"
+    },
+    {
+      "pokedexNumber": 66,
+      "name": "Machop",
+      "energyType": "Fire",
+      "evolutionTier": 1,
+      "cost": {
+        "Fire": 2
+      },
+      "trainerPoints": 0,
+      "typeBonus": "Fire"
+    },
+    {
+      "pokedexNumber": 67,
+      "name": "Machoke",
+      "energyType": "Fire",
+      "evolutionTier": 2,
+      "cost": {
+        "Fire": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Fire"
+    },
+    {
+      "pokedexNumber": 68,
+      "name": "Machamp",
+      "energyType": "Fire",
+      "evolutionTier": 3,
+      "cost": {
+        "Fire": 5,
+        "Water": 2
+      },
+      "trainerPoints": 3,
+      "typeBonus": "Fire"
+    },
+    {
+      "pokedexNumber": 69,
+      "name": "Bellsprout",
+      "energyType": "Grass",
+      "evolutionTier": 1,
+      "cost": {
+        "Grass": 2
+      },
+      "trainerPoints": 0,
+      "typeBonus": "Grass"
+    },
+    {
+      "pokedexNumber": 70,
+      "name": "Weepinbell",
+      "energyType": "Grass",
+      "evolutionTier": 2,
+      "cost": {
+        "Grass": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Grass"
+    },
+    {
+      "pokedexNumber": 71,
+      "name": "Victreebel",
+      "energyType": "Grass",
+      "evolutionTier": 3,
+      "cost": {
+        "Grass": 5,
+        "Fire": 2
+      },
+      "trainerPoints": 3,
+      "typeBonus": "Grass"
+    },
+    {
+      "pokedexNumber": 72,
+      "name": "Tentacool",
+      "energyType": "Water",
+      "evolutionTier": 1,
+      "cost": {
+        "Water": 2
+      },
+      "trainerPoints": 0,
+      "typeBonus": "Water"
+    },
+    {
+      "pokedexNumber": 73,
+      "name": "Tentacruel",
+      "energyType": "Water",
+      "evolutionTier": 2,
+      "cost": {
+        "Water": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Water"
+    },
+    {
+      "pokedexNumber": 74,
+      "name": "Geodude",
+      "energyType": "Fire",
+      "evolutionTier": 1,
+      "cost": {
+        "Fire": 2
+      },
+      "trainerPoints": 0,
+      "typeBonus": "Fire"
+    },
+    {
+      "pokedexNumber": 75,
+      "name": "Graveler",
+      "energyType": "Fire",
+      "evolutionTier": 2,
+      "cost": {
+        "Fire": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Fire"
+    },
+    {
+      "pokedexNumber": 76,
+      "name": "Golem",
+      "energyType": "Fire",
+      "evolutionTier": 3,
+      "cost": {
+        "Fire": 5,
+        "Water": 2
+      },
+      "trainerPoints": 3,
+      "typeBonus": "Fire"
+    },
+    {
+      "pokedexNumber": 77,
+      "name": "Ponyta",
+      "energyType": "Fire",
+      "evolutionTier": 1,
+      "cost": {
+        "Fire": 2
+      },
+      "trainerPoints": 0,
+      "typeBonus": "Fire"
+    },
+    {
+      "pokedexNumber": 78,
+      "name": "Rapidash",
+      "energyType": "Fire",
+      "evolutionTier": 2,
+      "cost": {
+        "Fire": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Fire"
+    },
+    {
+      "pokedexNumber": 79,
+      "name": "Slowpoke",
+      "energyType": "Water",
+      "evolutionTier": 1,
+      "cost": {
+        "Water": 2
+      },
+      "trainerPoints": 0,
+      "typeBonus": "Water"
+    },
+    {
+      "pokedexNumber": 80,
+      "name": "Slowbro",
+      "energyType": "Water",
+      "evolutionTier": 2,
+      "cost": {
+        "Water": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Water"
+    },
+    {
+      "pokedexNumber": 81,
+      "name": "Magnemite",
+      "energyType": "Electric",
+      "evolutionTier": 1,
+      "cost": {
+        "Electric": 2
+      },
+      "trainerPoints": 0,
+      "typeBonus": "Electric"
+    },
+    {
+      "pokedexNumber": 82,
+      "name": "Magneton",
+      "energyType": "Electric",
+      "evolutionTier": 2,
+      "cost": {
+        "Electric": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Electric"
+    },
+    {
+      "pokedexNumber": 83,
+      "name": "Farfetchd",
+      "energyType": "Electric",
+      "evolutionTier": 1,
+      "cost": {
+        "Electric": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Electric"
+    },
+    {
+      "pokedexNumber": 84,
+      "name": "Doduo",
+      "energyType": "Electric",
+      "evolutionTier": 1,
+      "cost": {
+        "Electric": 2
+      },
+      "trainerPoints": 0,
+      "typeBonus": "Electric"
+    },
+    {
+      "pokedexNumber": 85,
+      "name": "Dodrio",
+      "energyType": "Electric",
+      "evolutionTier": 2,
+      "cost": {
+        "Electric": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Electric"
+    },
+    {
+      "pokedexNumber": 86,
+      "name": "Seel",
+      "energyType": "Water",
+      "evolutionTier": 1,
+      "cost": {
+        "Water": 2
+      },
+      "trainerPoints": 0,
+      "typeBonus": "Water"
+    },
+    {
+      "pokedexNumber": 87,
+      "name": "Dewgong",
+      "energyType": "Water",
+      "evolutionTier": 2,
+      "cost": {
+        "Water": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Water"
+    },
+    {
+      "pokedexNumber": 88,
+      "name": "Grimer",
+      "energyType": "Grass",
+      "evolutionTier": 1,
+      "cost": {
+        "Grass": 2
+      },
+      "trainerPoints": 0,
+      "typeBonus": "Grass"
+    },
+    {
+      "pokedexNumber": 89,
+      "name": "Muk",
+      "energyType": "Grass",
+      "evolutionTier": 2,
+      "cost": {
+        "Grass": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Grass"
+    },
+    {
+      "pokedexNumber": 90,
+      "name": "Shellder",
+      "energyType": "Water",
+      "evolutionTier": 1,
+      "cost": {
+        "Water": 2
+      },
+      "trainerPoints": 0,
+      "typeBonus": "Water"
+    },
+    {
+      "pokedexNumber": 91,
+      "name": "Cloyster",
+      "energyType": "Water",
+      "evolutionTier": 2,
+      "cost": {
+        "Water": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Water"
+    },
+    {
+      "pokedexNumber": 92,
+      "name": "Gastly",
+      "energyType": "Psychic",
+      "evolutionTier": 1,
+      "cost": {
+        "Psychic": 2
+      },
+      "trainerPoints": 0,
+      "typeBonus": "Psychic"
+    },
+    {
+      "pokedexNumber": 93,
+      "name": "Haunter",
+      "energyType": "Psychic",
+      "evolutionTier": 2,
+      "cost": {
+        "Psychic": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Psychic"
+    },
+    {
+      "pokedexNumber": 94,
+      "name": "Gengar",
+      "energyType": "Psychic",
+      "evolutionTier": 3,
+      "cost": {
+        "Psychic": 5,
+        "Water": 2
+      },
+      "trainerPoints": 3,
+      "typeBonus": "Psychic"
+    },
+    {
+      "pokedexNumber": 95,
+      "name": "Onix",
+      "energyType": "Fire",
+      "evolutionTier": 1,
+      "cost": {
+        "Fire": 2
+      },
+      "trainerPoints": 0,
+      "typeBonus": "Fire"
+    },
+    {
+      "pokedexNumber": 96,
+      "name": "Drowzee",
+      "energyType": "Psychic",
+      "evolutionTier": 1,
+      "cost": {
+        "Psychic": 2
+      },
+      "trainerPoints": 0,
+      "typeBonus": "Psychic"
+    },
+    {
+      "pokedexNumber": 97,
+      "name": "Hypno",
+      "energyType": "Psychic",
+      "evolutionTier": 2,
+      "cost": {
+        "Psychic": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Psychic"
+    },
+    {
+      "pokedexNumber": 98,
+      "name": "Krabby",
+      "energyType": "Water",
+      "evolutionTier": 1,
+      "cost": {
+        "Water": 2
+      },
+      "trainerPoints": 0,
+      "typeBonus": "Water"
+    },
+    {
+      "pokedexNumber": 99,
+      "name": "Kingler",
+      "energyType": "Water",
+      "evolutionTier": 2,
+      "cost": {
+        "Water": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Water"
+    },
+    {
+      "pokedexNumber": 100,
+      "name": "Voltorb",
+      "energyType": "Electric",
+      "evolutionTier": 1,
+      "cost": {
+        "Electric": 2
+      },
+      "trainerPoints": 0,
+      "typeBonus": "Electric"
+    },
+    {
+      "pokedexNumber": 101,
+      "name": "Electrode",
+      "energyType": "Electric",
+      "evolutionTier": 2,
+      "cost": {
+        "Electric": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Electric"
+    },
+    {
+      "pokedexNumber": 102,
+      "name": "Exeggcute",
+      "energyType": "Grass",
+      "evolutionTier": 1,
+      "cost": {
+        "Grass": 2
+      },
+      "trainerPoints": 0,
+      "typeBonus": "Grass"
+    },
+    {
+      "pokedexNumber": 103,
+      "name": "Exeggutor",
+      "energyType": "Grass",
+      "evolutionTier": 2,
+      "cost": {
+        "Grass": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Grass"
+    },
+    {
+      "pokedexNumber": 104,
+      "name": "Cubone",
+      "energyType": "Electric",
+      "evolutionTier": 1,
+      "cost": {
+        "Electric": 2
+      },
+      "trainerPoints": 0,
+      "typeBonus": "Electric"
+    },
+    {
+      "pokedexNumber": 105,
+      "name": "Marowak",
+      "energyType": "Electric",
+      "evolutionTier": 2,
+      "cost": {
+        "Electric": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Electric"
+    },
+    {
+      "pokedexNumber": 106,
+      "name": "Hitmonlee",
+      "energyType": "Fire",
+      "evolutionTier": 1,
+      "cost": {
+        "Fire": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Fire"
+    },
+    {
+      "pokedexNumber": 107,
+      "name": "Hitmonchan",
+      "energyType": "Fire",
+      "evolutionTier": 1,
+      "cost": {
+        "Fire": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Fire"
+    },
+    {
+      "pokedexNumber": 108,
+      "name": "Lickitung",
+      "energyType": "Electric",
+      "evolutionTier": 1,
+      "cost": {
+        "Electric": 2
+      },
+      "trainerPoints": 0,
+      "typeBonus": "Electric"
+    },
+    {
+      "pokedexNumber": 109,
+      "name": "Koffing",
+      "energyType": "Grass",
+      "evolutionTier": 1,
+      "cost": {
+        "Grass": 2
+      },
+      "trainerPoints": 0,
+      "typeBonus": "Grass"
+    },
+    {
+      "pokedexNumber": 110,
+      "name": "Weezing",
+      "energyType": "Grass",
+      "evolutionTier": 2,
+      "cost": {
+        "Grass": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Grass"
+    },
+    {
+      "pokedexNumber": 111,
+      "name": "Rhyhorn",
+      "energyType": "Fire",
+      "evolutionTier": 1,
+      "cost": {
+        "Fire": 2
+      },
+      "trainerPoints": 0,
+      "typeBonus": "Fire"
+    },
+    {
+      "pokedexNumber": 112,
+      "name": "Rhydon",
+      "energyType": "Fire",
+      "evolutionTier": 2,
+      "cost": {
+        "Fire": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Fire"
+    },
+    {
+      "pokedexNumber": 113,
+      "name": "Chansey",
+      "energyType": "Psychic",
+      "evolutionTier": 1,
+      "cost": {
+        "Psychic": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Psychic"
+    },
+    {
+      "pokedexNumber": 114,
+      "name": "Tangela",
+      "energyType": "Grass",
+      "evolutionTier": 1,
+      "cost": {
+        "Grass": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Grass"
+    },
+    {
+      "pokedexNumber": 115,
+      "name": "Kangaskhan",
+      "energyType": "Electric",
+      "evolutionTier": 1,
+      "cost": {
+        "Electric": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Electric"
+    },
+    {
+      "pokedexNumber": 116,
+      "name": "Horsea",
+      "energyType": "Water",
+      "evolutionTier": 1,
+      "cost": {
+        "Water": 2
+      },
+      "trainerPoints": 0,
+      "typeBonus": "Water"
+    },
+    {
+      "pokedexNumber": 117,
+      "name": "Seadra",
+      "energyType": "Water",
+      "evolutionTier": 2,
+      "cost": {
+        "Water": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Water"
+    },
+    {
+      "pokedexNumber": 118,
+      "name": "Goldeen",
+      "energyType": "Water",
+      "evolutionTier": 1,
+      "cost": {
+        "Water": 2
+      },
+      "trainerPoints": 0,
+      "typeBonus": "Water"
+    },
+    {
+      "pokedexNumber": 119,
+      "name": "Seaking",
+      "energyType": "Water",
+      "evolutionTier": 2,
+      "cost": {
+        "Water": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Water"
+    },
+    {
+      "pokedexNumber": 120,
+      "name": "Staryu",
+      "energyType": "Water",
+      "evolutionTier": 1,
+      "cost": {
+        "Water": 2
+      },
+      "trainerPoints": 0,
+      "typeBonus": "Water"
+    },
+    {
+      "pokedexNumber": 121,
+      "name": "Starmie",
+      "energyType": "Water",
+      "evolutionTier": 2,
+      "cost": {
+        "Water": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Water"
+    },
+    {
+      "pokedexNumber": 122,
+      "name": "Mr. Mime",
+      "energyType": "Psychic",
+      "evolutionTier": 1,
+      "cost": {
+        "Psychic": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Psychic"
+    },
+    {
+      "pokedexNumber": 123,
+      "name": "Scyther",
+      "energyType": "Grass",
+      "evolutionTier": 1,
+      "cost": {
+        "Grass": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Grass"
+    },
+    {
+      "pokedexNumber": 124,
+      "name": "Jynx",
+      "energyType": "Psychic",
+      "evolutionTier": 1,
+      "cost": {
+        "Psychic": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Psychic"
+    },
+    {
+      "pokedexNumber": 125,
+      "name": "Electabuzz",
+      "energyType": "Electric",
+      "evolutionTier": 1,
+      "cost": {
+        "Electric": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Electric"
+    },
+    {
+      "pokedexNumber": 126,
+      "name": "Magmar",
+      "energyType": "Fire",
+      "evolutionTier": 1,
+      "cost": {
+        "Fire": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Fire"
+    },
+    {
+      "pokedexNumber": 127,
+      "name": "Pinsir",
+      "energyType": "Grass",
+      "evolutionTier": 1,
+      "cost": {
+        "Grass": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Grass"
+    },
+    {
+      "pokedexNumber": 128,
+      "name": "Tauros",
+      "energyType": "Electric",
+      "evolutionTier": 1,
+      "cost": {
+        "Electric": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Electric"
+    },
+    {
+      "pokedexNumber": 129,
+      "name": "Magikarp",
+      "energyType": "Water",
+      "evolutionTier": 1,
+      "cost": {},
+      "trainerPoints": 0,
+      "typeBonus": "Water"
+    },
+    {
+      "pokedexNumber": 130,
+      "name": "Gyarados",
+      "energyType": "Water",
+      "evolutionTier": 2,
+      "cost": {
+        "Water": 4
+      },
+      "trainerPoints": 2,
+      "typeBonus": "Water"
+    },
+    {
+      "pokedexNumber": 131,
+      "name": "Lapras",
+      "energyType": "Water",
+      "evolutionTier": 1,
+      "cost": {
+        "Water": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Water"
+    },
+    {
+      "pokedexNumber": 133,
+      "name": "Eevee",
+      "energyType": "Electric",
+      "evolutionTier": 1,
+      "cost": {
+        "Electric": 2
+      },
+      "trainerPoints": 0,
+      "typeBonus": null
+    },
+    {
+      "pokedexNumber": 134,
+      "name": "Vaporeon",
+      "energyType": "Water",
+      "evolutionTier": 2,
+      "cost": {
+        "Water": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Water"
+    },
+    {
+      "pokedexNumber": 135,
+      "name": "Jolteon",
+      "energyType": "Electric",
+      "evolutionTier": 2,
+      "cost": {
+        "Electric": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Electric"
+    },
+    {
+      "pokedexNumber": 136,
+      "name": "Flareon",
+      "energyType": "Fire",
+      "evolutionTier": 2,
+      "cost": {
+        "Fire": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Fire"
+    },
+    {
+      "pokedexNumber": 137,
+      "name": "Porygon",
+      "energyType": "Electric",
+      "evolutionTier": 1,
+      "cost": {
+        "Electric": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Electric"
+    },
+    {
+      "pokedexNumber": 138,
+      "name": "Omanyte",
+      "energyType": "Fire",
+      "evolutionTier": 1,
+      "cost": {
+        "Fire": 2
+      },
+      "trainerPoints": 0,
+      "typeBonus": "Fire"
+    },
+    {
+      "pokedexNumber": 139,
+      "name": "Omastar",
+      "energyType": "Fire",
+      "evolutionTier": 2,
+      "cost": {
+        "Fire": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Fire"
+    },
+    {
+      "pokedexNumber": 140,
+      "name": "Kabuto",
+      "energyType": "Fire",
+      "evolutionTier": 1,
+      "cost": {
+        "Fire": 2
+      },
+      "trainerPoints": 0,
+      "typeBonus": "Fire"
+    },
+    {
+      "pokedexNumber": 141,
+      "name": "Kabutops",
+      "energyType": "Fire",
+      "evolutionTier": 2,
+      "cost": {
+        "Fire": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Fire"
+    },
+    {
+      "pokedexNumber": 142,
+      "name": "Aerodactyl",
+      "energyType": "Fire",
+      "evolutionTier": 1,
+      "cost": {
+        "Fire": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Fire"
+    },
+    {
+      "pokedexNumber": 143,
+      "name": "Snorlax",
+      "energyType": "Electric",
+      "evolutionTier": 1,
+      "cost": {
+        "Electric": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Electric"
+    },
+    {
+      "pokedexNumber": 147,
+      "name": "Dratini",
+      "energyType": "Grass",
+      "evolutionTier": 1,
+      "cost": {
+        "Grass": 2
+      },
+      "trainerPoints": 0,
+      "typeBonus": "Grass"
+    },
+    {
+      "pokedexNumber": 148,
+      "name": "Dragonair",
+      "energyType": "Grass",
+      "evolutionTier": 2,
+      "cost": {
+        "Grass": 3
+      },
+      "trainerPoints": 1,
+      "typeBonus": "Grass"
+    }
+  ]
+}
