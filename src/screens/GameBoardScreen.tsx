@@ -238,6 +238,8 @@ export default function GameBoardScreen({ navigation }: Props) {
 
   useEffect(() => {
     setTokenSelection({});
+    setSelectedBall(null);
+    setCatchModalVisible(false);
   }, [game?.currentPlayerIndex, game?.turnNumber]);
 
   if (!game) {
@@ -493,7 +495,7 @@ export default function GameBoardScreen({ navigation }: Props) {
 
         {player.scoutedCards.length > 0 && (
           <View style={s.scoutedSection}>
-            <Text style={s.hudRowLabel}>Scouted ({player.scoutedCards.length})</Text>
+            <Text style={[s.hudRowLabel, { width: 'auto' }]} numberOfLines={1}>Scouted ({player.scoutedCards.length})</Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               {player.scoutedCards.map(c => (
                 <PokemonCardView
@@ -531,9 +533,9 @@ export default function GameBoardScreen({ navigation }: Props) {
       <TokenDiscardModal />
 
       {/* Catch Mew modal */}
-      <Modal visible={catchModalVisible} transparent animationType="slide" onRequestClose={() => setCatchModalVisible(false)}>
+      <Modal visible={catchModalVisible} transparent animationType="slide" onRequestClose={() => { setCatchModalVisible(false); setSelectedBall(null); }}>
         <View style={s.catchBackdrop}>
-          <TouchableOpacity style={StyleSheet.absoluteFill} onPress={() => setCatchModalVisible(false)} />
+          <TouchableOpacity style={StyleSheet.absoluteFill} onPress={() => { setCatchModalVisible(false); setSelectedBall(null); }} />
           <View style={s.catchSheet}>
             <Text style={s.catchTitle}>Catch Mew!</Text>
             <Text style={s.catchSub}>Failed attempts consume the ball. Choose wisely.</Text>

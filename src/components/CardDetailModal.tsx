@@ -46,7 +46,9 @@ export default function CardDetailModal({
   useEffect(() => {
     if (!card) { setSpriteUri(null); return; }
     let cancelled = false;
-    getSpriteUri(card.pokedexNumber).then(uri => { if (!cancelled) setSpriteUri(uri); });
+    getSpriteUri(card.pokedexNumber)
+      .then(uri => { if (!cancelled) setSpriteUri(uri); })
+      .catch(() => { if (!cancelled) setSpriteUri(null); });
     return () => { cancelled = true; };
   }, [card?.pokedexNumber]);
 

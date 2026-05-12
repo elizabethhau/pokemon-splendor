@@ -7,6 +7,8 @@ import { getSpriteUri } from '../utils/spriteUriCache';
 import TypeBadge from './TypeBadge';
 import { TYPE_COLORS } from '../constants';
 
+const LIGHT_TYPES = new Set<EnergyType>(['Electric']);
+
 const TIER_COLORS: Record<1 | 2 | 3, string> = {
   1: '#a8d8a8',
   2: '#a8c0f0',
@@ -25,9 +27,9 @@ export default function PokemonCardView({ card, onPress, faceDown = false, compa
 
   useEffect(() => {
     let cancelled = false;
-    getSpriteUri(card.pokedexNumber).then(uri => {
-      if (!cancelled) setSpriteUri(uri);
-    });
+    getSpriteUri(card.pokedexNumber)
+      .then(uri => { if (!cancelled) setSpriteUri(uri); })
+      .catch(() => { if (!cancelled) setSpriteUri(null); });
     return () => { cancelled = true; };
   }, [card.pokedexNumber]);
 
@@ -70,7 +72,7 @@ export default function PokemonCardView({ card, onPress, faceDown = false, compa
             <View style={styles.costRow}>
               {costEntries.map(([type, count]) => (
                 <View key={type} style={[styles.costBadge, { backgroundColor: TYPE_COLORS[type] }]}>
-                  <Text style={styles.costText}>{count}</Text>
+                  <Text style={[styles.costText, LIGHT_TYPES.has(type) && { color: '#333' }]}>{count}</Text>
                 </View>
               ))}
             </View>

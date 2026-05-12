@@ -25,7 +25,7 @@ export default function GameSetupScreen({ navigation }: Props) {
 
   function handleStart() {
     const config: GameConfig = {
-      playerNames: names.slice(0, playerCount),
+      playerNames: names.slice(0, playerCount).map((n, i) => n.trim() || `Player ${i + 1}`),
       deckMode: 'first151',
       passAndPlay: playerCount > 1 ? passAndPlay : false,
     };

@@ -43,19 +43,21 @@ export default function TokenDiscardModal() {
   function handleConfirm() {
     try {
       discardTokens(selection);
+      setSelection({});
     } catch (e: unknown) {
       Alert.alert('Error', e instanceof Error ? e.message : String(e));
     }
   }
 
   return (
-    <Modal visible transparent animationType="slide">
+    <Modal visible transparent animationType="slide" onRequestClose={() => {}}>
+
       <View style={s.backdrop}>
         <View style={s.sheet}>
           <Text style={s.title}>Discard Tokens</Text>
           <Text style={s.subtitle}>
             You have {totalHeld} tokens — maximum is {MAX_TOKENS}.{'\n'}
-            {stillOver > 0 ? `Discard at least ${totalHeld - MAX_TOKENS}.` : 'Select tokens to discard.'}
+            {stillOver > 0 ? `Discard at least ${stillOver} more.` : totalDiscard > 0 ? 'Tap Discard when ready.' : 'Select tokens to discard.'}
           </Text>
 
           {heldTypes.map(([type, held]) => {

@@ -30,13 +30,21 @@ export default function GameOverScreen({ navigation }: Props) {
   const winners = getWinners(game.players);
   const winnerIds = new Set(winners.map(w => w.id));
 
+  let lastRank = 0;
+  let lastKey: string | null = null;
+  const ranked = sorted.map((p, i) => {
+    const key = `${trainerPoints(p)}|${p.trainedCards.length}`;
+    if (key !== lastKey) { lastRank = i + 1; lastKey = key; }
+    return { player: p, rank: lastRank };
+  });
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Game Over</Text>
       </View>
 
-      {sorted.map((player, rank) => {
+      {ranked.map(({ player, rank }) => {
         const tp = trainerPoints(player);
         const cardTP = player.trainedCards.reduce((s, c) => s + c.trainerPoints, 0);
         const legTP = player.legendaries.reduce((s, l) => s + l.trainerPoints, 0);
@@ -50,7 +58,7 @@ export default function GameOverScreen({ navigation }: Props) {
             key={player.id}
             style={[styles.row, isWinner && styles.rowWinner, { borderLeftColor: color }]}
           >
-            <Text style={styles.rank}>#{rank + 1}</Text>
+            <Text style={styles.rank}>#{rank}</Text>
             <View style={styles.info}>
               <Text style={[styles.name, isWinner && styles.nameWinner]}>
                 {isWinner ? '🏆 ' : ''}{player.name}
