@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   View, Text, ScrollView, TouchableOpacity,
-  StyleSheet, SafeAreaView, Alert, Modal,
+  StyleSheet, SafeAreaView, Alert, Modal, ActivityIndicator,
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
@@ -18,6 +18,9 @@ import {
 import PokemonCardView from '../components/PokemonCardView';
 import TokenDiscardModal from '../components/TokenDiscardModal';
 import CardDetailModal from '../components/CardDetailModal';
+import { getGreedyMove } from '../ai/greedy';
+import { getHeuristicMove } from '../ai/heuristic';
+import { getAIDiscard } from '../ai/utils';
 
 type Props = {
   navigation: NativeStackNavigationProp<RootStackParamList, 'GameBoard'>;
@@ -229,6 +232,8 @@ export default function GameBoardScreen({ navigation }: Props) {
   const [selectedCardSource, setSelectedCardSource] = useState<'face' | 'scouted' | null>(null);
   const [catchModalVisible, setCatchModalVisible] = useState(false);
   const [selectedBall, setSelectedBall] = useState<PokeballTier | null>(null);
+  const [aiThinking, setAiThinking] = useState(false);
+  const aiTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (game?.phase === PHASE.GAME_OVER) {
@@ -242,11 +247,74 @@ export default function GameBoardScreen({ navigation }: Props) {
     setCatchModalVisible(false);
   }, [game?.currentPlayerIndex, game?.turnNumber]);
 
+  // AI turn trigger
+  useEffect(() => {
+    if (!game) return;
+    const player = currentPlayer(game);
+    if (!player.isAI || game.pendingHandoff || game.phase === PHASE.GAME_OVER || game.actionTakenThisTurn) return;
+    if (aiTimerRef.current !== null) return; // already scheduled for this turn
+
+    setAiThinking(true);
+    aiTimerRef.current = setTimeout(() => {
+      aiTimerRef.current = null;
+      const store = useGameStore.getState();
+      const g = store.game;
+      if (!g) { setAiThinking(false); return; }
+
+      const difficulty = g.config.aiDifficulty ?? 'greedy';
+      const getMove = difficulty === 'heuristic' ? getHeuristicMove : getGreedyMove;
+
+      try {
+        const action = getMove(g);
+        store.dispatchAction(action);
+      } catch {
+        // Fallback: take 1 token to avoid infinite loop
+        try { store.takeTokens({ Fire: 1 }); } catch { /* nothing available */ }
+      }
+
+      // Auto-discard if needed
+      const afterAction = useGameStore.getState().game;
+      if (afterAction?.phase === PHASE.DISCARDING) {
+        const aiPlayer = currentPlayer(afterAction);
+        const discard = getAIDiscard(aiPlayer);
+        try { store.discardTokens(discard); } catch { /* discard error */ }
+      }
+
+      // Advance turn
+      const afterDiscard = useGameStore.getState().game;
+      if (afterDiscard && afterDiscard.phase !== PHASE.GAME_OVER) {
+        try { store.advanceTurn(); } catch { /* advance error */ }
+      }
+
+      setAiThinking(false);
+    }, 1200);
+
+    return () => {
+      if (aiTimerRef.current) {
+        clearTimeout(aiTimerRef.current);
+        aiTimerRef.current = null;
+      }
+    };
+  }, [game?.currentPlayerIndex, game?.turnNumber]);
+
   if (!game) {
     return (
       <SafeAreaView style={s.center}>
         <Text style={s.centerText}>No game in progress.</Text>
       </SafeAreaView>
+    );
+  }
+
+  const player = currentPlayer(game);
+  const playerColor = PLAYER_COLORS[game.currentPlayerIndex] ?? '#888';
+
+  if (aiThinking || (player.isAI && !game.actionTakenThisTurn && game.phase !== PHASE.GAME_OVER)) {
+    return (
+      <View style={s.aiThinking}>
+        <ActivityIndicator size="large" color={playerColor} />
+        <Text style={[s.aiThinkingName, { color: playerColor }]}>{player.name}</Text>
+        <Text style={s.aiThinkingText}>is thinking...</Text>
+      </View>
     );
   }
 
@@ -264,9 +332,7 @@ export default function GameBoardScreen({ navigation }: Props) {
     );
   }
 
-  const player = currentPlayer(game);
   const tp = trainerPoints(player);
-  const playerColor = PLAYER_COLORS[game.currentPlayerIndex] ?? '#888';
   const canEndTurn = game.actionTakenThisTurn && game.phase !== PHASE.DISCARDING;
   const actionAvailable = !game.actionTakenThisTurn &&
     game.phase !== PHASE.DISCARDING &&
@@ -589,6 +655,10 @@ const s = StyleSheet.create({
   root: { flex: 1, backgroundColor: '#0d1b2a' },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#0d1b2a' },
   centerText: { color: '#aaa', fontSize: 16 },
+
+  aiThinking: { flex: 1, backgroundColor: '#0d1b2a', alignItems: 'center', justifyContent: 'center', gap: 12 },
+  aiThinkingName: { fontSize: 28, fontWeight: '800' },
+  aiThinkingText: { fontSize: 16, color: '#aaa' },
 
   handoff: { flex: 1, backgroundColor: '#0d1b2a', alignItems: 'center', justifyContent: 'center', padding: 32 },
   handoffPrompt: { fontSize: 20, color: '#aaa', marginBottom: 8 },
