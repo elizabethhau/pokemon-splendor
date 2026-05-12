@@ -252,9 +252,11 @@ export default function GameBoardScreen({ navigation }: Props) {
     if (!game) return;
     const player = currentPlayer(game);
     if (!player.isAI || game.pendingHandoff || game.phase === PHASE.GAME_OVER || game.actionTakenThisTurn) return;
+    if (aiTimerRef.current !== null) return; // already scheduled for this turn
 
     setAiThinking(true);
     aiTimerRef.current = setTimeout(() => {
+      aiTimerRef.current = null;
       const store = useGameStore.getState();
       const g = store.game;
       if (!g) { setAiThinking(false); return; }
@@ -288,7 +290,10 @@ export default function GameBoardScreen({ navigation }: Props) {
     }, 1200);
 
     return () => {
-      if (aiTimerRef.current) clearTimeout(aiTimerRef.current);
+      if (aiTimerRef.current) {
+        clearTimeout(aiTimerRef.current);
+        aiTimerRef.current = null;
+      }
     };
   }, [game?.currentPlayerIndex, game?.turnNumber]);
 

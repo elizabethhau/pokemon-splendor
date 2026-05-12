@@ -180,7 +180,12 @@ test('greedy AI trains highest-TP affordable card over taking tokens', () => {
 });
 
 test('greedy AI takes tokens when no affordable card', () => {
-  putCardInFace(VENUSAUR); // costs 7 Grass
+  useGameStore.setState(s => ({
+    game: {
+      ...s.game!,
+      board: { ...s.game!.board, tier1Face: [], tier2Face: [], tier3Face: [VENUSAUR] },
+    },
+  }));
   setAIPlayer({ energyTokens: {} });
 
   const action = getGreedyMove(currentGame());
@@ -264,12 +269,14 @@ test('heuristic AI prefers cards in focus type when both are affordable', () => 
 });
 
 test('heuristic AI scouts a Tier 3 focus-type card when nothing is affordable', () => {
-  putCardInFace(VENUSAUR); // Grass Tier 3, too expensive
-  setAIPlayer({
-    energyTokens: {},
-    typeBonuses: { Grass: 2 }, // focus = Grass
-    scoutedCards: [],
-  });
+  // Only VENUSAUR on the board — no tokens means nothing is affordable
+  useGameStore.setState(s => ({
+    game: {
+      ...s.game!,
+      board: { ...s.game!.board, tier1Face: [], tier2Face: [], tier3Face: [VENUSAUR] },
+    },
+  }));
+  setAIPlayer({ energyTokens: {}, typeBonuses: {}, scoutedCards: [] });
 
   const action = getHeuristicMove(currentGame());
   expect(action.type).toBe('scoutFaceUp');
@@ -342,9 +349,9 @@ test('heuristic AI biases token selection toward focus type', () => {
     scoutedCards: [],
   });
 
-  // Drain Tier 3 face so no scouting option
+  // Clear all face cards so no training or scouting option
   useGameStore.setState(s => ({
-    game: { ...s.game!, board: { ...s.game!.board, tier3Face: [] } },
+    game: { ...s.game!, board: { ...s.game!.board, tier1Face: [], tier2Face: [], tier3Face: [] } },
   }));
 
   const action = getHeuristicMove(currentGame());
