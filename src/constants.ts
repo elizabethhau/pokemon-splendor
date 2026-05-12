@@ -1,4 +1,4 @@
-import { PokeballTier } from './types/game';
+import { EnergyType, PokeballTier, TokenType } from "./types/game";
 
 // Token economy
 export const MAX_TOKENS = 10;
@@ -19,17 +19,34 @@ export const TP_TRIGGER_THRESHOLD = 20;
 
 // Mew catch mechanics
 export const MEWTWO_POKEDEX_NUMBER = 150;
-export const MEWTWO_CATCH_BONUS = 0.10;
+export const MEWTWO_CATCH_BONUS = 0.1;
 export const BASE_CATCH_RATES: Record<PokeballTier, number> = {
-  Pokeball: 0.40,
+  Pokeball: 0.4,
   GreatBall: 0.65,
   UltraBall: 0.85,
-  MasterBall: 1.00,
+  MasterBall: 1.0,
 };
 
+export const TYPE_COLORS: Record<TokenType, string> = {
+  Fire: "#F44336",
+  Water: "#2196F3",
+  Grass: "#4CAF50",
+  Electric: "#FFC107",
+  Psychic: "#9C27B0",
+  Ditto: "#BDBDBD",
+};
+
+// One accent color per player slot (maps to Fire / Water / Grass / Electric)
+export const PLAYER_COLORS = [
+  "#F44336",
+  "#2196F3",
+  "#4CAF50",
+  "#FFC107",
+] as const;
+
 export const PHASE = {
-  PLAYING: 'playing',
-  DISCARDING: 'discarding',
-  FINAL_ROUND: 'finalRound',
-  GAME_OVER: 'gameOver',
+  PLAYING: "playing",
+  DISCARDING: "discarding",
+  FINAL_ROUND: "finalRound",
+  GAME_OVER: "gameOver",
 } as const;

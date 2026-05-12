@@ -11,7 +11,7 @@ export default function HomeScreen({ navigation }: Props) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Pokemon Splendor</Text>
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('GameBoard')}>
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('GameSetup')}>
         <Text style={styles.buttonText}>New Game</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Pokedex')}>
