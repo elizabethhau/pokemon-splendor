@@ -24,8 +24,8 @@ GitHub repo: https://github.com/elizabethhau/pokemon-splendor/issues
 
 | # | Issue | Blocked by | Status |
 |---|-------|-----------|--------|
-| [#10](https://github.com/elizabethhau/pokemon-splendor/issues/10) | Greedy AI Opponent | #7 | [ ] |
-| [#11](https://github.com/elizabethhau/pokemon-splendor/issues/11) | Heuristic AI Opponent | #10 | [ ] |
+| [#10](https://github.com/elizabethhau/pokemon-splendor/issues/10) | Greedy AI Opponent | #7 | [x] |
+| [#11](https://github.com/elizabethhau/pokemon-splendor/issues/11) | Heuristic AI Opponent | #10 | [x] |
 
 ## Phase 1 — Supporting Features
 
