@@ -41,7 +41,7 @@ GitHub repo: https://github.com/elizabethhau/pokemon-splendor/issues
 
 | # | Issue | Blocked by | Status |
 |---|-------|-----------|--------|
-| [#18](https://github.com/elizabethhau/pokemon-splendor/issues/18) | Game Board UI (Playable End-to-End) | #9 | [ ] |
+| [#18](https://github.com/elizabethhau/pokemon-splendor/issues/18) | Game Board UI (Playable End-to-End) | #9 | [x] |
 
 ## Phase 1 — Polish
 
