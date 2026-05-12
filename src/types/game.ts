@@ -36,11 +36,14 @@ export type PokeballTier = 'Pokeball' | 'GreatBall' | 'UltraBall' | 'MasterBall'
 
 export type DeckMode = 'first151' | 'balanced';
 
+export type AIDifficulty = 'greedy' | 'heuristic';
+
 export interface GameConfig {
   playerNames: string[];
   deckMode: DeckMode;
   passAndPlay: boolean;
   aiPlayerIndices?: number[];
+  aiDifficulty?: AIDifficulty;
 }
 
 export type GameAction =

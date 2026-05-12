@@ -6,17 +6,24 @@ import {
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { useGameStore } from '../store/useGameStore';
-import { GameConfig } from '../types/game';
+import { AIDifficulty, GameConfig } from '../types/game';
 import { PLAYER_COLORS } from '../constants';
 
 type Props = {
   navigation: NativeStackNavigationProp<RootStackParamList, 'GameSetup'>;
 };
 
+const AI_NAMES: Record<AIDifficulty, string> = {
+  greedy: 'Rival (Easy)',
+  heuristic: 'Rival (Normal)',
+};
+
 export default function GameSetupScreen({ navigation }: Props) {
   const [playerCount, setPlayerCount] = useState(2);
   const [names, setNames] = useState(['Player 1', 'Player 2', 'Player 3', 'Player 4']);
   const [passAndPlay, setPassAndPlay] = useState(true);
+  const [vsAI, setVsAI] = useState(false);
+  const [aiDifficulty, setAIDifficulty] = useState<AIDifficulty>('greedy');
   const initGame = useGameStore(s => s.initGame);
 
   function updateName(index: number, value: string) {
@@ -24,10 +31,16 @@ export default function GameSetupScreen({ navigation }: Props) {
   }
 
   function handleStart() {
+    const isVsAI = playerCount === 1 && vsAI;
+    const humanNames = names.slice(0, playerCount).map((n, i) => n.trim() || `Player ${i + 1}`);
+    const playerNames = isVsAI ? [...humanNames, AI_NAMES[aiDifficulty]] : humanNames;
+
     const config: GameConfig = {
-      playerNames: names.slice(0, playerCount).map((n, i) => n.trim() || `Player ${i + 1}`),
+      playerNames,
       deckMode: 'first151',
-      passAndPlay: playerCount > 1 ? passAndPlay : false,
+      passAndPlay: isVsAI ? false : playerCount > 1 ? passAndPlay : false,
+      aiPlayerIndices: isVsAI ? [1] : undefined,
+      aiDifficulty: isVsAI ? aiDifficulty : undefined,
     };
     initGame(config);
     navigation.navigate('GameBoard');
@@ -73,6 +86,12 @@ export default function GameSetupScreen({ navigation }: Props) {
             />
           </View>
         ))}
+        {playerCount === 1 && vsAI && (
+          <View style={styles.nameRow}>
+            <View style={[styles.playerDot, { backgroundColor: PLAYER_COLORS[1] }]} />
+            <Text style={styles.aiNameLabel}>{AI_NAMES[aiDifficulty]}</Text>
+          </View>
+        )}
       </View>
 
       {/* Deck mode */}
@@ -89,7 +108,42 @@ export default function GameSetupScreen({ navigation }: Props) {
         </View>
       </View>
 
-      {/* Pass & Play */}
+      {/* VS AI (solo only) */}
+      {playerCount === 1 && (
+        <View style={styles.card}>
+          <View style={styles.toggleRow}>
+            <Text style={styles.cardLabel}>VS AI Opponent</Text>
+            <Switch
+              value={vsAI}
+              onValueChange={setVsAI}
+              trackColor={{ true: '#6a1b9a' }}
+            />
+          </View>
+          {vsAI && (
+            <>
+              <Text style={styles.toggleHint}>Choose difficulty</Text>
+              <View style={styles.diffRow}>
+                {(['greedy', 'heuristic'] as AIDifficulty[]).map(d => (
+                  <TouchableOpacity
+                    key={d}
+                    style={[styles.diffBtn, aiDifficulty === d && styles.diffBtnActive]}
+                    onPress={() => setAIDifficulty(d)}
+                  >
+                    <Text style={[styles.diffBtnText, aiDifficulty === d && styles.diffBtnTextActive]}>
+                      {d === 'greedy' ? 'Easy' : 'Normal'}
+                    </Text>
+                    <Text style={[styles.diffBtnSub, aiDifficulty === d && styles.diffBtnSubActive]}>
+                      {d === 'greedy' ? 'Greedy' : 'Heuristic'}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </>
+          )}
+        </View>
+      )}
+
+      {/* Pass & Play (multiplayer only) */}
       {playerCount > 1 && (
         <View style={styles.card}>
           <View style={styles.toggleRow}>
@@ -164,6 +218,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: '#222',
   },
+  aiNameLabel: { flex: 1, fontSize: 15, color: '#999', fontStyle: 'italic', paddingVertical: 6 },
 
   modeRow: { flexDirection: 'row', gap: 10 },
   modeBtn: {
@@ -182,7 +237,22 @@ const styles = StyleSheet.create({
   comingSoon: { fontSize: 10, color: '#bbb', marginTop: 2 },
 
   toggleRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  toggleHint: { fontSize: 12, color: '#999', marginTop: 6, lineHeight: 16 },
+  toggleHint: { fontSize: 12, color: '#999', marginTop: 6, lineHeight: 16, marginBottom: 10 },
+
+  diffRow: { flexDirection: 'row', gap: 10 },
+  diffBtn: {
+    flex: 1,
+    paddingVertical: 10,
+    borderRadius: 8,
+    borderWidth: 2,
+    borderColor: '#ddd',
+    alignItems: 'center',
+  },
+  diffBtnActive: { borderColor: '#6a1b9a', backgroundColor: '#6a1b9a' },
+  diffBtnText: { fontSize: 14, fontWeight: '700', color: '#555' },
+  diffBtnTextActive: { color: '#fff' },
+  diffBtnSub: { fontSize: 10, color: '#aaa', marginTop: 2 },
+  diffBtnSubActive: { color: '#e1bee7' },
 
   startBtn: {
     marginHorizontal: 16,
