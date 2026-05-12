@@ -1,8 +1,6 @@
-import { EnergyType, GameAction, GameState, PlayerState, PokeballTier, PokemonCard } from '../types/game';
+import { EnergyType, GameAction, GameState, PlayerState, PokemonCard } from '../types/game';
 import { canAfford, canCatchMew, currentPlayer } from '../store/selectors';
-import { bestTokenSelection } from './utils';
-
-const BALL_ORDER: PokeballTier[] = ['MasterBall', 'UltraBall', 'GreatBall', 'Pokeball'];
+import { bestTokenSelection, BALL_ORDER } from './utils';
 const ENERGY_TYPES: EnergyType[] = ['Fire', 'Water', 'Grass', 'Electric', 'Psychic'];
 
 // Derive the AI's focus type from its current type bonuses + what's reachable on the board.

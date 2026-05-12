@@ -1,7 +1,9 @@
-import { EnergyType, GameState, PlayerState, TokenType } from '../types/game';
+import { EnergyType, GameState, PlayerState, PokeballTier, TokenType } from '../types/game';
 import { canAfford } from '../store/selectors';
 import { totalTokens } from '../store/gameRules';
 import { MAX_TOKENS, MIN_SUPPLY_FOR_TAKE_TWO } from '../constants';
+
+export const BALL_ORDER: PokeballTier[] = ['MasterBall', 'UltraBall', 'GreatBall', 'Pokeball'];
 
 export function bestAffordableCard(player: PlayerState, game: GameState, typeFilter?: EnergyType) {
   const faceCards = [
@@ -17,7 +19,7 @@ export function bestAffordableCard(player: PlayerState, game: GameState, typeFil
 }
 
 export function bestTokenSelection(
-  player: PlayerState,
+  _player: PlayerState,
   supply: GameState['board']['energySupply'],
   preferTypes?: EnergyType[],
 ): Partial<Record<EnergyType, number>> | null {

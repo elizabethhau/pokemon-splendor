@@ -1,8 +1,6 @@
-import { GameAction, GameState, PokeballTier } from '../types/game';
+import { GameAction, GameState } from '../types/game';
 import { canCatchMew, currentPlayer } from '../store/selectors';
-import { bestAffordableCard, bestTokenSelection } from './utils';
-
-const BALL_ORDER: PokeballTier[] = ['MasterBall', 'UltraBall', 'GreatBall', 'Pokeball'];
+import { bestAffordableCard, bestTokenSelection, BALL_ORDER } from './utils';
 
 export function getGreedyMove(game: GameState): GameAction {
   const player = currentPlayer(game);
@@ -15,12 +13,7 @@ export function getGreedyMove(game: GameState): GameAction {
 
   // 2. Train highest-TP affordable card
   const card = bestAffordableCard(player, game);
-  if (card) {
-    const isScouted = player.scoutedCards.some(c => c.pokedexNumber === card.pokedexNumber);
-    return isScouted
-      ? { type: 'trainCard', card }
-      : { type: 'trainCard', card };
-  }
+  if (card) return { type: 'trainCard', card };
 
   // 3. Take tokens
   const tokens = bestTokenSelection(player, game.board.energySupply);
