@@ -49,6 +49,21 @@ GitHub repo: https://github.com/elizabethhau/pokemon-splendor/issues
 |---|-------|-----------|--------|
 | [#17](https://github.com/elizabethhau/pokemon-splendor/issues/17) | Animation Polish | #18 | [ ] |
 
+## Phase 2 — Prototype Redesign
+
+Rebuild to match `design_prototype/` (see decisions in the redesign plan). HITL = needs design review before merge.
+
+| # | Issue | Blocked by | Status |
+|---|-------|-----------|--------|
+| [#23](https://github.com/elizabethhau/pokemon-splendor/issues/23) | Foundation: landscape, fonts, themes, Home + Settings (HITL) | — | [ ] |
+| [#24](https://github.com/elizabethhau/pokemon-splendor/issues/24) | Setup screen + multi-AI rivals | #23 | [ ] |
+| [#25](https://github.com/elizabethhau/pokemon-splendor/issues/25) | Board screen rebuild + toasts (HITL) | #23 | [ ] |
+| [#26](https://github.com/elizabethhau/pokemon-splendor/issues/26) | Modal package: scouted hand, Catch Mew, discard | #25 | [ ] |
+| [#27](https://github.com/elizabethhau/pokemon-splendor/issues/27) | Undo system + confirm gates + deferred refill | #25 | [ ] |
+| [#28](https://github.com/elizabethhau/pokemon-splendor/issues/28) | On-board AI turn presentation | #24, #25 | [ ] |
+| [#29](https://github.com/elizabethhau/pokemon-splendor/issues/29) | Game Over + Handoff screens | #23 | [ ] |
+| [#30](https://github.com/elizabethhau/pokemon-splendor/issues/30) | Pokédex, How to Play, Stats screens | #23 | [ ] |
+
 ---
 
 ## Dependency Graph
@@ -73,4 +88,13 @@ GitHub repo: https://github.com/elizabethhau/pokemon-splendor/issues
 #9 → #18 Game Board UI
     └── #17 Animations
 #1 → #15 Rulebook (parallel track)
+
+#23 Redesign Foundation (HITL)
+├── #24 Setup + Multi-AI ──┐
+├── #25 Board Rebuild (HITL)
+│   ├── #26 Modal Package  │
+│   ├── #27 Undo System    │
+│   └── #28 AI Presentation ←┘
+├── #29 Game Over + Handoff
+└── #30 Pokédex / How to Play / Stats
 ```
