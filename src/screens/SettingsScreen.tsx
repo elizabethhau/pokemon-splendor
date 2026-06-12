@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, Switch, TouchableOpacity, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
@@ -18,6 +19,7 @@ export default function SettingsScreen({ navigation }: Props) {
 
   return (
     <LinearGradient colors={theme.appBg} style={s.container}>
+      <SafeAreaView style={s.safeArea}>
       <View style={s.topBar}>
         <TouchableOpacity
           style={[s.backBtn, { backgroundColor: theme.surface, borderColor: theme.ring }]}
@@ -58,12 +60,14 @@ export default function SettingsScreen({ navigation }: Props) {
           trackColor={{ true: theme.accentSolid }}
         />
       </View>
+      </SafeAreaView>
     </LinearGradient>
   );
 }
 
 const s = StyleSheet.create({
-  container: { flex: 1, paddingHorizontal: 40, paddingTop: 26 },
+  container: { flex: 1 },
+  safeArea: { flex: 1, paddingHorizontal: 40, paddingTop: 26 },
   topBar: { flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 20 },
   backBtn: {
     width: 34, height: 34, borderRadius: 10, borderWidth: 1,

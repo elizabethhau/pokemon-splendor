@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import Animated, { useSharedValue, useAnimatedStyle, withRepeat, withTiming, Easing } from 'react-native-reanimated';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -45,6 +46,8 @@ export default function HomeScreen({ navigation }: Props) {
     <LinearGradient colors={theme.appBg} style={s.container}>
       <View style={[s.bgCircle, { backgroundColor: theme.surface }]} />
 
+      {/* margin mode so the absolutely-positioned corner icons land inside the safe area */}
+      <SafeAreaView style={s.safeArea} mode="margin">
       <View style={s.cornerIcons}>
         <TouchableOpacity
           style={[s.cornerBtn, { backgroundColor: theme.surface, borderColor: theme.ring }]}
@@ -104,12 +107,14 @@ export default function HomeScreen({ navigation }: Props) {
           </Animated.View>
         )}
       </View>
+      </SafeAreaView>
     </LinearGradient>
   );
 }
 
 const s = StyleSheet.create({
-  container: { flex: 1, flexDirection: 'row' },
+  container: { flex: 1 },
+  safeArea: { flex: 1, flexDirection: 'row' },
   bgCircle: {
     position: 'absolute', top: -60, right: -40,
     width: 300, height: 300, borderRadius: 150, opacity: 0.6,

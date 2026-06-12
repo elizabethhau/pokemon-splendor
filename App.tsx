@@ -5,6 +5,7 @@ import { useFonts } from 'expo-font';
 import { Fredoka_500Medium, Fredoka_700Bold } from '@expo-google-fonts/fredoka';
 import { Poppins_400Regular, Poppins_600SemiBold, Poppins_700Bold } from '@expo-google-fonts/poppins';
 import * as SplashScreen from 'expo-splash-screen';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AppNavigator from './src/navigation/AppNavigator';
 import { ThemeProvider } from './src/theme/ThemeContext';
 import { useGameStore } from './src/store/useGameStore';
@@ -52,8 +53,10 @@ export default function App() {
   if (!fontsReady) return null;
 
   return (
-    <ThemeProvider>
-      <AppNavigator />
-    </ThemeProvider>
+    <SafeAreaProvider>
+      <ThemeProvider>
+        <AppNavigator />
+      </ThemeProvider>
+    </SafeAreaProvider>
   );
 }
