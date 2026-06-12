@@ -9,6 +9,7 @@ import { Poppins_400Regular, Poppins_600SemiBold, Poppins_700Bold } from '@expo-
 import * as SplashScreen from 'expo-splash-screen';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import AppNavigator from './src/navigation/AppNavigator';
+import { ToastProvider } from './src/components/Toast';
 import { ThemeProvider, useTheme } from './src/theme/ThemeContext';
 import { useGameStore } from './src/store/useGameStore';
 
@@ -24,7 +25,9 @@ function SafeAreaFrame() {
     <View style={{ flex: 1, backgroundColor: theme.bezel }}>
       <StatusBar style="light" />
       <SafeAreaView style={{ flex: 1 }}>
-        <AppNavigator />
+        <ToastProvider>
+          <AppNavigator />
+        </ToastProvider>
       </SafeAreaView>
     </View>
   );
