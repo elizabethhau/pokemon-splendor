@@ -27,13 +27,14 @@ export const BASE_CATCH_RATES: Record<PokeballTier, number> = {
   MasterBall: 1.0,
 };
 
+// Prototype type palette (design_prototype TC())
 export const TYPE_COLORS: Record<TokenType, string> = {
-  Fire: "#F44336",
-  Water: "#2196F3",
-  Grass: "#4CAF50",
-  Electric: "#FFC107",
-  Psychic: "#9C27B0",
-  Ditto: "#BDBDBD",
+  Fire: "#F0483C",
+  Water: "#2E8BE6",
+  Grass: "#46B25A",
+  Electric: "#F5C211",
+  Psychic: "#A24DD0",
+  Ditto: "#C9CDD6",
 };
 
 // One accent color per player slot (maps to Fire / Water / Grass / Electric)

@@ -1,4 +1,4 @@
-import { getSpriteUri } from '../utils/spriteUriCache';
+import { getSpriteUri, getArtworkUri } from '../utils/spriteUriCache';
 
 jest.mock('@react-native-async-storage/async-storage', () => ({
   getItem: jest.fn(),
@@ -36,4 +36,14 @@ test('getSpriteUri builds correct PokeAPI CDN URI on cache miss and stores it', 
 
   expect(uri).toBe(`${SPRITE_BASE}/25.png`);
   expect(mockSetItem).toHaveBeenCalledWith('sprite_25', `${SPRITE_BASE}/25.png`);
+});
+
+test('getArtworkUri builds official-artwork CDN URI on cache miss and stores it under its own key', async () => {
+  mockGetItem.mockResolvedValueOnce(null);
+  mockSetItem.mockResolvedValueOnce(undefined);
+
+  const uri = await getArtworkUri(25);
+
+  expect(uri).toBe(`${SPRITE_BASE}/other/official-artwork/25.png`);
+  expect(mockSetItem).toHaveBeenCalledWith('artwork_25', `${SPRITE_BASE}/other/official-artwork/25.png`);
 });
