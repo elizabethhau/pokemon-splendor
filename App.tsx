@@ -18,7 +18,7 @@ export default function App() {
   const soundEnabled = useGameStore((s) => s.soundEnabled);
   const hydrated = useRef(false);
 
-  const [fontsLoaded] = useFonts({
+  const [fontsLoaded, fontError] = useFonts({
     Fredoka_500Medium,
     Fredoka_700Bold,
     Poppins_400Regular,
@@ -42,11 +42,14 @@ export default function App() {
     AsyncStorage.setItem(SOUND_KEY, JSON.stringify(soundEnabled));
   }, [soundEnabled]);
 
-  useEffect(() => {
-    if (fontsLoaded) SplashScreen.hideAsync();
-  }, [fontsLoaded]);
+  // Proceed on fontError too — system fonts beat a permanently blank splash
+  const fontsReady = fontsLoaded || !!fontError;
 
-  if (!fontsLoaded) return null;
+  useEffect(() => {
+    if (fontsReady) SplashScreen.hideAsync();
+  }, [fontsReady]);
+
+  if (!fontsReady) return null;
 
   return (
     <ThemeProvider>
