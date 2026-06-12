@@ -182,6 +182,8 @@ Each turn, a player takes **exactly one** of five actions:
 3. **Scout a Pokemon Card** — move a face-up card (or top of any tier's deck, face-down) to hand (max 3 Scouted); gain 1 Ditto token if available. Face-up slot is refilled from the matching tier deck (slot left empty if deck is exhausted). Scouting player always sees their own Scouted card; opponents see only a face-down card back. Card detail modal checks active player identity before revealing contents.
 4. **Catch Attempt** — spend one Pokeball to attempt catching Mew; only available when player holds 2+ Legendaries and 1+ Pokeball *(eligible players only)*
 
+If **none** of these actions is legal (empty supply, nothing affordable, no Scout possible, no Catch Attempt available), the player **passes** and the turn is forfeited. Passing is never allowed while a legal action exists. Matches the official Splendor ruling for stuck players.
+
 After the action (automatic, free):
 - **Legendary check:** if Type Bonuses now meet any unclaimed Legendary's requirement, that Legendary is auto-collected (multiple possible in one check)
 - **Token discard check:** if holding >10 Energy Tokens, must discard down to 10 (player's choice)

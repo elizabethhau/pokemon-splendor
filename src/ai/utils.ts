@@ -58,6 +58,7 @@ export function bestTokenSelection(
 
 // Last resort when no tokens can be taken and nothing is affordable: scout.
 // Face-down deck scout is preferred (always legal while a deck has cards).
+// When even scouting is impossible, pass — the store validates pass legality.
 export function fallbackScout(player: PlayerState, game: GameState): GameAction {
   if (player.scoutedCards.length < SCOUT_HAND_LIMIT) {
     const tier = ([1, 2, 3] as EvolutionTier[]).find(t => game.board[tierDeckKey(t)].length > 0);
@@ -65,7 +66,7 @@ export function fallbackScout(player: PlayerState, game: GameState): GameAction 
     const face = game.board.tier1Face[0] ?? game.board.tier2Face[0] ?? game.board.tier3Face[0];
     if (face) return { type: 'scoutFaceUp', card: face };
   }
-  throw new Error('No legal move available');
+  return { type: 'pass' };
 }
 
 // Returns which tokens to discard to get back to MAX_TOKENS.

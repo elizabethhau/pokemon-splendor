@@ -5,4 +5,5 @@ web-build/
 .kotlin/
 /ios
 /android
-graphify-out/
+graphify-out/*
+!graphify-out/GRAPH_REPORT.md

@@ -6,7 +6,7 @@ import {
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { useGameStore } from '../store/useGameStore';
-import { currentPlayer, trainerPoints, canCatchMew } from '../store/selectors';
+import { currentPlayer, trainerPoints, canCatchMew, hasLegalMove } from '../store/selectors';
 import { maxDifferentTakeable } from '../store/gameRules';
 import {
   EnergyType, EvolutionTier, Legendary, Mythical,
@@ -268,9 +268,9 @@ export default function GameBoardScreen({ navigation }: Props) {
       try {
         const action = getMove(g);
         store.dispatchAction(action);
-      } catch {
-        // No legal move exists (supply empty, nothing affordable, nothing to scout) —
-        // leave state untouched rather than dispatch an illegal action
+      } catch (e) {
+        // The AI passes when stuck, so reaching here means an AI bug — surface it
+        console.warn('AI move failed:', e);
       }
 
       // Auto-discard if needed
@@ -441,6 +441,12 @@ export default function GameBoardScreen({ navigation }: Props) {
 
   function handleEndTurn() {
     try {
+      const store = useGameStore.getState();
+      const g = store.game!;
+      if (!g.actionTakenThisTurn && !hasLegalMove(g)) {
+        store.passTurn();
+        Alert.alert('Turn passed', 'No legal moves were available.');
+      }
       advanceTurn();
     } catch (e: unknown) {
       Alert.alert('Cannot end turn', e instanceof Error ? e.message : String(e));

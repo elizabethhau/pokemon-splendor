@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { EnergyType, EvolutionTier, GameAction, GameConfig, GamePhase, GameState, PokemonCard, Legendary, Mythical, PokeballTier, TokenType } from '../types/game';
 import legData from '../data/legendaries.json';
 import mewData from '../data/mew.json';
-import { trainerPoints, canAfford } from './selectors';
+import { trainerPoints, canAfford, hasLegalMove } from './selectors';
 import { totalTokens, claimLegendaries, buildDecks, makePlayer, applyScout, tierFaceKey, tierDeckKey, maxDifferentTakeable } from './gameRules';
 import {
   BASE_CATCH_RATES, FACE_UP_COUNT, INITIAL_DITTO_SUPPLY, INITIAL_ENERGY_SUPPLY,
@@ -27,6 +27,7 @@ interface GameStore {
   scoutFaceUp: (card: PokemonCard) => void;
   scoutFromDeck: (tier: EvolutionTier) => void;
   catchMew: (ball: PokeballTier, rng?: () => number) => boolean;
+  passTurn: () => void;
   acknowledgeHandoff: () => void;
   dispatchAction: (action: GameAction) => boolean;
 }
@@ -387,6 +388,18 @@ export const useGameStore = create<GameStore>((set, get) => ({
     return caught;
   },
 
+  passTurn: () => {
+    const { game } = get();
+    if (!game) return;
+    if (game.pendingHandoff) throw new Error('Acknowledge handoff before acting');
+    if (game.phase === PHASE.DISCARDING) throw new Error('Must discard tokens first');
+    if (game.phase === PHASE.GAME_OVER) throw new Error('Game is over');
+    if (game.actionTakenThisTurn) throw new Error('Action already taken this turn');
+    if (hasLegalMove(game)) throw new Error('Cannot pass: a legal move is available');
+
+    set({ game: { ...game, actionTakenThisTurn: true } });
+  },
+
   acknowledgeHandoff: () => {
     const { game } = get();
     if (!game) return;
@@ -394,13 +407,14 @@ export const useGameStore = create<GameStore>((set, get) => ({
   },
 
   dispatchAction: (action: GameAction) => {
-    const { takeTokens, trainCard, scoutFaceUp, scoutFromDeck, catchMew } = get();
+    const { takeTokens, trainCard, scoutFaceUp, scoutFromDeck, catchMew, passTurn } = get();
     switch (action.type) {
       case 'takeTokens':    takeTokens(action.tokens);          return true;
       case 'trainCard':     trainCard(action.card);             return true;
       case 'scoutFaceUp':   scoutFaceUp(action.card);           return true;
       case 'scoutFromDeck': scoutFromDeck(action.tier);         return true;
       case 'catchMew':      return catchMew(action.ball);
+      case 'pass':          passTurn();                         return true;
     }
   },
 }));
