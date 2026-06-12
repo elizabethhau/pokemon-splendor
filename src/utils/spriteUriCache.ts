@@ -13,3 +13,14 @@ export async function getSpriteUri(pokedexNumber: number): Promise<string> {
   await AsyncStorage.setItem(key, uri);
   return uri;
 }
+
+// High-res official artwork (crisp at hero/card sizes, unlike the pixel sprites).
+export async function getArtworkUri(pokedexNumber: number): Promise<string> {
+  const key = `artwork_${pokedexNumber}`;
+  const cached = await AsyncStorage.getItem(key);
+  if (cached) return cached;
+
+  const uri = `${SPRITE_BASE}/other/official-artwork/${pokedexNumber}.png`;
+  await AsyncStorage.setItem(key, uri);
+  return uri;
+}
