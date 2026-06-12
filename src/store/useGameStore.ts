@@ -2,8 +2,8 @@ import { create } from 'zustand';
 import { EnergyType, EvolutionTier, GameAction, GameConfig, GamePhase, GameState, PokemonCard, Legendary, Mythical, PokeballTier, TokenType } from '../types/game';
 import legData from '../data/legendaries.json';
 import mewData from '../data/mew.json';
-import { trainerPoints, canAfford } from './selectors';
-import { totalTokens, claimLegendaries, buildDecks, makePlayer, applyScout, tierFaceKey, tierDeckKey } from './gameRules';
+import { trainerPoints, canAfford, hasLegalMove } from './selectors';
+import { totalTokens, claimLegendaries, buildDecks, makePlayer, applyScout, tierFaceKey, tierDeckKey, maxDifferentTakeable } from './gameRules';
 import {
   BASE_CATCH_RATES, FACE_UP_COUNT, INITIAL_DITTO_SUPPLY, INITIAL_ENERGY_SUPPLY,
   MAX_PLAYERS, MAX_TOKENS, MEWTWO_CATCH_BONUS, MEWTWO_POKEDEX_NUMBER, MIN_PLAYERS,
@@ -27,6 +27,7 @@ interface GameStore {
   scoutFaceUp: (card: PokemonCard) => void;
   scoutFromDeck: (tier: EvolutionTier) => void;
   catchMew: (ball: PokeballTier, rng?: () => number) => boolean;
+  passTurn: () => void;
   acknowledgeHandoff: () => void;
   dispatchAction: (action: GameAction) => boolean;
 }
@@ -130,10 +131,12 @@ export const useGameStore = create<GameStore>((set, get) => ({
     const entries = Object.entries(tokens) as [EnergyType, number][];
     const supply = game.board.energySupply;
 
-    const isThreeDiff = entries.length === 3 && entries.every(([, n]) => n === 1);
+    const isDifferentTake = entries.length > 0 &&
+      entries.length === maxDifferentTakeable(supply) &&
+      entries.every(([, n]) => n === 1);
     const isTwoSame = entries.length === 1 && entries[0][1] === 2;
-    if (!isThreeDiff && !isTwoSame) {
-      throw new Error('Invalid token selection: must take 3 different types or 2 of the same type');
+    if (!isDifferentTake && !isTwoSame) {
+      throw new Error('Invalid token selection: must take 3 different types (fewer only when supply has fewer types) or 2 of the same type');
     }
 
     for (const [type, count] of entries) {
@@ -385,6 +388,18 @@ export const useGameStore = create<GameStore>((set, get) => ({
     return caught;
   },
 
+  passTurn: () => {
+    const { game } = get();
+    if (!game) return;
+    if (game.pendingHandoff) throw new Error('Acknowledge handoff before acting');
+    if (game.phase === PHASE.DISCARDING) throw new Error('Must discard tokens first');
+    if (game.phase === PHASE.GAME_OVER) throw new Error('Game is over');
+    if (game.actionTakenThisTurn) throw new Error('Action already taken this turn');
+    if (hasLegalMove(game)) throw new Error('Cannot pass: a legal move is available');
+
+    set({ game: { ...game, actionTakenThisTurn: true } });
+  },
+
   acknowledgeHandoff: () => {
     const { game } = get();
     if (!game) return;
@@ -392,13 +407,14 @@ export const useGameStore = create<GameStore>((set, get) => ({
   },
 
   dispatchAction: (action: GameAction) => {
-    const { takeTokens, trainCard, scoutFaceUp, scoutFromDeck, catchMew } = get();
+    const { takeTokens, trainCard, scoutFaceUp, scoutFromDeck, catchMew, passTurn } = get();
     switch (action.type) {
       case 'takeTokens':    takeTokens(action.tokens);          return true;
       case 'trainCard':     trainCard(action.card);             return true;
       case 'scoutFaceUp':   scoutFaceUp(action.card);           return true;
       case 'scoutFromDeck': scoutFromDeck(action.tier);         return true;
       case 'catchMew':      return catchMew(action.ball);
+      case 'pass':          passTurn();                         return true;
     }
   },
 }));

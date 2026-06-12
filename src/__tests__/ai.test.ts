@@ -210,6 +210,23 @@ test('greedy AI takes 3 different tokens when supply allows', () => {
   }
 });
 
+test('greedy AI scouts from deck when supply is empty and nothing is affordable', () => {
+  useGameStore.setState(s => ({
+    game: {
+      ...s.game!,
+      board: {
+        ...s.game!.board,
+        tier1Face: [], tier2Face: [], tier3Face: [VENUSAUR],
+        energySupply: { Fire: 0, Water: 0, Grass: 0, Electric: 0, Psychic: 0, Ditto: 0 },
+      },
+    },
+  }));
+  setAIPlayer({ energyTokens: {} });
+
+  const action = getGreedyMove(currentGame());
+  expect(action.type).toBe('scoutFromDeck');
+});
+
 test('greedy AI catches Mew when eligible, using best ball', () => {
   const mew = currentGame().board.mew!;
   // Give AI 2 legendaries (meets requirement) + an UltraBall
@@ -310,6 +327,84 @@ test('heuristic AI does not scout when hand is full', () => {
   const action = getHeuristicMove(currentGame());
   // Can't scout (hand full), can't afford anything → take tokens
   expect(action.type).toBe('takeTokens');
+});
+
+test('heuristic AI scouts from deck when supply is empty and nothing is affordable', () => {
+  useGameStore.setState(s => ({
+    game: {
+      ...s.game!,
+      board: {
+        ...s.game!.board,
+        tier1Face: [], tier2Face: [], tier3Face: [],
+        energySupply: { Fire: 0, Water: 0, Grass: 0, Electric: 0, Psychic: 0, Ditto: 0 },
+      },
+    },
+  }));
+  setAIPlayer({ energyTokens: {}, typeBonuses: {}, scoutedCards: [] });
+
+  const action = getHeuristicMove(currentGame());
+  expect(action.type).toBe('scoutFromDeck');
+});
+
+// ── AI ↔ store contract (soft-lock regression) ───────────────────────────────
+// The AI used to emit 2-different / 1-token takes the store rejected; the error
+// was swallowed in the UI and the game hung on the "is thinking..." screen.
+
+test('greedy move dispatches legally when only 2 token types remain', () => {
+  useGameStore.setState(s => ({
+    game: {
+      ...s.game!,
+      board: {
+        ...s.game!.board,
+        tier1Face: [], tier2Face: [], tier3Face: [VENUSAUR],
+        energySupply: { Fire: 2, Water: 1, Grass: 0, Electric: 0, Psychic: 0, Ditto: 0 },
+      },
+    },
+  }));
+  setAIPlayer({ energyTokens: {} });
+
+  const action = getGreedyMove(currentGame());
+  expect(useGameStore.getState().dispatchAction(action)).toBe(true);
+  expect(currentGame().actionTakenThisTurn).toBe(true);
+});
+
+test('heuristic move dispatches legally when only 1 token type remains', () => {
+  useGameStore.setState(s => ({
+    game: {
+      ...s.game!,
+      board: {
+        ...s.game!.board,
+        tier1Face: [], tier2Face: [], tier3Face: [],
+        energySupply: { Fire: 3, Water: 0, Grass: 0, Electric: 0, Psychic: 0, Ditto: 0 },
+      },
+    },
+  }));
+  setAIPlayer({ energyTokens: {}, typeBonuses: {}, scoutedCards: [] });
+
+  const action = getHeuristicMove(currentGame());
+  expect(useGameStore.getState().dispatchAction(action)).toBe(true);
+  expect(currentGame().actionTakenThisTurn).toBe(true);
+});
+
+test('greedy AI passes legally when no move exists (supply empty, scout hand full)', () => {
+  useGameStore.setState(s => ({
+    game: {
+      ...s.game!,
+      board: {
+        ...s.game!.board,
+        tier1Face: [], tier2Face: [], tier3Face: [],
+        tier1Deck: [], tier2Deck: [], tier3Deck: [VENUSAUR],
+        energySupply: { Fire: 0, Water: 0, Grass: 0, Electric: 0, Psychic: 0, Ditto: 0 },
+      },
+    },
+  }));
+  // Hand full of unaffordable cards — deck scout is illegal despite cards remaining
+  setAIPlayer({ energyTokens: {}, typeBonuses: {}, scoutedCards: [VENUSAUR, VENUSAUR, VENUSAUR] });
+
+  const action = getGreedyMove(currentGame());
+  expect(action.type).toBe('pass');
+  expect(useGameStore.getState().dispatchAction(action)).toBe(true);
+  expect(currentGame().actionTakenThisTurn).toBe(true);
 });
 
 test('heuristic AI boosts score for legendary-claiming card', () => {

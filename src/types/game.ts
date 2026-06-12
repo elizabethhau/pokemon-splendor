@@ -51,7 +51,8 @@ export type GameAction =
   | { type: 'trainCard'; card: PokemonCard }
   | { type: 'scoutFaceUp'; card: PokemonCard }
   | { type: 'scoutFromDeck'; tier: EvolutionTier }
-  | { type: 'catchMew'; ball: PokeballTier };
+  | { type: 'catchMew'; ball: PokeballTier }
+  | { type: 'pass' };
 
 export interface PlayerState {
   id: string;

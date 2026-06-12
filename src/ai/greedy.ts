@@ -1,6 +1,6 @@
 import { GameAction, GameState } from '../types/game';
 import { canCatchMew, currentPlayer } from '../store/selectors';
-import { bestAffordableCard, bestTokenSelection, BALL_ORDER } from './utils';
+import { bestAffordableCard, bestTokenSelection, fallbackScout, BALL_ORDER } from './utils';
 
 export function getGreedyMove(game: GameState): GameAction {
   const player = currentPlayer(game);
@@ -19,11 +19,6 @@ export function getGreedyMove(game: GameState): GameAction {
   const tokens = bestTokenSelection(player, game.board.energySupply);
   if (tokens) return { type: 'takeTokens', tokens };
 
-  // Fallback: take 1 of whatever is available (shouldn't normally reach here)
-  const anyType = (['Fire', 'Water', 'Grass', 'Electric', 'Psychic'] as const)
-    .find(t => game.board.energySupply[t] > 0);
-  if (anyType) return { type: 'takeTokens', tokens: { [anyType]: 1 } };
-
-  // Last resort: take 1 token even if it triggers discard (game is stuck otherwise)
-  return { type: 'takeTokens', tokens: { Fire: 1 } };
+  // 4. Supply is empty — scout instead
+  return fallbackScout(player, game);
 }

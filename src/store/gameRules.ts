@@ -7,6 +7,15 @@ export function totalTokens(energyTokens: Partial<Record<TokenType, number>>): n
   return Object.values(energyTokens).reduce<number>((s, n) => s + (n ?? 0), 0);
 }
 
+const ENERGY_TYPES: EnergyType[] = ['Fire', 'Water', 'Grass', 'Electric', 'Psychic'];
+
+// How many different types a "take different tokens" action must include:
+// normally 3, but when supply can't support that, taking 1 of each remaining type is legal.
+export function maxDifferentTakeable(supply: Partial<Record<EnergyType, number>>): number {
+  const availableTypes = ENERGY_TYPES.filter(t => (supply[t] ?? 0) > 0).length;
+  return Math.min(3, availableTypes);
+}
+
 export function claimLegendaries(
   typeBonuses: Partial<Record<EnergyType, number>>,
   available: Legendary[],

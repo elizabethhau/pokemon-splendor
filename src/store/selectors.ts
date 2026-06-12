@@ -1,4 +1,7 @@
 import { EnergyType, GameState, Legendary, Mythical, PlayerState, PokemonCard } from '../types/game';
+import { SCOUT_HAND_LIMIT } from '../constants';
+
+const ENERGY_TYPES: EnergyType[] = ['Fire', 'Water', 'Grass', 'Electric', 'Psychic'];
 
 export function currentPlayer(game: GameState): PlayerState {
   return game.players[game.currentPlayerIndex];
@@ -34,6 +37,23 @@ export function canCatchMew(player: PlayerState, mew: Mythical): boolean {
   const hasEnoughLegendaries = player.legendaries.length >= mew.legendariesRequired;
   const hasAnyBall = Object.values(player.pokeballs).some(n => (n ?? 0) > 0);
   return hasEnoughLegendaries && hasAnyBall;
+}
+
+// True if the current player can take any of the five turn actions.
+// When false, the only legal move is to pass.
+export function hasLegalMove(game: GameState): boolean {
+  const player = currentPlayer(game);
+  if (ENERGY_TYPES.some(t => game.board.energySupply[t] > 0)) return true;
+
+  const faceUp = [...game.board.tier1Face, ...game.board.tier2Face, ...game.board.tier3Face];
+  if ([...faceUp, ...player.scoutedCards].some(c => canAfford(player, c))) return true;
+
+  if (player.scoutedCards.length < SCOUT_HAND_LIMIT) {
+    const deckCount = game.board.tier1Deck.length + game.board.tier2Deck.length + game.board.tier3Deck.length;
+    if (deckCount > 0 || faceUp.length > 0) return true;
+  }
+
+  return game.board.mew !== null && canCatchMew(player, game.board.mew);
 }
 
 // Returns the winner(s) at game over. Tiebreaker: fewest trained cards.

@@ -44,6 +44,6 @@ yarn-error.*
 /.claude
 CLAUDE.md
 
-# graphify knowledge graph — keep stable outputs, ignore generated intermediates
-graphify-out/cache/
-graphify-out/.graphify_*
+# graphify knowledge graph — keep the report, ignore regenerable artifacts
+graphify-out/*
+!graphify-out/GRAPH_REPORT.md

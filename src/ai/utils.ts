@@ -1,7 +1,7 @@
-import { EnergyType, GameState, PlayerState, PokeballTier, TokenType } from '../types/game';
+import { EnergyType, EvolutionTier, GameAction, GameState, PlayerState, PokeballTier, TokenType } from '../types/game';
 import { canAfford } from '../store/selectors';
-import { totalTokens } from '../store/gameRules';
-import { MAX_TOKENS, MIN_SUPPLY_FOR_TAKE_TWO } from '../constants';
+import { totalTokens, tierDeckKey } from '../store/gameRules';
+import { MAX_TOKENS, MIN_SUPPLY_FOR_TAKE_TWO, SCOUT_HAND_LIMIT } from '../constants';
 
 export const BALL_ORDER: PokeballTier[] = ['MasterBall', 'UltraBall', 'GreatBall', 'Pokeball'];
 
@@ -54,6 +54,19 @@ export function bestTokenSelection(
 
   // Take 1
   return { [available[0]]: 1 };
+}
+
+// Last resort when no tokens can be taken and nothing is affordable: scout.
+// Face-down deck scout is preferred (always legal while a deck has cards).
+// When even scouting is impossible, pass — the store validates pass legality.
+export function fallbackScout(player: PlayerState, game: GameState): GameAction {
+  if (player.scoutedCards.length < SCOUT_HAND_LIMIT) {
+    const tier = ([1, 2, 3] as EvolutionTier[]).find(t => game.board[tierDeckKey(t)].length > 0);
+    if (tier) return { type: 'scoutFromDeck', tier };
+    const face = game.board.tier1Face[0] ?? game.board.tier2Face[0] ?? game.board.tier3Face[0];
+    if (face) return { type: 'scoutFaceUp', card: face };
+  }
+  return { type: 'pass' };
 }
 
 // Returns which tokens to discard to get back to MAX_TOKENS.

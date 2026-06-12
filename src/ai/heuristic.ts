@@ -1,6 +1,6 @@
 import { EnergyType, GameAction, GameState, PlayerState, PokemonCard } from '../types/game';
 import { canAfford, canCatchMew, currentPlayer } from '../store/selectors';
-import { bestTokenSelection, BALL_ORDER } from './utils';
+import { bestTokenSelection, fallbackScout, BALL_ORDER } from './utils';
 const ENERGY_TYPES: EnergyType[] = ['Fire', 'Water', 'Grass', 'Electric', 'Psychic'];
 
 // Derive the AI's focus type from its current type bonuses + what's reachable on the board.
@@ -108,8 +108,6 @@ export function getHeuristicMove(game: GameState): GameAction {
   const tokens = bestTokenSelection(player, game.board.energySupply, [...neededTypes]);
   if (tokens) return { type: 'takeTokens', tokens };
 
-  // Fallback
-  const anyType = ENERGY_TYPES.find(t => game.board.energySupply[t] > 0);
-  if (anyType) return { type: 'takeTokens', tokens: { [anyType]: 1 } };
-  return { type: 'takeTokens', tokens: { Fire: 1 } };
+  // 5. Supply is empty — scout instead
+  return fallbackScout(player, game);
 }
