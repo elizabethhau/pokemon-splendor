@@ -7,6 +7,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { useGameStore } from '../store/useGameStore';
 import { currentPlayer, trainerPoints, canCatchMew } from '../store/selectors';
+import { maxDifferentTakeable } from '../store/gameRules';
 import {
   EnergyType, EvolutionTier, Legendary, Mythical,
   PokemonCard, PokeballTier, TokenType,
@@ -268,8 +269,8 @@ export default function GameBoardScreen({ navigation }: Props) {
         const action = getMove(g);
         store.dispatchAction(action);
       } catch {
-        // Fallback: take 1 token to avoid infinite loop
-        try { store.takeTokens({ Fire: 1 }); } catch { /* nothing available */ }
+        // No legal move exists (supply empty, nothing affordable, nothing to scout) —
+        // leave state untouched rather than dispatch an illegal action
       }
 
       // Auto-discard if needed
@@ -371,7 +372,10 @@ export default function GameBoardScreen({ navigation }: Props) {
   function isSelectionValid(): boolean {
     const entries = (Object.entries(tokenSelection) as [EnergyType, number][]).filter(([, n]) => n > 0);
     const total = entries.reduce((acc, [, n]) => acc + n, 0);
-    return (total === 3 && entries.every(([, n]) => n === 1)) || (total === 2 && entries.length === 1);
+    if (total === 2 && entries.length === 1) return true;
+    return entries.length > 0 &&
+      entries.length === maxDifferentTakeable(game!.board.energySupply) &&
+      entries.every(([, n]) => n === 1);
   }
 
   function handleConfirmTokens() {

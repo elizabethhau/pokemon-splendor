@@ -177,7 +177,7 @@ No MCTS/minimax — overkill for a casual mobile game and expensive on-device.
 
 Each turn, a player takes **exactly one** of five actions:
 
-1. **Take Energy Tokens** — take 3 tokens of different types, OR take 2 of the same type (only if ≥4 of that type remain)
+1. **Take Energy Tokens** — take 3 tokens of different types, OR take 2 of the same type (only if ≥4 of that type remain). If fewer than 3 types remain in supply, take 1 of each remaining type instead
 2. **Train a Pokemon Card** — pay its cost in Energy Tokens + Type Bonuses; take a face-up card or a Scouted card from hand
 3. **Scout a Pokemon Card** — move a face-up card (or top of any tier's deck, face-down) to hand (max 3 Scouted); gain 1 Ditto token if available. Face-up slot is refilled from the matching tier deck (slot left empty if deck is exhausted). Scouting player always sees their own Scouted card; opponents see only a face-down card back. Card detail modal checks active player identity before revealing contents.
 4. **Catch Attempt** — spend one Pokeball to attempt catching Mew; only available when player holds 2+ Legendaries and 1+ Pokeball *(eligible players only)*
@@ -195,6 +195,7 @@ After the action (automatic, free):
 - **Supply:** 7 of each type Energy Token + 5 Ditto tokens (unchanged from Splendor)
 - **Hand limit:** Maximum 10 Energy Tokens at end of turn. If over, player must discard down to 10 (player's choice of which to discard). This is a mandatory post-action check.
 - **Take 3 different rule:** Player may take 1 token of 3 different types, OR take 2 of the same type (only if ≥4 of that type are in supply before taking)
+- **Short-supply exception:** If fewer than 3 types have tokens in supply, the player may take 1 of each remaining type (2 or 1 tokens). Taking fewer than the maximum possible is not allowed. Matches the official Splendor FAQ ruling.
 
 ---
 

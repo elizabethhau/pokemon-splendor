@@ -70,6 +70,72 @@ test('takeTokens throws when a selected type has 0 in supply', () => {
   expect(() => useGameStore.getState().takeTokens({ Fire: 1, Water: 1, Grass: 1 })).toThrow();
 });
 
+// ─── Test 13 ──────────────────────────────────────────────────────────────────
+test('takeTokens allows taking 2 different types when only 2 types remain in supply', () => {
+  useGameStore.setState((s) => ({
+    game: {
+      ...s.game!,
+      board: {
+        ...s.game!.board,
+        energySupply: { ...s.game!.board.energySupply, Grass: 0, Electric: 0, Psychic: 0 },
+      },
+    },
+  }));
+  useGameStore.getState().takeTokens({ Fire: 1, Water: 1 });
+  const { game } = useGameStore.getState();
+  expect(game!.players[0].energyTokens.Fire).toBe(1);
+  expect(game!.players[0].energyTokens.Water).toBe(1);
+  expect(game!.board.energySupply.Fire).toBe(6);
+  expect(game!.board.energySupply.Water).toBe(6);
+});
+
+// ─── Test 14 ──────────────────────────────────────────────────────────────────
+test('takeTokens allows taking 1 token when only 1 type remains in supply', () => {
+  useGameStore.setState((s) => ({
+    game: {
+      ...s.game!,
+      board: {
+        ...s.game!.board,
+        energySupply: { ...s.game!.board.energySupply, Fire: 2, Water: 0, Grass: 0, Electric: 0, Psychic: 0 },
+      },
+    },
+  }));
+  useGameStore.getState().takeTokens({ Fire: 1 });
+  const { game } = useGameStore.getState();
+  expect(game!.players[0].energyTokens.Fire).toBe(1);
+  expect(game!.board.energySupply.Fire).toBe(1);
+});
+
+// ─── Test 15 ──────────────────────────────────────────────────────────────────
+test('takeTokens still rejects short takes while a full take is possible', () => {
+  // Exactly 3 types available — must take all 3, not 2 or 1
+  useGameStore.setState((s) => ({
+    game: {
+      ...s.game!,
+      board: {
+        ...s.game!.board,
+        energySupply: { ...s.game!.board.energySupply, Electric: 0, Psychic: 0 },
+      },
+    },
+  }));
+  expect(() => useGameStore.getState().takeTokens({ Fire: 1, Water: 1 })).toThrow();
+  expect(() => useGameStore.getState().takeTokens({ Fire: 1 })).toThrow();
+});
+
+// ─── Test 16 ──────────────────────────────────────────────────────────────────
+test('takeTokens rejects an empty selection even when supply is empty', () => {
+  useGameStore.setState((s) => ({
+    game: {
+      ...s.game!,
+      board: {
+        ...s.game!.board,
+        energySupply: { ...s.game!.board.energySupply, Fire: 0, Water: 0, Grass: 0, Electric: 0, Psychic: 0 },
+      },
+    },
+  }));
+  expect(() => useGameStore.getState().takeTokens({})).toThrow();
+});
+
 // ─── Test 6 ───────────────────────────────────────────────────────────────────
 test('discardTokens moves tokens from player hand back to supply', () => {
   // Force discarding phase with 11 tokens

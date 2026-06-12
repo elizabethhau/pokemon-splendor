@@ -3,7 +3,7 @@ import { EnergyType, EvolutionTier, GameAction, GameConfig, GamePhase, GameState
 import legData from '../data/legendaries.json';
 import mewData from '../data/mew.json';
 import { trainerPoints, canAfford } from './selectors';
-import { totalTokens, claimLegendaries, buildDecks, makePlayer, applyScout, tierFaceKey, tierDeckKey } from './gameRules';
+import { totalTokens, claimLegendaries, buildDecks, makePlayer, applyScout, tierFaceKey, tierDeckKey, maxDifferentTakeable } from './gameRules';
 import {
   BASE_CATCH_RATES, FACE_UP_COUNT, INITIAL_DITTO_SUPPLY, INITIAL_ENERGY_SUPPLY,
   MAX_PLAYERS, MAX_TOKENS, MEWTWO_CATCH_BONUS, MEWTWO_POKEDEX_NUMBER, MIN_PLAYERS,
@@ -130,10 +130,12 @@ export const useGameStore = create<GameStore>((set, get) => ({
     const entries = Object.entries(tokens) as [EnergyType, number][];
     const supply = game.board.energySupply;
 
-    const isThreeDiff = entries.length === 3 && entries.every(([, n]) => n === 1);
+    const isDifferentTake = entries.length > 0 &&
+      entries.length === maxDifferentTakeable(supply) &&
+      entries.every(([, n]) => n === 1);
     const isTwoSame = entries.length === 1 && entries[0][1] === 2;
-    if (!isThreeDiff && !isTwoSame) {
-      throw new Error('Invalid token selection: must take 3 different types or 2 of the same type');
+    if (!isDifferentTake && !isTwoSame) {
+      throw new Error('Invalid token selection: must take 3 different types (fewer only when supply has fewer types) or 2 of the same type');
     }
 
     for (const [type, count] of entries) {
