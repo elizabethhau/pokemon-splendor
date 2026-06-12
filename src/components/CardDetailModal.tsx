@@ -1,211 +1,199 @@
-import React, { useEffect, useState } from 'react';
-import {
-  View, Text, Modal, TouchableOpacity, Image, StyleSheet,
-  ActivityIndicator, ScrollView,
-} from 'react-native';
-import { EnergyType, PlayerState, PokemonCard } from '../types/game';
+import React from 'react';
+import { Pressable, Text, TouchableOpacity, View } from 'react-native';
+import { PlayerState, PokemonCard } from '../types/game';
 import { canAfford } from '../store/selectors';
-import { getSpriteUri } from '../utils/spriteUriCache';
-import TypeBadge from './TypeBadge';
+import { costRows } from '../store/costRows';
 import { TYPE_COLORS, SCOUT_HAND_LIMIT } from '../constants';
+import { useTheme } from '../theme/ThemeContext';
+import ArtworkImage from './board/ArtworkImage';
+import { onTypeColor } from './board/util';
+
+const TIER_NAMES = { 1: 'Basic', 2: 'Stage 1', 3: 'Stage 2' } as const;
+const OK_GREEN = '#46B25A';
 
 interface Props {
   card: PokemonCard | null;
   source: 'face' | 'scouted' | null;
   player: PlayerState | null;
   actionTakenThisTurn: boolean;
+  dittoInSupply: boolean;
+  scale: number;
   onClose: () => void;
   onTrain: (card: PokemonCard) => void;
   onScout: (card: PokemonCard) => void;
 }
 
-type BreakdownRow = {
-  type: EnergyType;
-  rawCost: number;
-  bonusCovers: number;
-  tokensPay: number;
-  dittoNeeds: number;
-};
-
-function computeBreakdown(player: PlayerState, card: PokemonCard): BreakdownRow[] {
-  return (Object.entries(card.cost) as [EnergyType, number][]).map(([type, rawCost]) => {
-    const bonus = player.typeBonuses[type] ?? 0;
-    const bonusCovers = Math.min(rawCost, bonus);
-    const effective = rawCost - bonusCovers;
-    const tokensPay = Math.min(effective, player.energyTokens[type] ?? 0);
-    const dittoNeeds = effective - tokensPay;
-    return { type, rawCost, bonusCovers, tokensPay, dittoNeeds };
-  });
-}
-
+// Rendered as an in-screen overlay (not an RN Modal) so toasts stack above it.
 export default function CardDetailModal({
-  card, source, player, actionTakenThisTurn, onClose, onTrain, onScout,
+  card, source, player, actionTakenThisTurn, dittoInSupply, scale, onClose, onTrain, onScout,
 }: Props) {
-  const [spriteUri, setSpriteUri] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!card) { setSpriteUri(null); return; }
-    let cancelled = false;
-    getSpriteUri(card.pokedexNumber)
-      .then(uri => { if (!cancelled) setSpriteUri(uri); })
-      .catch(() => { if (!cancelled) setSpriteUri(null); });
-    return () => { cancelled = true; };
-  }, [card?.pokedexNumber]);
-
+  const { theme } = useTheme();
   if (!card || !player) return null;
 
+  const z = (n: number) => n * scale;
+  const color = TYPE_COLORS[card.energyType];
   const affordable = canAfford(player, card);
   const canTrain = affordable && !actionTakenThisTurn;
   const canScout = source === 'face' &&
     !actionTakenThisTurn &&
     player.scoutedCards.length < SCOUT_HAND_LIMIT;
+  const rows = costRows(player, card);
+  const usesDitto = affordable && rows.some(r => !r.ok);
 
-  const breakdown = computeBreakdown(player, card);
-  const totalDitto = breakdown.reduce((s, r) => s + r.dittoNeeds, 0);
-  const isFreeTrain = breakdown.length === 0 || breakdown.every(r => r.rawCost === 0);
-
-  const borderColor = TYPE_COLORS[card.energyType];
+  const trainLabel = actionTakenThisTurn ? 'Acted this turn' : affordable ? 'Train' : "Can't afford";
+  const scoutLabel = source === 'scouted'
+    ? 'In your hand'
+    : dittoInSupply ? 'Scout (+Ditto)' : 'Scout';
+  const bonusText = card.typeBonus
+    ? `Grants +1 ${card.typeBonus} bonus · ${card.trainerPoints} TP`
+    : `No type bonus · ${card.trainerPoints} TP`;
 
   return (
-    <Modal visible transparent animationType="slide" onRequestClose={onClose}>
-      <View style={s.backdrop}>
-        <TouchableOpacity style={StyleSheet.absoluteFill} onPress={onClose} />
-        <View style={s.sheet}>
-          <TouchableOpacity style={s.closeBtn} onPress={onClose}>
-            <Text style={s.closeBtnText}>✕</Text>
-          </TouchableOpacity>
-
-          {/* Card header */}
-          <View style={[s.cardHeader, { borderLeftColor: borderColor }]}>
-            {spriteUri ? (
-              <Image source={{ uri: spriteUri }} style={s.sprite} resizeMode="contain" />
-            ) : (
-              <ActivityIndicator size="large" color={borderColor} style={s.sprite} />
-            )}
-            <View style={s.cardMeta}>
-              <Text style={s.cardName}>{card.name}</Text>
-              <Text style={s.cardDex}>#{card.pokedexNumber}</Text>
-              <TypeBadge type={card.energyType} />
-              <Text style={s.tierText}>Tier {card.evolutionTier} {'★'.repeat(card.evolutionTier)}</Text>
-              {card.trainerPoints > 0 && (
-                <Text style={[s.tpText, { color: borderColor }]}>{card.trainerPoints} Trainer Points</Text>
-              )}
-              {card.typeBonus && (
-                <Text style={s.bonusText}>+1 {card.typeBonus} bonus when trained</Text>
-              )}
+    <Pressable
+      onPress={onClose}
+      style={{
+        position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
+        backgroundColor: theme.overlay, alignItems: 'center', justifyContent: 'center', zIndex: 20,
+      }}
+    >
+      <Pressable
+        onPress={() => {}}
+        style={{
+          flexDirection: 'row', gap: z(18), width: z(560),
+          backgroundColor: theme.modalBg, borderRadius: z(20), padding: z(20),
+          shadowColor: '#000', shadowOpacity: 0.4, shadowRadius: 60, shadowOffset: { width: 0, height: 24 },
+          elevation: 24,
+        }}
+      >
+        <View style={{
+          width: z(170), borderRadius: z(15), backgroundColor: color,
+          alignItems: 'center', justifyContent: 'center', overflow: 'hidden',
+        }}>
+          <View style={{
+            position: 'absolute', top: 0, left: 0, right: 0, height: '55%',
+            backgroundColor: 'rgba(255,255,255,0.22)',
+          }} />
+          <ArtworkImage dex={card.pokedexNumber} style={{ width: z(150), height: z(150) }} />
+          <View style={{
+            position: 'absolute', top: z(10), left: z(10),
+            paddingVertical: z(3), paddingHorizontal: z(9), borderRadius: z(8),
+            backgroundColor: 'rgba(0,0,0,0.28)',
+          }}>
+            <Text style={{ fontFamily: 'Poppins_700Bold', fontSize: z(11), color: '#fff' }}>
+              {TIER_NAMES[card.evolutionTier]}
+            </Text>
+          </View>
+          {card.trainerPoints > 0 && (
+            <View style={{
+              position: 'absolute', bottom: z(10), right: z(10),
+              width: z(34), height: z(34), borderRadius: z(17), backgroundColor: '#fff',
+              alignItems: 'center', justifyContent: 'center',
+            }}>
+              <Text style={{ fontFamily: 'Fredoka_700Bold', fontSize: z(16), color }}>{card.trainerPoints}</Text>
             </View>
+          )}
+        </View>
+
+        <View style={{ flex: 1 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Text style={{ fontFamily: 'Fredoka_700Bold', fontSize: z(24), color: theme.modalText }}>
+              {card.name}
+            </Text>
+            <TouchableOpacity
+              onPress={onClose}
+              style={{
+                width: z(28), height: z(28), borderRadius: z(8), backgroundColor: theme.surface,
+                alignItems: 'center', justifyContent: 'center',
+              }}
+            >
+              <Text style={{ fontSize: z(15), color: theme.inkDim }}>✕</Text>
+            </TouchableOpacity>
           </View>
 
-          {/* Payment breakdown */}
-          <View style={s.costSection}>
-            <Text style={s.costTitle}>Cost Breakdown</Text>
-            {isFreeTrain ? (
-              <Text style={s.freeText}>Free to train</Text>
-            ) : (
-              <>
-                {breakdown.map(row => (
-                  <View key={row.type} style={s.breakdownRow}>
-                    <View style={[s.typeDot, { backgroundColor: TYPE_COLORS[row.type] }]} />
-                    <Text style={s.breakdownType}>{row.type}</Text>
-                    <Text style={s.breakdownCost}>{row.rawCost}</Text>
-                    {row.bonusCovers > 0 && (
-                      <Text style={s.breakdownBonus}>−{row.bonusCovers} bonus</Text>
-                    )}
-                    {row.tokensPay > 0 && (
-                      <Text style={s.breakdownToken}>{row.tokensPay} token</Text>
-                    )}
-                    {row.dittoNeeds > 0 && (
-                      <Text style={s.breakdownDitto}>{row.dittoNeeds} Ditto</Text>
-                    )}
-                  </View>
-                ))}
-                {totalDitto > 0 && (
-                  <Text style={[s.dittoSummary, { color: TYPE_COLORS.Ditto }]}>
-                    Requires {totalDitto} Ditto token{totalDitto > 1 ? 's' : ''} (wild)
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: z(7), marginTop: z(4), marginBottom: z(14) }}>
+            <View style={{ paddingVertical: z(3), paddingHorizontal: z(10), borderRadius: z(7), backgroundColor: color }}>
+              <Text style={{ fontFamily: 'Poppins_600SemiBold', fontSize: z(11), color: onTypeColor(card.energyType) }}>
+                {card.energyType}
+              </Text>
+            </View>
+            <Text style={{ fontFamily: 'Poppins_400Regular', fontSize: z(11), color: theme.inkDim }}>{bonusText}</Text>
+          </View>
+
+          <Text style={{
+            fontFamily: 'Poppins_700Bold', fontSize: z(10), color: theme.inkDim,
+            textTransform: 'uppercase', letterSpacing: 1, marginBottom: z(7),
+          }}>
+            Training cost
+          </Text>
+          <View style={{ gap: z(6), marginBottom: z(14) }}>
+            {rows.map(row => (
+              <View key={row.label} style={{ flexDirection: 'row', alignItems: 'center', gap: z(9) }}>
+                <View style={{
+                  width: z(24), height: z(24), borderRadius: z(12),
+                  backgroundColor: row.type ? TYPE_COLORS[row.type] : TYPE_COLORS.Ditto,
+                  borderWidth: 2, borderColor: 'rgba(255,255,255,0.7)',
+                  alignItems: 'center', justifyContent: 'center',
+                }}>
+                  <Text style={{
+                    fontFamily: 'Fredoka_700Bold', fontSize: z(11),
+                    color: onTypeColor(row.type ?? 'Ditto'),
+                  }}>
+                    {row.need}
                   </Text>
-                )}
-                <Text style={[s.affordability, affordable ? s.canAfford : s.cantAfford]}>
-                  {affordable ? 'You can afford this' : 'Not enough tokens'}
+                </View>
+                <Text style={{ fontFamily: 'Poppins_400Regular', fontSize: z(12), color: theme.modalText }}>
+                  {row.label}
                 </Text>
-              </>
+                <Text style={{
+                  marginLeft: 'auto', fontFamily: 'Poppins_600SemiBold', fontSize: z(12),
+                  color: row.ok ? OK_GREEN : theme.inkDim,
+                }}>
+                  {row.status}
+                </Text>
+              </View>
+            ))}
+            {usesDitto && (
+              <Text style={{ fontFamily: 'Poppins_400Regular', fontSize: z(11), color: theme.inkDim, fontStyle: 'italic' }}>
+                Shortfall covered by your Ditto (wild)
+              </Text>
             )}
           </View>
 
-          {/* Action buttons */}
-          <View style={s.actions}>
+          <View style={{ marginTop: 'auto', flexDirection: 'row', gap: z(9) }}>
             {source === 'face' && (
               <TouchableOpacity
-                style={[s.actionBtn, s.scoutBtn, !canScout && s.actionBtnDisabled]}
                 onPress={() => onScout(card)}
                 disabled={!canScout}
+                style={{
+                  flex: 1, padding: z(12), borderRadius: z(11),
+                  borderWidth: 1.5, borderColor: theme.ring2, opacity: canScout ? 1 : 0.45,
+                }}
               >
-                <Text style={[s.actionBtnText, !canScout && s.actionBtnTextDisabled]}>
-                  {player.scoutedCards.length >= SCOUT_HAND_LIMIT
-                    ? 'Scout full (3/3)'
-                    : actionTakenThisTurn
-                      ? 'Already acted'
-                      : 'Scout'}
+                <Text style={{ fontFamily: 'Poppins_600SemiBold', fontSize: z(13), color: theme.modalText, textAlign: 'center' }}>
+                  {scoutLabel}
                 </Text>
               </TouchableOpacity>
             )}
             <TouchableOpacity
-              style={[s.actionBtn, s.trainBtn, !canTrain && s.actionBtnDisabled]}
               onPress={() => onTrain(card)}
               disabled={!canTrain}
+              style={{
+                flex: 1.4, padding: z(12), borderRadius: z(11),
+                backgroundColor: canTrain ? theme.accent : theme.ring2,
+                borderWidth: 1, borderColor: theme.accentBorder,
+                opacity: canTrain ? 1 : 0.55,
+              }}
             >
-              <Text style={[s.actionBtnText, !canTrain && s.actionBtnTextDisabled]}>
-                {actionTakenThisTurn ? 'Already acted' : affordable ? 'Train' : 'Cannot afford'}
+              <Text style={{
+                fontFamily: 'Fredoka_700Bold', fontSize: z(13), textAlign: 'center',
+                color: canTrain ? theme.accentText : theme.inkDim,
+              }}>
+                {trainLabel}
               </Text>
             </TouchableOpacity>
           </View>
         </View>
-      </View>
-    </Modal>
+      </Pressable>
+    </Pressable>
   );
 }
-
-const s = StyleSheet.create({
-  backdrop: { flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0.6)' },
-  sheet: {
-    backgroundColor: '#fff',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    padding: 20,
-    paddingBottom: 36,
-    maxHeight: '85%',
-  },
-  closeBtn: { alignSelf: 'flex-end', padding: 4 },
-  closeBtnText: { fontSize: 18, color: '#aaa' },
-
-  cardHeader: { flexDirection: 'row', gap: 16, marginBottom: 16, borderLeftWidth: 4, paddingLeft: 12, borderRadius: 2 },
-  sprite: { width: 96, height: 96 },
-  cardMeta: { flex: 1, gap: 4 },
-  cardName: { fontSize: 20, fontWeight: '800', color: '#111' },
-  cardDex: { fontSize: 12, color: '#aaa' },
-  tierText: { fontSize: 12, color: '#888', marginTop: 2 },
-  tpText: { fontSize: 14, fontWeight: '700' },
-  bonusText: { fontSize: 11, color: '#555', fontStyle: 'italic' },
-
-  costSection: { backgroundColor: '#f8f8f8', borderRadius: 10, padding: 12, marginBottom: 16 },
-  costTitle: { fontSize: 12, fontWeight: '700', color: '#888', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 8 },
-  freeText: { fontSize: 14, color: '#388e3c', fontWeight: '600' },
-  breakdownRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 6 },
-  typeDot: { width: 10, height: 10, borderRadius: 5 },
-  breakdownType: { fontSize: 13, color: '#333', fontWeight: '600', width: 64 },
-  breakdownCost: { fontSize: 13, color: '#222', fontWeight: '700', width: 16 },
-  breakdownBonus: { fontSize: 11, color: '#4caf50', fontWeight: '600' },
-  breakdownToken: { fontSize: 11, color: '#1565c0', fontWeight: '600' },
-  breakdownDitto: { fontSize: 11, color: '#9c27b0', fontWeight: '600' },
-  dittoSummary: { fontSize: 12, marginTop: 4, fontStyle: 'italic' },
-  affordability: { fontSize: 13, fontWeight: '700', marginTop: 8 },
-  canAfford: { color: '#388e3c' },
-  cantAfford: { color: '#c62828' },
-
-  actions: { flexDirection: 'row', gap: 12 },
-  actionBtn: { flex: 1, paddingVertical: 14, borderRadius: 10, alignItems: 'center' },
-  actionBtnDisabled: { opacity: 0.4 },
-  scoutBtn: { backgroundColor: '#e8f0fe', borderWidth: 1.5, borderColor: '#1565C0' },
-  trainBtn: { backgroundColor: '#E53935' },
-  actionBtnText: { fontSize: 15, fontWeight: '700' },
-  actionBtnTextDisabled: { color: '#888' },
-});

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { useGameStore } from '../store/useGameStore';
@@ -39,7 +39,8 @@ export default function GameOverScreen({ navigation }: Props) {
   });
 
   return (
-    <View style={styles.container}>
+    // Scrollable so Home/Play Again stay reachable in landscape until the #29 redesign
+    <ScrollView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Game Over</Text>
       </View>
@@ -81,7 +82,7 @@ export default function GameOverScreen({ navigation }: Props) {
           <Text style={styles.primaryBtnText}>Play Again</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
