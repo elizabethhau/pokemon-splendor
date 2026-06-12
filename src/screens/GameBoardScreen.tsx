@@ -6,7 +6,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { useGameStore } from '../store/useGameStore';
-import { currentPlayer, trainerPoints, canCatchMew, hasLegalMove } from '../store/selectors';
+import { currentPlayer, canCatchMew, hasLegalMove } from '../store/selectors';
 import { canAddToken, isSelectionValid, TokenSelection } from '../store/tokenSelection';
 import {
   EvolutionTier, PokemonCard, PokeballTier, TokenType,
