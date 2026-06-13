@@ -67,6 +67,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     const { tier1, tier2, tier3 } = buildDecks(config.deckMode);
 
     set({
+      undoSnapshot: null, // a snapshot from a previous game must not leak in
       game: {
         config,
         players,

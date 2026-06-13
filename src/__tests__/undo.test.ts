@@ -30,6 +30,14 @@ test('undoAction throws when there is nothing to undo', () => {
   expect(() => useGameStore.getState().undoAction()).toThrow('Nothing to undo');
 });
 
+test('starting a new game clears any stale snapshot from the previous game', () => {
+  useGameStore.getState().takeTokens({ Fire: 1, Water: 1, Grass: 1 });
+  expect(useGameStore.getState().undoSnapshot).not.toBeNull();
+
+  useGameStore.getState().initGame(TWO_PLAYER);
+  expect(useGameStore.getState().undoSnapshot).toBeNull();
+});
+
 test('undo after trainCard restores board, tokens, bonuses, and pokeballs exactly', () => {
   const card = useGameStore.getState().game!.board.tier1Face[0];
   givePlayerTokens({ [card.energyType]: 5, Ditto: 5 });
