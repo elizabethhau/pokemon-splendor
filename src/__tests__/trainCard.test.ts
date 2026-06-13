@@ -61,7 +61,7 @@ test('training a face-up tier 1 card adds it to trainedCards and grants a Pokeba
 });
 
 // ─── Test 2 ───────────────────────────────────────────────────────────────────
-test('training a face-up card replaces it from the deck; empty deck leaves the slot gone', () => {
+test('training empties the slot; the deck refills it at turn commit, or leaves it gone when empty', () => {
   putCardInFace(BULBASAUR);
   givePlayerTokens({ Grass: 5 });
 
@@ -70,18 +70,25 @@ test('training a face-up card replaces it from the deck; empty deck leaves the s
 
   useGameStore.getState().trainCard(BULBASAUR);
 
-  const board = useGameStore.getState().game!.board;
+  let board = useGameStore.getState().game!.board;
+  expect(board.tier1Face).not.toContainEqual(BULBASAUR);
+  expect(board.tier1Face).toHaveLength(3); // slot stays empty until commit
+  expect(board.tier1Deck).toHaveLength(deckBefore.length);
+
+  useGameStore.getState().advanceTurn();
+  board = useGameStore.getState().game!.board;
   expect(board.tier1Face).toContainEqual(expectedReplacement);
   expect(board.tier1Deck).toHaveLength(deckBefore.length - 1);
-  expect(board.tier1Face).not.toContainEqual(BULBASAUR);
 
-  // When deck is empty the slot disappears (face shrinks by 1)
+  // When the deck is empty the slot stays gone after commit (now Bob's turn)
   useGameStore.setState((s) => ({
-    game: { ...s.game!, actionTakenThisTurn: false, board: { ...s.game!.board, tier1Deck: [] } },
+    game: { ...s.game!, board: { ...s.game!.board, tier1Deck: [] } },
   }));
+  givePlayerTokens({ Grass: 5 }, 1);
   const faceCountBefore = useGameStore.getState().game!.board.tier1Face.length;
   putCardInFace(BULBASAUR);
   useGameStore.getState().trainCard(BULBASAUR);
+  useGameStore.getState().advanceTurn();
   expect(useGameStore.getState().game!.board.tier1Face).toHaveLength(faceCountBefore - 1);
 });
 

@@ -38,7 +38,7 @@ test('complete turn: takeTokens then advanceTurn moves to next player and increm
 });
 
 // ─── Test 2 ───────────────────────────────────────────────────────────────────
-test('taking tokens that push player >10 enters discarding phase; advanceTurn throws', () => {
+test('ending the turn with >10 tokens enters discarding instead of advancing; advanceTurn while discarding throws', () => {
   // Give Alice 9 tokens, then take 3 more → 12 total
   useGameStore.setState((s) => ({
     game: {
@@ -50,8 +50,11 @@ test('taking tokens that push player >10 enters discarding phase; advanceTurn th
   }));
 
   useGameStore.getState().takeTokens({ Fire: 1, Water: 1, Grass: 1 });
+  expect(useGameStore.getState().game!.phase).toBe('playing'); // discard waits for End Turn
 
+  useGameStore.getState().advanceTurn();
   expect(useGameStore.getState().game!.phase).toBe('discarding');
+  expect(useGameStore.getState().game!.currentPlayerIndex).toBe(0); // turn did not advance
   expect(() => useGameStore.getState().advanceTurn()).toThrow();
 });
 
@@ -66,7 +69,8 @@ test('discardTokens that brings player to ≤10 exits discarding; advanceTurn th
     },
   }));
 
-  useGameStore.getState().takeTokens({ Fire: 1, Water: 1, Grass: 1 }); // → 12 tokens, 'discarding'
+  useGameStore.getState().takeTokens({ Fire: 1, Water: 1, Grass: 1 }); // → 12 tokens
+  useGameStore.getState().advanceTurn();                                // End Turn → 'discarding'
   useGameStore.getState().discardTokens({ Fire: 1, Water: 1 });          // → 10 tokens, 'playing'
 
   expect(useGameStore.getState().game!.phase).toBe('playing');
@@ -237,8 +241,10 @@ test('discarding during finalRound restores finalRound phase, not playing', () =
       ),
     },
   }));
-  useGameStore.getState().takeTokens({ Electric: 1, Psychic: 1, Fire: 1 }); // 12 tokens → discarding
+  useGameStore.getState().takeTokens({ Electric: 1, Psychic: 1, Fire: 1 }); // 12 tokens
+  expect(useGameStore.getState().game!.phase).toBe('finalRound'); // discard waits for End Turn
 
+  useGameStore.getState().advanceTurn(); // End Turn → discarding
   expect(useGameStore.getState().game!.phase).toBe('discarding');
 
   useGameStore.getState().discardTokens({ Electric: 1, Psychic: 1 }); // back to 10
