@@ -148,6 +148,11 @@ test('bestAffordableCard returns highest-TP affordable card', () => {
 });
 
 test('bestAffordableCard returns null when nothing affordable', () => {
+  // Clear the shuffled face rows first — a randomly-dealt free card (e.g. Magikarp,
+  // cost {}) would be affordable and make this test flaky
+  useGameStore.setState((s) => ({
+    game: { ...s.game!, board: { ...s.game!.board, tier1Face: [], tier2Face: [], tier3Face: [] } },
+  }));
   putCardInFace(VENUSAUR);
   givePlayerTokens({ Grass: 1 }); // needs 7
   const game = currentGame();

@@ -26,6 +26,7 @@ import LegendariesColumn from '../components/board/LegendariesColumn';
 import Dock from '../components/board/Dock';
 import TokenDiscardModal from '../components/TokenDiscardModal';
 import CardDetailModal from '../components/CardDetailModal';
+import ConfirmModal, { ConfirmRequest } from '../components/ConfirmModal';
 import { getGreedyMove } from '../ai/greedy';
 import { getHeuristicMove } from '../ai/heuristic';
 import { getAIDiscard } from '../ai/utils';
@@ -48,6 +49,8 @@ export default function GameBoardScreen({ navigation }: Props) {
   const scoutFaceUp = useGameStore(s => s.scoutFaceUp);
   const scoutFromDeck = useGameStore(s => s.scoutFromDeck);
   const catchMew = useGameStore(s => s.catchMew);
+  const undoAction = useGameStore(s => s.undoAction);
+  const undoSnapshot = useGameStore(s => s.undoSnapshot);
 
   const { theme } = useTheme();
   const toast = useToast();
@@ -59,6 +62,7 @@ export default function GameBoardScreen({ navigation }: Props) {
   const [selectedCardSource, setSelectedCardSource] = useState<'face' | 'scouted' | null>(null);
   const [catchModalVisible, setCatchModalVisible] = useState(false);
   const [selectedBall, setSelectedBall] = useState<PokeballTier | null>(null);
+  const [confirm, setConfirm] = useState<ConfirmRequest | null>(null);
   const [aiThinking, setAiThinking] = useState(false);
   const aiTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -99,18 +103,20 @@ export default function GameBoardScreen({ navigation }: Props) {
         console.warn('AI move failed:', e);
       }
 
-      // Auto-discard if needed
+      // Advance turn — the >10-token discard check now happens here
       const afterAction = useGameStore.getState().game;
-      if (afterAction?.phase === PHASE.DISCARDING) {
-        const aiPlayer = currentPlayer(afterAction);
-        const discard = getAIDiscard(aiPlayer);
-        try { store.discardTokens(discard); } catch { /* discard error */ }
+      if (afterAction && afterAction.phase !== PHASE.GAME_OVER) {
+        try { store.advanceTurn(); } catch { /* advance error */ }
       }
 
-      // Advance turn
-      const afterDiscard = useGameStore.getState().game;
-      if (afterDiscard && afterDiscard.phase !== PHASE.GAME_OVER) {
-        try { store.advanceTurn(); } catch { /* advance error */ }
+      // If End Turn entered the discard phase, the AI discards and commits again
+      const afterAdvance = useGameStore.getState().game;
+      if (afterAdvance?.phase === PHASE.DISCARDING) {
+        const aiPlayer = currentPlayer(afterAdvance);
+        try {
+          store.discardTokens(getAIDiscard(aiPlayer));
+          store.advanceTurn();
+        } catch { /* discard error */ }
       }
 
       setAiThinking(false);
@@ -236,9 +242,26 @@ export default function GameBoardScreen({ navigation }: Props) {
       toast('Scout hand is full (3)');
       return;
     }
+    setConfirm({
+      title: 'Scout from the deck?',
+      message: 'You’ll draw the top card face-down into your hand. Because only you get to see it, this move can’t be undone.',
+      confirmLabel: 'Scout blind',
+      onProceed: () => {
+        try {
+          scoutFromDeck(tier);
+          toast('Scouted from the deck — added to your hand');
+        } catch (e: unknown) {
+          toast(e instanceof Error ? e.message : String(e));
+        }
+      },
+    });
+  }
+
+  function handleUndo() {
     try {
-      scoutFromDeck(tier);
-      toast('Scouted from the deck — added to your hand');
+      undoAction();
+      setTokenSelection({});
+      toast('Action undone · choose again');
     } catch (e: unknown) {
       toast(e instanceof Error ? e.message : String(e));
     }
@@ -275,19 +298,28 @@ export default function GameBoardScreen({ navigation }: Props) {
     toast(`Mew needs ${mewOnBoard.legendariesRequired} Legendaries + a Poké Ball`);
   }
 
-  function handleCatchMew() {
+  function handleThrowPress() {
     if (!selectedBall) return;
     const ball = selectedBall;
-    try {
-      const caught = catchMew(ball);
-      setCatchModalVisible(false);
-      setSelectedBall(null);
-      toast(caught
-        ? 'Mew caught! +5 Trainer Points!'
-        : `The ${BALL_LABELS[ball]} was spent — Mew escaped`);
-    } catch (e: unknown) {
-      toast(e instanceof Error ? e.message : String(e));
-    }
+    const hasMewtwoBonus = player.legendaries.some(l => l.pokedexNumber === MEWTWO_POKEDEX_NUMBER);
+    const pct = Math.round(Math.min(1, BASE_CATCH_RATES[ball] + (hasMewtwoBonus ? MEWTWO_CATCH_BONUS : 0)) * 100);
+    setCatchModalVisible(false);
+    setConfirm({
+      title: `Throw your ${BALL_LABELS[ball]}?`,
+      message: `Catch chance is ${pct}%. Win or lose, this uses your turn and the ball — it can’t be undone.`,
+      confirmLabel: 'Throw it!',
+      onProceed: () => {
+        try {
+          const caught = catchMew(ball);
+          setSelectedBall(null);
+          toast(caught
+            ? 'Mew caught! +5 Trainer Points!'
+            : `The ${BALL_LABELS[ball]} was spent — Mew escaped`);
+        } catch (e: unknown) {
+          toast(e instanceof Error ? e.message : String(e));
+        }
+      },
+    });
   }
 
   // ── Layout ──
@@ -362,6 +394,8 @@ export default function GameBoardScreen({ navigation }: Props) {
         mewEligible={mewEligible}
         onCatchMew={() => setCatchModalVisible(true)}
         onScoutedPress={card => handleCardPress(card, 'scouted')}
+        canUndo={undoSnapshot !== null}
+        onUndo={handleUndo}
       />
 
       <CardDetailModal
@@ -375,6 +409,8 @@ export default function GameBoardScreen({ navigation }: Props) {
         onTrain={handleTrain}
         onScout={handleScoutFaceUp}
       />
+
+      <ConfirmModal request={confirm} scale={scale} onClose={() => setConfirm(null)} />
 
       <TokenDiscardModal />
 
@@ -415,7 +451,7 @@ export default function GameBoardScreen({ navigation }: Props) {
 
             <TouchableOpacity
               style={[s.catchConfirmBtn, !selectedBall && s.catchConfirmBtnDisabled]}
-              onPress={handleCatchMew}
+              onPress={handleThrowPress}
               disabled={!selectedBall}
             >
               <Text style={s.catchConfirmText}>

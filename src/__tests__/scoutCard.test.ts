@@ -32,7 +32,7 @@ test('scouting a face-up card adds it to scoutedCards and gives player 1 Ditto',
 });
 
 // ─── Test 2 ───────────────────────────────────────────────────────────────────
-test('scouted face-up card slot is refilled from the deck; empty deck leaves slot gone', () => {
+test('scouted face-up slot stays empty until turn commit, then refills from the deck', () => {
   putCardInFace(BULBASAUR);
   const deckBefore = useGameStore.getState().game!.board.tier1Deck;
   const faceBefore = useGameStore.getState().game!.board.tier1Face.length;
@@ -40,19 +40,25 @@ test('scouted face-up card slot is refilled from the deck; empty deck leaves slo
 
   useGameStore.getState().scoutFaceUp(BULBASAUR);
 
-  const board = useGameStore.getState().game!.board;
+  let board = useGameStore.getState().game!.board;
   expect(board.tier1Face).not.toContainEqual(BULBASAUR);
-  expect(board.tier1Face).toContainEqual(replacement);       // slot refilled
-  expect(board.tier1Face).toHaveLength(faceBefore);          // count unchanged
+  expect(board.tier1Face).toHaveLength(faceBefore - 1);      // empty until commit
+  expect(board.tier1Deck).toHaveLength(deckBefore.length);
+
+  useGameStore.getState().advanceTurn();
+  board = useGameStore.getState().game!.board;
+  expect(board.tier1Face).toContainEqual(replacement);       // refilled at commit
+  expect(board.tier1Face).toHaveLength(faceBefore);
   expect(board.tier1Deck).toHaveLength(deckBefore.length - 1);
 
-  // When deck is empty the slot disappears
+  // When the deck is empty the slot stays gone after commit (now Bob's turn)
   useGameStore.setState((s) => ({
-    game: { ...s.game!, actionTakenThisTurn: false, board: { ...s.game!.board, tier1Deck: [] } },
+    game: { ...s.game!, board: { ...s.game!.board, tier1Deck: [] } },
   }));
   const faceCount = useGameStore.getState().game!.board.tier1Face.length;
   putCardInFace(BULBASAUR);
   useGameStore.getState().scoutFaceUp(BULBASAUR);
+  useGameStore.getState().advanceTurn();
   expect(useGameStore.getState().game!.board.tier1Face).toHaveLength(faceCount - 1);
 });
 

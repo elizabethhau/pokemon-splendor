@@ -26,6 +26,7 @@ function BallGlyph({ ball, size }: { ball: PokeballTier; size: number }) {
 export default function Dock({
   game, scale, selecting, selectionTotal, selectionValid,
   onClear, onTake, onEndTurn, endTurnEnabled, mewEligible, onCatchMew, onScoutedPress,
+  canUndo, onUndo,
 }: {
   game: GameState;
   scale: number;
@@ -39,6 +40,8 @@ export default function Dock({
   mewEligible: boolean;
   onCatchMew: () => void;
   onScoutedPress: (card: PokemonCard) => void;
+  canUndo: boolean;
+  onUndo: () => void;
 }) {
   const { theme } = useTheme();
   const z = (n: number) => n * scale;
@@ -188,6 +191,11 @@ export default function Dock({
           </>
         ) : (
           <>
+            {canUndo && (
+              <TouchableOpacity style={ghostBtn} onPress={onUndo}>
+                <Text style={ghostText}>↩ Undo Action</Text>
+              </TouchableOpacity>
+            )}
             {mewEligible && (
               <TouchableOpacity style={ghostBtn} onPress={onCatchMew}>
                 <Text style={ghostText}>Catch Mew</Text>

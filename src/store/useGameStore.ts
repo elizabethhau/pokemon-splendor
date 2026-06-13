@@ -13,12 +13,23 @@ import {
 type TokenSelection = Partial<Record<EnergyType, number>>;
 type DiscardSelection = Partial<Record<TokenType, number>>;
 
+function refillTier(face: PokemonCard[], deck: PokemonCard[]): [PokemonCard[], PokemonCard[]] {
+  const missing = FACE_UP_COUNT - face.length;
+  if (missing <= 0 || deck.length === 0) return [face, deck];
+  const take = Math.min(missing, deck.length);
+  return [[...face, ...deck.slice(0, take)], deck.slice(take)];
+}
+
 interface GameStore {
   soundEnabled: boolean;
   toggleSound: () => void;
   setSoundEnabled: (enabled: boolean) => void;
 
   game: GameState | null;
+  // Pre-action snapshot for the undoable actions (take tokens, face-up scout,
+  // train); cleared on turn commit and by irreversible actions.
+  undoSnapshot: GameState | null;
+  undoAction: () => void;
   initGame: (config: GameConfig) => void;
   advanceTurn: () => void;
   takeTokens: (tokens: TokenSelection) => void;
@@ -38,6 +49,13 @@ export const useGameStore = create<GameStore>((set, get) => ({
   setSoundEnabled: (enabled: boolean) => set({ soundEnabled: enabled }),
 
   game: null,
+  undoSnapshot: null,
+
+  undoAction: () => {
+    const { undoSnapshot } = get();
+    if (!undoSnapshot) throw new Error('Nothing to undo');
+    set({ game: undoSnapshot, undoSnapshot: null });
+  },
 
   initGame: (config: GameConfig) => {
     if (config.playerNames.length < MIN_PLAYERS) throw new Error('Game requires at least 1 player');
@@ -49,6 +67,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     const { tier1, tier2, tier3 } = buildDecks(config.deckMode);
 
     set({
+      undoSnapshot: null, // a snapshot from a previous game must not leak in
       game: {
         config,
         players,
@@ -88,6 +107,13 @@ export const useGameStore = create<GameStore>((set, get) => ({
     if (game.phase === PHASE.GAME_OVER) throw new Error('Game is over');
     if (!game.actionTakenThisTurn) throw new Error('Must take an action before ending turn');
 
+    // Over the token limit: enter the discard phase instead of advancing.
+    // Ending the turn commits the action, so the snapshot clears here too.
+    if (totalTokens(game.players[game.currentPlayerIndex].energyTokens) > MAX_TOKENS) {
+      set({ undoSnapshot: null, game: { ...game, phase: PHASE.DISCARDING } });
+      return;
+    }
+
     const prevPlayer = game.players[game.currentPlayerIndex];
     const prevTP = trainerPoints(prevPlayer);
     const next = (game.currentPlayerIndex + 1) % game.players.length;
@@ -107,9 +133,16 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
     const pendingHandoff = game.config.passAndPlay && phase !== PHASE.GAME_OVER;
 
+    // Turn commit: refill face-up slots emptied by train/scout this turn
+    const [tier1Face, tier1Deck] = refillTier(game.board.tier1Face, game.board.tier1Deck);
+    const [tier2Face, tier2Deck] = refillTier(game.board.tier2Face, game.board.tier2Deck);
+    const [tier3Face, tier3Deck] = refillTier(game.board.tier3Face, game.board.tier3Deck);
+
     set({
+      undoSnapshot: null,
       game: {
         ...game,
+        board: { ...game.board, tier1Face, tier1Deck, tier2Face, tier2Deck, tier3Face, tier3Deck },
         currentPlayerIndex: next,
         turnNumber: nextTurn,
         phase,
@@ -154,13 +187,13 @@ export const useGameStore = create<GameStore>((set, get) => ({
       newSupply[type] = newSupply[type] - count;
     }
 
-    const newPhase = totalTokens(newTokens) > MAX_TOKENS ? PHASE.DISCARDING : game.phase;
+    // The >10-token discard check happens at End Turn so the take stays undoable
     set({
+      undoSnapshot: game,
       game: {
         ...game,
         players: game.players.map((p, i) => i === idx ? { ...p, energyTokens: newTokens } : p),
         board: { ...game.board, energySupply: newSupply },
-        phase: newPhase,
         actionTakenThisTurn: true,
       },
     });
@@ -215,7 +248,6 @@ export const useGameStore = create<GameStore>((set, get) => ({
     const board = game.board;
 
     const faceKey = tierFaceKey(card.evolutionTier);
-    const deckKey = tierDeckKey(card.evolutionTier);
     const pokeballTier = (['Pokeball', 'GreatBall', 'UltraBall'] as const)[card.evolutionTier - 1];
 
     const faceIdx = board[faceKey].findIndex(c => c.pokedexNumber === card.pokedexNumber);
@@ -245,18 +277,13 @@ export const useGameStore = create<GameStore>((set, get) => ({
     energyAfter.Ditto = (energyAfter.Ditto ?? 0) - dittoNeeded;
     supplyAfter.Ditto = supplyAfter.Ditto + dittoNeeded;
 
-    // Update board: replace face-up slot from deck, or remove from scouted
+    // Update board: empty the face-up slot (refill is deferred to turn commit
+    // in advanceTurn so undo never reveals the next card), or remove from scouted
     let newFace = [...board[faceKey]];
-    let newDeck = [...board[deckKey]];
     let newScouted = [...player.scoutedCards];
 
     if (faceIdx !== -1) {
-      if (newDeck.length > 0) {
-        newFace = newFace.map((c, i) => i === faceIdx ? newDeck[0] : c);
-        newDeck = newDeck.slice(1);
-      } else {
-        newFace = newFace.filter((_, i) => i !== faceIdx);
-      }
+      newFace = newFace.filter((_, i) => i !== faceIdx);
     } else {
       newScouted = newScouted.filter((_, i) => i !== scoutedIdx);
     }
@@ -279,6 +306,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     }
 
     set({
+      undoSnapshot: game,
       game: {
         ...game,
         actionTakenThisTurn: true,
@@ -294,7 +322,6 @@ export const useGameStore = create<GameStore>((set, get) => ({
         board: {
           ...board,
           [faceKey]: faceIdx !== -1 ? newFace : board[faceKey],
-          [deckKey]: faceIdx !== -1 ? newDeck : board[deckKey],
           energySupply: supplyAfter,
           availableLegendaries: newAvailableLegendaries,
           firstLegendaryClaimed: board.firstLegendaryClaimed || isFirstLegendary,
@@ -317,18 +344,13 @@ export const useGameStore = create<GameStore>((set, get) => ({
     }
 
     const faceKey = tierFaceKey(card.evolutionTier);
-    const deckKey = tierDeckKey(card.evolutionTier);
     const faceIdx = game.board[faceKey].findIndex(c => c.pokedexNumber === card.pokedexNumber);
     if (faceIdx === -1) throw new Error(`${card.name} is not face-up on the board`);
 
-    const deck = game.board[deckKey];
-    const newFace = deck.length > 0
-      ? game.board[faceKey].map((c, i) => i === faceIdx ? deck[0] : c)
-      : game.board[faceKey].filter((_, i) => i !== faceIdx);
-    const newDeck = deck.length > 0 ? deck.slice(1) : deck;
-
-    const updatedBoard = { ...game.board, [faceKey]: newFace, [deckKey]: newDeck };
-    set({ game: applyScout(game, idx, card, updatedBoard) });
+    // Slot stays empty until turn commit so undo never reveals the next card
+    const newFace = game.board[faceKey].filter((_, i) => i !== faceIdx);
+    const updatedBoard = { ...game.board, [faceKey]: newFace };
+    set({ undoSnapshot: game, game: applyScout(game, idx, card, updatedBoard) });
   },
 
   scoutFromDeck: (tier: EvolutionTier) => {
@@ -348,8 +370,9 @@ export const useGameStore = create<GameStore>((set, get) => ({
     const deck = game.board[deckKey];
     if (deck.length === 0) throw new Error(`Tier ${tier} deck is empty`);
 
+    // Irreversible: the drawn card is hidden information
     const updatedBoard = { ...game.board, [deckKey]: deck.slice(1) };
-    set({ game: applyScout(game, idx, deck[0], updatedBoard) });
+    set({ undoSnapshot: null, game: applyScout(game, idx, deck[0], updatedBoard) });
   },
 
   catchMew: (ball: PokeballTier, rng: () => number = Math.random) => {
@@ -375,6 +398,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     const caught = rng() < threshold;
 
     set({
+      undoSnapshot: null, // irreversible: the ball is spent either way
       game: {
         ...game,
         actionTakenThisTurn: true,
@@ -397,7 +421,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     if (game.actionTakenThisTurn) throw new Error('Action already taken this turn');
     if (hasLegalMove(game)) throw new Error('Cannot pass: a legal move is available');
 
-    set({ game: { ...game, actionTakenThisTurn: true } });
+    set({ undoSnapshot: null, game: { ...game, actionTakenThisTurn: true } });
   },
 
   acknowledgeHandoff: () => {

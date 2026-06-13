@@ -231,6 +231,9 @@ test('after taking pushes player past 10, discardTokens brings them back to ≤1
   const total = Object.values(afterTake).reduce((s, n) => s + n, 0);
   expect(total).toBe(12);
 
+  // Ending the turn enters the discard phase
+  useGameStore.getState().advanceTurn();
+
   // Discard 2 to get back to 10
   useGameStore.getState().discardTokens({ Fire: 1, Water: 1 });
   const afterDiscard = useGameStore.getState().game!.players[0].energyTokens;
