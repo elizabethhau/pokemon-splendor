@@ -15,3 +15,6 @@ export const BALL_TOP_COLORS: Record<PokeballTier, string> = {
 
 // Seat avatars: Pikachu, Charmander, Squirtle, Bulbasaur
 export const SEAT_AVATAR_DEX = [25, 4, 7, 1] as const;
+
+// AI rival avatars: Mewtwo, Dragonite, Gyarados, Moltres
+export const AI_AVATAR_DEX = [150, 149, 130, 146] as const;
