@@ -7,39 +7,38 @@ import { Ionicons } from '@expo/vector-icons';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { useGameStore } from '../store/useGameStore';
-import { AIDifficulty, GameConfig } from '../types/game';
 import { PLAYER_COLORS } from '../constants';
 import { useTheme } from '../theme/ThemeContext';
 import { Theme } from '../theme/themes';
+import { buildGameConfig, SetupMode, SetupDifficulty } from './gameSetupConfig';
 
 type Props = {
   navigation: NativeStackNavigationProp<RootStackParamList, 'GameSetup'>;
 };
 
-type Mode = 'solo' | 'pass';
-type Difficulty = 'easy' | 'normal';
-
 type SegOption<T extends string> = { key: T; label: string; sub?: string; disabled?: boolean };
 
-function Segmented<T extends string>({ options, value, onChange, theme }: {
+function Segmented<T extends string>({ options, value, onChange, theme, disabled }: {
   options: SegOption<T>[];
   value: T;
   onChange: (key: T) => void;
   theme: Theme;
+  disabled?: boolean;
 }) {
   return (
     <View style={s.segRow}>
       {options.map(o => {
         const active = o.key === value;
+        const off = disabled || o.disabled;
         return (
           <TouchableOpacity
             key={o.key}
-            disabled={o.disabled}
+            disabled={off}
             onPress={() => onChange(o.key)}
             style={[s.segBtn, {
               backgroundColor: active ? theme.accent : 'transparent',
               borderColor: active ? theme.accentBorder : theme.ring2,
-              opacity: o.disabled ? 0.5 : 1,
+              opacity: off ? 0.5 : 1,
             }]}
           >
             <Text style={[s.segLabel, { color: active ? theme.accentText : theme.ink }]}>{o.label}</Text>
@@ -55,10 +54,10 @@ function Segmented<T extends string>({ options, value, onChange, theme }: {
 
 export default function GameSetupScreen({ navigation }: Props) {
   const { theme } = useTheme();
-  const [mode, setMode] = useState<Mode>('solo');
+  const [mode, setMode] = useState<SetupMode>('solo');
   const [players, setPlayers] = useState(2);
-  const [difficulty, setDifficulty] = useState<Difficulty>('normal');
-  const [names, setNames] = useState(['Player 1', 'Player 2', 'Player 3', 'Player 4']);
+  const [difficulty, setDifficulty] = useState<SetupDifficulty>('normal');
+  const [names, setNames] = useState(['', '', '', '']);
   const initGame = useGameStore(st => st.initGame);
 
   function updateName(index: number, value: string) {
@@ -69,31 +68,7 @@ export default function GameSetupScreen({ navigation }: Props) {
   const nameCount = mode === 'solo' ? 1 : players;
 
   function handleStart() {
-    const aiDifficulty: AIDifficulty = difficulty === 'easy' ? 'greedy' : 'heuristic';
-
-    let playerNames: string[];
-    let aiPlayerIndices: number[] | undefined;
-
-    if (mode === 'solo') {
-      const humanName = names[0].trim() || 'You';
-      const rivalCount = players - 1;
-      const rivalNames = Array.from({ length: rivalCount }, (_, k) =>
-        rivalCount === 1 ? 'Rival' : `Rival ${k + 1}`
-      );
-      playerNames = [humanName, ...rivalNames];
-      aiPlayerIndices = rivalNames.map((_, k) => k + 1); // seats 1..players-1 are AI
-    } else {
-      playerNames = names.slice(0, players).map((n, i) => n.trim() || `Player ${i + 1}`);
-    }
-
-    const config: GameConfig = {
-      playerNames,
-      deckMode: 'first151',
-      passAndPlay: mode === 'pass',
-      aiPlayerIndices,
-      aiDifficulty: mode === 'solo' ? aiDifficulty : undefined,
-    };
-    initGame(config);
+    initGame(buildGameConfig(mode, players, difficulty, names));
     navigation.navigate('GameBoard');
   }
 
@@ -157,6 +132,7 @@ export default function GameSetupScreen({ navigation }: Props) {
                 theme={theme}
                 value={difficulty}
                 onChange={setDifficulty}
+                disabled={mode === 'pass'}
                 options={[
                   { key: 'easy', label: 'Easy' },
                   { key: 'normal', label: 'Normal' },
@@ -192,7 +168,7 @@ export default function GameSetupScreen({ navigation }: Props) {
                 }]}
                 value={names[i]}
                 onChangeText={v => updateName(i, v)}
-                placeholder={`Player ${i + 1}`}
+                placeholder={mode === 'solo' ? 'You' : `Player ${i + 1}`}
                 placeholderTextColor={theme.inkDim}
                 maxLength={20}
                 returnKeyType="done"
