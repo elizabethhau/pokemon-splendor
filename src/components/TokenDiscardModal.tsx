@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import {
-  View, Text, Modal, TouchableOpacity, StyleSheet, Alert,
+  View, Text, Modal, TouchableOpacity, StyleSheet,
 } from 'react-native';
 import { useGameStore } from '../store/useGameStore';
+import { useToast } from './Toast';
 import { currentPlayer } from '../store/selectors';
 import { totalTokens } from '../store/gameRules';
 import { TokenType } from '../types/game';
@@ -11,6 +12,8 @@ import { TYPE_COLORS, MAX_TOKENS, PHASE } from '../constants';
 export default function TokenDiscardModal() {
   const game = useGameStore(s => s.game);
   const discardTokens = useGameStore(s => s.discardTokens);
+  const advanceTurn = useGameStore(s => s.advanceTurn);
+  const toast = useToast();
   const [selection, setSelection] = useState<Partial<Record<TokenType, number>>>({});
 
   const visible = game?.phase === PHASE.DISCARDING;
@@ -44,8 +47,13 @@ export default function TokenDiscardModal() {
     try {
       discardTokens(selection);
       setSelection({});
+      // The discard happens at End Turn now — once back under the limit,
+      // finish committing the turn
+      if (useGameStore.getState().game?.phase !== PHASE.DISCARDING) {
+        advanceTurn();
+      }
     } catch (e: unknown) {
-      Alert.alert('Error', e instanceof Error ? e.message : String(e));
+      toast(e instanceof Error ? e.message : String(e));
     }
   }
 
