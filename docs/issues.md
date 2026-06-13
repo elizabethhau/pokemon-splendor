@@ -55,11 +55,11 @@ Rebuild to match `design_prototype/` (see decisions in the redesign plan). HITL 
 
 | # | Issue | Blocked by | Status |
 |---|-------|-----------|--------|
-| [#23](https://github.com/elizabethhau/pokemon-splendor/issues/23) | Foundation: landscape, fonts, themes, Home + Settings (HITL) | — | [ ] |
+| [#23](https://github.com/elizabethhau/pokemon-splendor/issues/23) | Foundation: landscape, fonts, themes, Home + Settings (HITL) | — | [x] |
 | [#24](https://github.com/elizabethhau/pokemon-splendor/issues/24) | Setup screen + multi-AI rivals | #23 | [ ] |
-| [#25](https://github.com/elizabethhau/pokemon-splendor/issues/25) | Board screen rebuild + toasts (HITL) | #23 | [ ] |
+| [#25](https://github.com/elizabethhau/pokemon-splendor/issues/25) | Board screen rebuild + toasts (HITL) | #23 | [x] |
 | [#26](https://github.com/elizabethhau/pokemon-splendor/issues/26) | Modal package: scouted hand, Catch Mew, discard | #25 | [ ] |
-| [#27](https://github.com/elizabethhau/pokemon-splendor/issues/27) | Undo system + confirm gates + deferred refill | #25 | [ ] |
+| [#27](https://github.com/elizabethhau/pokemon-splendor/issues/27) | Undo system + confirm gates + deferred refill | #25 | [ ] (PR [#34](https://github.com/elizabethhau/pokemon-splendor/pull/34) in review) |
 | [#28](https://github.com/elizabethhau/pokemon-splendor/issues/28) | On-board AI turn presentation | #24, #25 | [ ] |
 | [#29](https://github.com/elizabethhau/pokemon-splendor/issues/29) | Game Over + Handoff screens | #23 | [ ] |
 | [#30](https://github.com/elizabethhau/pokemon-splendor/issues/30) | Pokédex, How to Play, Stats screens | #23 | [ ] |
