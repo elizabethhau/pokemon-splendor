@@ -7,7 +7,7 @@ import { trainerPoints } from '../../store/selectors';
 import { useTheme } from '../../theme/ThemeContext';
 import { PHASE } from '../../constants';
 import ArtworkImage from './ArtworkImage';
-import { SEAT_AVATAR_DEX } from './util';
+import { SEAT_AVATAR_DEX, AI_AVATAR_DEX } from './util';
 
 export default function TopBar({ game, scale, onMewPress, onHome }: {
   game: GameState;
@@ -44,7 +44,8 @@ export default function TopBar({ game, scale, onMewPress, onHome }: {
               borderWidth: 2, borderColor: 'rgba(255,255,255,0.25)',
               alignItems: 'center', justifyContent: 'center', overflow: 'hidden',
             }}>
-              <ArtworkImage dex={SEAT_AVATAR_DEX[i % SEAT_AVATAR_DEX.length]} style={{ width: z(25), height: z(25) }} />
+              {/* AI seats start at index 1 (seat 0 is always the human), so Math.max guards the never-AI-at-0 case */}
+              <ArtworkImage dex={p.isAI ? AI_AVATAR_DEX[Math.max(0, i - 1) % AI_AVATAR_DEX.length] : SEAT_AVATAR_DEX[i % SEAT_AVATAR_DEX.length]} style={{ width: z(25), height: z(25) }} />
             </View>
             <View>
               <Text style={{ fontFamily: 'Poppins_600SemiBold', fontSize: z(10), color: theme.topDim }} numberOfLines={1}>
