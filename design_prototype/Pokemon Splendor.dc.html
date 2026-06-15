@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  body{margin:0}
+  img{display:block}
+  .ps-scroll::-webkit-scrollbar{width:6px;height:6px}
+  .ps-scroll::-webkit-scrollbar-thumb{background:rgba(128,140,160,.4);border-radius:3px}
+  @keyframes ps-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-11px)}}
+  @keyframes ps-wiggle{0%,100%{transform:rotate(0)}25%{transform:rotate(-16deg)}75%{transform:rotate(16deg)}}
+  @keyframes ps-pop{0%{transform:scale(.55);opacity:0}100%{transform:scale(1);opacity:1}}
+  @keyframes ps-fade{from{opacity:0}to{opacity:1}}
+  @keyframes ps-rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes ps-spin{to{transform:rotate(360deg)}}
+</style>
+</helmet>
+<div style="min-height:100vh;background:#e6e8ee;font-family:'Poppins',sans-serif;padding:30px 24px 56px;display:flex;flex-direction:column;align-items:center;">
+
+  <!-- chrome above device -->
+  <div style="width:914px;display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+    <div style="display:flex;align-items:center;gap:11px;">
+      <div style="position:relative;width:30px;height:30px;border-radius:50%;background:linear-gradient(#ee4b3b 0 49%,#fff 51% 100%);border:2.5px solid #1d2530;">
+        <div style="position:absolute;top:calc(50% - 1.5px);left:-2.5px;right:-2.5px;height:3px;background:#1d2530;"></div>
+        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:9px;height:9px;border-radius:50%;background:#fff;border:2.5px solid #1d2530;"></div>
+      </div>
+      <div>
+        <div style="font:700 17px 'Fredoka',sans-serif;color:#1a212c;line-height:1;">Pokémon Splendor</div>
+        <div style="font:500 11px 'Poppins',sans-serif;color:#828c9a;">Interactive prototype · landscape</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:9px;">
+      <span style="font:600 10px 'Poppins',sans-serif;color:#828c9a;text-transform:uppercase;letter-spacing:1px;">Theme</span>
+      <div style="display:flex;gap:4px;background:#d7dae2;padding:4px;border-radius:11px;">
+        <sc-for list="{{ themeBtns }}" as="tb" hint-placeholder-count="3">
+          <div onClick="{{ tb.onTap }}" style="cursor:pointer;padding:6px 13px;border-radius:8px;background:{{tb.bg}};color:{{tb.color}};font:600 12px 'Poppins',sans-serif;transition:all .15s;display:flex;align-items:center;gap:6px;">
+            <span style="font-family:'Fredoka';font-weight:700;">{{tb.tag}}</span>{{tb.label}}
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+
+  <!-- DEVICE -->
+  <div style="width:914px;background:{{t.bezel}};border-radius:36px;padding:13px;box-shadow:0 18px 42px rgba(15,20,30,.3), inset 0 0 0 2px rgba(255,255,255,.04);">
+    <div class="ps-scroll" style="position:relative;width:888px;height:414px;border-radius:24px;overflow:hidden;background:{{t.appBg}};">
+
+      <!-- ============ HOME ============ -->
+      <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+        <div style="position:absolute;inset:0;display:flex;">
+          <div style="position:absolute;top:-60px;right:-40px;width:300px;height:300px;border-radius:50%;background:{{t.surface}};opacity:.6;"></div>
+          <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 0 0 52px;z-index:2;">
+            <div style="display:flex;gap:7px;margin-bottom:14px;">
+              <sc-for list="{{ typeDots }}" as="td" hint-placeholder-count="5">
+                <div style="width:13px;height:13px;border-radius:50%;background:{{td}};box-shadow:0 1px 3px rgba(0,0,0,.2);"></div>
+              </sc-for>
+            </div>
+            <div style="font:600 13px 'Poppins',sans-serif;color:{{t.inkDim}};letter-spacing:3px;text-transform:uppercase;margin-bottom:2px;">The deck-building duel</div>
+            <h1 style="margin:0;font:700 52px 'Fredoka',sans-serif;color:{{t.ink}};line-height:.95;letter-spacing:.5px;">Pokémon<br>Splendor</h1>
+            <p style="margin:14px 0 26px;font:400 14px/1.5 'Poppins',sans-serif;color:{{t.inkDim}};max-width:320px;">Collect energy, train Pokémon, claim Legendaries, and race to <b style="color:{{t.accentSolid}};">20 Trainer Points</b>.</p>
+            <div style="display:flex;flex-direction:column;gap:10px;width:240px;">
+              <div onClick="{{ goSetup }}" style="cursor:pointer;padding:14px;border-radius:13px;background:{{t.accent}};border:1px solid {{t.accentBorder}};color:{{t.accentText}};font:700 16px 'Fredoka',sans-serif;text-align:center;box-shadow:0 5px 14px rgba(10,15,25,.18);display:flex;align-items:center;justify-content:center;gap:8px;">▶ Play</div>
+              <div style="display:flex;gap:10px;">
+                <div onClick="{{ goHowto }}" style="cursor:pointer;flex:1;padding:11px;border-radius:12px;background:{{t.surface}};border:1px solid {{t.ring}};color:{{t.ink}};font:600 13px 'Poppins',sans-serif;text-align:center;">How to play</div>
+                <div onClick="{{ goPokedex }}" style="cursor:pointer;flex:1;padding:11px;border-radius:12px;background:{{t.surface}};border:1px solid {{t.ring}};color:{{t.ink}};font:600 13px 'Poppins',sans-serif;text-align:center;">Pokédex</div>
+              </div>
+            </div>
+          </div>
+          <div style="width:360px;position:relative;display:flex;align-items:center;justify-content:center;z-index:2;">
+            <div style="position:absolute;width:230px;height:230px;border-radius:50%;background:radial-gradient(circle,{{t.accentGlow}} 0%,transparent 70%);"></div>
+            <img src="{{heroSprite}}" alt="Pikachu" style="width:280px;height:280px;object-fit:contain;filter:drop-shadow(0 14px 22px rgba(0,0,0,.3));animation:ps-bob 3.4s ease-in-out infinite;">
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ============ SETUP ============ -->
+      <sc-if value="{{ isSetup }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;inset:0;padding:26px 40px;overflow:auto;">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
+            <div onClick="{{ goHome }}" style="cursor:pointer;width:34px;height:34px;border-radius:10px;background:{{t.surface}};border:1px solid {{t.ring}};display:flex;align-items:center;justify-content:center;color:{{t.ink}};font-size:16px;">←</div>
+            <h2 style="margin:0;font:700 26px 'Fredoka',sans-serif;color:{{t.ink}};">New Game</h2>
+          </div>
+          <div style="display:flex;gap:26px;">
+            <div style="flex:1;display:flex;flex-direction:column;gap:18px;">
+              <div>
+                <div style="font:700 11px 'Poppins',sans-serif;color:{{t.inkDim}};text-transform:uppercase;letter-spacing:1.2px;margin-bottom:8px;">Mode</div>
+                <div style="display:flex;gap:8px;">
+                  <sc-for list="{{ modeOpts }}" as="o" hint-placeholder-count="2">
+                    <div onClick="{{ o.onTap }}" style="cursor:pointer;flex:1;padding:13px;border-radius:12px;background:{{o.bg}};border:1.5px solid {{o.border}};color:{{o.color}};font:600 13px 'Poppins',sans-serif;text-align:center;">{{o.label}}</div>
+                  </sc-for>
+                </div>
+              </div>
+              <div>
+                <div style="font:700 11px 'Poppins',sans-serif;color:{{t.inkDim}};text-transform:uppercase;letter-spacing:1.2px;margin-bottom:8px;">Players</div>
+                <div style="display:flex;align-items:center;gap:14px;">
+                  <div onClick="{{ playersDec }}" style="cursor:pointer;width:40px;height:40px;border-radius:11px;background:{{t.surface}};border:1px solid {{t.ring}};display:flex;align-items:center;justify-content:center;color:{{t.ink}};font:700 20px 'Fredoka',sans-serif;">−</div>
+                  <div style="font:700 30px 'Fredoka',sans-serif;color:{{t.ink}};min-width:30px;text-align:center;">{{players}}</div>
+                  <div onClick="{{ playersInc }}" style="cursor:pointer;width:40px;height:40px;border-radius:11px;background:{{t.surface}};border:1px solid {{t.ring}};display:flex;align-items:center;justify-content:center;color:{{t.ink}};font:700 20px 'Fredoka',sans-serif;">+</div>
+                  <span style="font:500 12px 'Poppins',sans-serif;color:{{t.inkDim}};">{{playersHint}}</span>
+                </div>
+              </div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;gap:18px;">
+              <div>
+                <div style="font:700 11px 'Poppins',sans-serif;color:{{t.inkDim}};text-transform:uppercase;letter-spacing:1.2px;margin-bottom:8px;">AI difficulty</div>
+                <div style="display:flex;gap:8px;">
+                  <sc-for list="{{ aiOpts }}" as="o" hint-placeholder-count="2">
+                    <div onClick="{{ o.onTap }}" style="cursor:pointer;flex:1;padding:13px;border-radius:12px;background:{{o.bg}};border:1.5px solid {{o.border}};color:{{o.color}};font:600 13px 'Poppins',sans-serif;text-align:center;">{{o.label}}</div>
+                  </sc-for>
+                </div>
+              </div>
+              <div>
+                <div style="font:700 11px 'Poppins',sans-serif;color:{{t.inkDim}};text-transform:uppercase;letter-spacing:1.2px;margin-bottom:8px;">Deck</div>
+                <div style="display:flex;gap:8px;">
+                  <sc-for list="{{ deckOpts }}" as="o" hint-placeholder-count="2">
+                    <div onClick="{{ o.onTap }}" style="cursor:pointer;flex:1;padding:13px 10px;border-radius:12px;background:{{o.bg}};border:1.5px solid {{o.border}};color:{{o.color}};font:600 12.5px 'Poppins',sans-serif;text-align:center;line-height:1.2;">{{o.label}}<br><span style="font-weight:400;font-size:10px;opacity:.8;">{{o.sub}}</span></div>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div onClick="{{ startGame }}" style="cursor:pointer;margin-top:24px;padding:15px;border-radius:13px;background:{{t.accent}};border:1px solid {{t.accentBorder}};color:{{t.accentText}};font:700 16px 'Fredoka',sans-serif;text-align:center;box-shadow:0 6px 16px rgba(10,15,25,.18);">Start Game →</div>
+        </div>
+      </sc-if>
+
+      <!-- ============ BOARD ============ -->
+      <sc-if value="{{ isBoard }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;inset:0;display:flex;flex-direction:column;">
+          <!-- top bar -->
+          <div style="height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;background:{{t.topBg}};border-bottom:1px solid {{t.ring}};flex-shrink:0;">
+            <div style="display:flex;align-items:center;gap:13px;">
+              <sc-for list="{{ opponents }}" as="op" hint-placeholder-count="1">
+                <div style="display:flex;align-items:center;gap:7px;">
+                  <div style="width:27px;height:27px;border-radius:50%;background:#4a5066;display:flex;align-items:center;justify-content:center;overflow:hidden;border:2px solid rgba(255,255,255,.25);">
+                    <img src="{{op.avatar}}" alt="" style="width:25px;height:25px;object-fit:contain;">
+                  </div>
+                  <div style="display:flex;flex-direction:column;line-height:1.06;">
+                    <span style="font:600 10px 'Poppins',sans-serif;color:{{t.topDim}};">{{op.label}}</span>
+                    <span style="font:700 13px 'Fredoka',sans-serif;color:{{t.topText}};">{{op.tp}}<span style="font-size:8px;font-weight:600;"> TP</span></span>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div style="padding:4px 11px;border-radius:999px;background:{{t.pillBg}};border:1px solid {{t.ring}};font:600 10px 'Poppins',sans-serif;color:{{t.pillText}};">{{turnText}}</div>
+              <sc-if value="{{ mewAvailable }}" hint-placeholder-val="{{ true }}">
+                <div onClick="{{ onCatch }}" style="cursor:pointer;display:flex;align-items:center;gap:5px;padding:3px 10px 3px 4px;border-radius:999px;background:{{t.pillBg}};border:1px solid {{t.ring}};">
+                  <img src="{{mew.sprite}}" alt="Mew" style="width:20px;height:20px;object-fit:contain;">
+                  <span style="font:600 9.5px 'Poppins',sans-serif;color:{{t.pillText}};">Catch Mew · <b style="font-family:'Fredoka';">5 TP</b></span>
+                </div>
+              </sc-if>
+              <sc-if value="{{ mewGone }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;align-items:center;gap:5px;padding:3px 10px 3px 4px;border-radius:999px;background:{{t.pillBg}};border:1px solid {{t.ring}};opacity:.5;">
+                  <img src="{{mew.sprite}}" alt="Mew" style="width:20px;height:20px;object-fit:contain;filter:grayscale(1);">
+                  <span style="font:600 9.5px 'Poppins',sans-serif;color:{{t.pillText}};">Mew · {{mewCaughtLabel}}</span>
+                </div>
+              </sc-if>
+            </div>
+            <div onClick="{{ goHome }}" style="cursor:pointer;display:flex;align-items:center;gap:11px;color:{{t.topDim}};font:700 17px 'Poppins',sans-serif;"><span style="font-size:13px;">⌂</span></div>
+          </div>
+
+          <!-- main -->
+          <div style="flex:1;display:flex;gap:9px;padding:8px 12px;min-height:0;">
+            <!-- deck rail -->
+            <div style="width:54px;display:flex;flex-direction:column;justify-content:center;gap:6px;">
+              <sc-for list="{{ rows }}" as="row" hint-placeholder-count="3">
+                <div style="height:90px;display:flex;align-items:center;justify-content:center;">
+                  <div onClick="{{ row.onDeck }}" style="cursor:pointer;position:relative;width:46px;height:80px;border-radius:9px;background:{{t.deckBg}};border:1px solid {{t.ring}};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;box-shadow:2px 2px 0 {{t.deckBg}}, 3px 3px 0 1px {{t.ring}};">
+                    <span style="font:600 7px 'Poppins',sans-serif;color:{{t.cardSub}};text-transform:uppercase;letter-spacing:.3px;text-align:center;line-height:1.1;">{{row.label}}</span>
+                    <span style="font:700 15px 'Fredoka',sans-serif;color:{{t.cardText}};">{{row.deckCount}}</span>
+                    <span style="font:600 6.5px 'Poppins',sans-serif;color:{{t.accentSolid}};text-transform:uppercase;letter-spacing:.4px;">Scout</span>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+            <!-- card grid -->
+            <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:6px;">
+              <sc-for list="{{ rows }}" as="row" hint-placeholder-count="3">
+                <div style="display:flex;gap:7px;justify-content:center;">
+                  <sc-for list="{{ row.slots }}" as="slot" hint-placeholder-count="4">
+                    <sc-if value="{{ slot.empty }}" hint-placeholder-val="{{ false }}">
+                      <div style="width:78px;height:90px;border-radius:11px;border:2px dashed {{t.ring2}};background:{{t.surface}};opacity:.4;"></div>
+                    </sc-if>
+                    <sc-if value="{{ slot.filled }}" hint-placeholder-val="{{ true }}">
+                      <div onClick="{{ slot.card.onPress }}" style="cursor:pointer;position:relative;width:78px;height:90px;border-radius:11px;background:{{t.cardBg}};border:2px solid {{slot.card.color}};overflow:hidden;box-shadow:0 3px 8px rgba(10,15,25,.16);">
+                        <div style="position:absolute;top:0;left:0;right:0;height:22px;background:{{slot.card.color}};opacity:.15;"></div>
+                        <sc-if value="{{ slot.card.hasTp }}" hint-placeholder-val="{{ true }}">
+                          <div style="position:absolute;top:4px;left:4px;width:18px;height:18px;border-radius:50%;background:{{slot.card.color}};display:flex;align-items:center;justify-content:center;font:700 11px 'Fredoka',sans-serif;color:{{slot.card.tpText}};z-index:4;box-shadow:0 1px 2px rgba(0,0,0,.3);">{{slot.card.tp}}</div>
+                        </sc-if>
+                        <div style="position:absolute;top:5px;right:6px;font:700 8px 'Fredoka',sans-serif;color:{{t.cardSub}};z-index:4;">{{slot.card.tierLabel}}</div>
+                        <sc-if value="{{ slot.card.isTier3 }}" hint-placeholder-val="{{ false }}">
+                          <div style="position:absolute;inset:0;background:linear-gradient(125deg,transparent 36%,{{t.sheen}} 50%,transparent 64%);z-index:2;pointer-events:none;"></div>
+                        </sc-if>
+                        <div style="position:absolute;top:15px;left:0;right:0;height:50px;display:flex;align-items:center;justify-content:center;z-index:1;">
+                          <img src="{{slot.card.sprite}}" alt="{{slot.card.name}}" style="max-width:48px;max-height:48px;object-fit:contain;filter:drop-shadow(0 2px 2px rgba(0,0,0,.22));">
+                        </div>
+                        <div style="position:absolute;left:4px;bottom:21px;display:flex;flex-direction:column;gap:2px;z-index:3;">
+                          <sc-for list="{{ slot.card.pips }}" as="pip" hint-placeholder-count="2">
+                            <div style="width:16px;height:16px;border-radius:50%;background:{{pip.color}};border:1.5px solid rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center;font:700 9px 'Fredoka',sans-serif;color:{{pip.text}};box-shadow:0 1px 2px rgba(0,0,0,.3);">{{pip.n}}</div>
+                          </sc-for>
+                        </div>
+                        <div style="position:absolute;left:0;right:0;bottom:0;height:18px;background:{{slot.card.color}};display:flex;align-items:center;justify-content:center;z-index:3;">
+                          <span style="font:600 8.5px 'Poppins',sans-serif;color:{{slot.card.nameText}};">{{slot.card.name}}</span>
+                        </div>
+                      </div>
+                    </sc-if>
+                  </sc-for>
+                </div>
+              </sc-for>
+            </div>
+            <!-- token supply -->
+            <div style="width:44px;display:flex;flex-direction:column;align-items:center;gap:4px;padding-top:1px;">
+              <span style="font:700 7px 'Poppins',sans-serif;color:{{t.cardSub}};letter-spacing:1px;">SUPPLY</span>
+              <sc-for list="{{ supply }}" as="tok" hint-placeholder-count="6">
+                <div onClick="{{ tok.onTap }}" style="cursor:pointer;position:relative;width:33px;height:33px;border-radius:50%;background:{{tok.color}};border:2px solid {{tok.ring}};box-shadow:0 2px 4px rgba(8,12,20,.32), inset 0 2px 3px rgba(255,255,255,.5), inset 0 -3px 4px rgba(0,0,0,.12);display:flex;align-items:center;justify-content:center;font:700 13px 'Fredoka',sans-serif;color:{{tok.text}};">
+                  {{tok.count}}
+                  <sc-if value="{{ tok.hasSel }}" hint-placeholder-val="{{ false }}">
+                    <div style="position:absolute;top:-5px;right:-5px;width:16px;height:16px;border-radius:50%;background:{{t.accentSolid}};color:{{t.accentText}};font:700 9px 'Fredoka',sans-serif;display:flex;align-items:center;justify-content:center;border:1.5px solid #fff;">{{tok.selected}}</div>
+                  </sc-if>
+                </div>
+              </sc-for>
+            </div>
+            <!-- legendaries -->
+            <div style="width:172px;display:flex;flex-direction:column;gap:5px;">
+              <span style="font:700 7px 'Poppins',sans-serif;color:{{t.cardSub}};letter-spacing:1px;">LEGENDARY · NOBLES</span>
+              <sc-for list="{{ legendaries }}" as="leg" hint-placeholder-count="3">
+                <div style="display:flex;align-items:center;gap:7px;background:{{t.surface}};border:1px solid {{t.ring}};border-radius:10px;padding:4px 8px 4px 5px;">
+                  <img src="{{leg.sprite}}" alt="{{leg.name}}" style="width:30px;height:30px;object-fit:contain;flex-shrink:0;">
+                  <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;">
+                    <span style="font:600 10px 'Poppins',sans-serif;color:{{t.cardText}};line-height:1;">{{leg.name}}</span>
+                    <div style="display:flex;gap:3px;">
+                      <sc-for list="{{ leg.reqs }}" as="r" hint-placeholder-count="2">
+                        <div style="display:flex;align-items:center;justify-content:center;min-width:14px;height:14px;padding:0 3px;border-radius:4px;background:{{r.color}};font:700 8.5px 'Fredoka',sans-serif;color:{{r.text}};">{{r.n}}</div>
+                      </sc-for>
+                    </div>
+                  </div>
+                  <span style="font:700 14px 'Fredoka',sans-serif;color:{{t.accentSolid}};">{{leg.tp}}</span>
+                </div>
+              </sc-for>
+              <sc-if value="{{ mewAvailable }}" hint-placeholder-val="{{ true }}">
+                <div onClick="{{ onCatch }}" style="cursor:pointer;display:flex;align-items:center;gap:7px;background:{{t.mewBg}};border:1.5px dashed #e46bb0;border-radius:10px;padding:4px 8px 4px 5px;">
+                  <img src="{{mew.sprite}}" alt="Mew" style="width:30px;height:30px;object-fit:contain;flex-shrink:0;">
+                  <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px;">
+                    <span style="font:600 10px 'Poppins',sans-serif;color:{{t.cardText}};line-height:1;">Mew · Mythical</span>
+                    <span style="font:500 8px 'Poppins',sans-serif;color:{{t.cardSub}};line-height:1.1;">2 Legendaries + Poké Ball</span>
+                  </div>
+                  <span style="font:700 14px 'Fredoka',sans-serif;color:#e46bb0;">5</span>
+                </div>
+              </sc-if>
+              <sc-if value="{{ mewGone }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;align-items:center;gap:7px;background:{{t.mewBg}};border:1.5px solid {{t.ring2}};border-radius:10px;padding:4px 8px 4px 5px;opacity:.62;">
+                  <img src="{{mew.sprite}}" alt="Mew" style="width:30px;height:30px;object-fit:contain;flex-shrink:0;filter:grayscale(1);">
+                  <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px;">
+                    <span style="font:600 10px 'Poppins',sans-serif;color:{{t.cardText}};line-height:1;">Mew · Caught</span>
+                    <span style="font:500 8px 'Poppins',sans-serif;color:{{t.cardSub}};line-height:1.1;">{{mewCaughtLabel}}</span>
+                  </div>
+                  <span style="font:700 13px 'Fredoka',sans-serif;color:#46B25A;">✓</span>
+                </div>
+              </sc-if>
+            </div>
+          </div>
+
+          <!-- dock -->
+          <div style="height:78px;background:{{t.dock}};display:flex;align-items:center;gap:13px;padding:0 14px;border-top:1px solid {{t.ring}};flex-shrink:0;">
+            <div style="display:flex;align-items:center;gap:9px;">
+              <div style="width:42px;height:42px;border-radius:50%;background:{{t.surface}};border:2px solid {{t.tpDock}};display:flex;align-items:center;justify-content:center;overflow:hidden;">
+                <img src="{{activeAvatar}}" alt="" style="width:38px;height:38px;object-fit:contain;">
+              </div>
+              <div style="display:flex;flex-direction:column;line-height:1.05;">
+                <span style="font:600 11px 'Poppins',sans-serif;color:{{t.dockText}};">{{activeName}}</span>
+                <span style="font:700 20px 'Fredoka',sans-serif;color:{{t.tpDock}};">{{youTp}}<span style="font-size:10px;color:{{t.dockDim}};font-weight:600;"> TP</span></span>
+              </div>
+            </div>
+            <div style="width:1px;height:46px;background:{{t.ring}};"></div>
+            <div style="display:flex;flex-direction:column;gap:4px;">
+              <span style="font:700 7px 'Poppins',sans-serif;color:{{t.dockDim}};letter-spacing:1px;">TYPE BONUS</span>
+              <div style="display:flex;gap:4px;">
+                <sc-for list="{{ bonuses }}" as="b" hint-placeholder-count="5">
+                  <div style="width:23px;height:26px;border-radius:6px;background:{{b.color}};opacity:{{b.opacity}};display:flex;align-items:center;justify-content:center;font:700 11px 'Fredoka',sans-serif;color:{{b.text}};">{{b.count}}</div>
+                </sc-for>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:4px;">
+              <span style="font:700 7px 'Poppins',sans-serif;color:{{t.dockDim}};letter-spacing:1px;">ENERGY {{energyCount}}</span>
+              <div style="display:flex;gap:6px;min-height:20px;align-items:center;">
+                <sc-for list="{{ heldTokens }}" as="ht" hint-placeholder-count="3">
+                  <div style="display:flex;align-items:center;gap:3px;">
+                    <div style="width:20px;height:20px;border-radius:50%;background:{{ht.color}};border:1.5px solid rgba(255,255,255,.8);box-shadow:inset 0 1px 2px rgba(255,255,255,.5);"></div>
+                    <span style="font:700 12px 'Fredoka',sans-serif;color:{{t.dockText}};">{{ht.count}}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-start;">
+              <span style="font:700 7px 'Poppins',sans-serif;color:{{t.dockDim}};letter-spacing:1px;">BALLS</span>
+              <div style="display:flex;align-items:center;gap:7px;min-height:20px;">
+                <sc-for list="{{ heldBalls }}" as="hb" hint-placeholder-count="2">
+                  <div style="display:flex;align-items:center;gap:3px;">
+                    <div style="position:relative;width:18px;height:18px;border-radius:50%;background:linear-gradient({{hb.top}} 0 48%,#fff 52% 100%);border:2px solid #1d2530;">
+                      <div style="position:absolute;top:calc(50% - 1px);left:-2px;right:-2px;height:2px;background:#1d2530;"></div>
+                    </div>
+                    <span style="font:700 11px 'Fredoka',sans-serif;color:{{t.dockText}};">{{hb.count}}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+
+            <div onClick="{{ onOpenHand }}" style="cursor:pointer;display:flex;flex-direction:column;gap:4px;align-items:flex-start;">
+              <span style="font:700 7px 'Poppins',sans-serif;color:{{t.dockDim}};letter-spacing:1px;">HAND {{handLabel}}</span>
+              <div style="display:flex;align-items:center;gap:4px;min-height:20px;">
+                <sc-if value="{{ hasScouted }}" hint-placeholder-val="{{ false }}">
+                  <sc-for list="{{ scoutedMini }}" as="sm" hint-placeholder-count="2">
+                    <div style="position:relative;width:17px;height:23px;border-radius:4px;background:{{sm.color}};border:1px solid rgba(255,255,255,.65);display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.25);">
+                      <img src="{{sm.sprite}}" alt="" style="width:16px;height:16px;object-fit:contain;">
+                    </div>
+                  </sc-for>
+                  <span style="font:600 9.5px 'Poppins',sans-serif;color:{{t.accentSolid}};margin-left:1px;">View</span>
+                </sc-if>
+                <sc-if value="{{ noScouted }}" hint-placeholder-val="{{ true }}">
+                  <span style="font:500 10px 'Poppins',sans-serif;color:{{t.dockDim}};">empty</span>
+                </sc-if>
+              </div>
+            </div>
+
+            <div style="margin-left:auto;display:flex;align-items:center;gap:8px;">
+              <sc-if value="{{ selecting }}" hint-placeholder-val="{{ false }}">
+                <span style="font:600 11px 'Poppins',sans-serif;color:{{t.dockDim}};">{{selCount}}/3 energy</span>
+                <div onClick="{{ onClearSel }}" style="cursor:pointer;padding:9px 14px;border-radius:11px;background:transparent;border:1.5px solid {{t.dockGhostBorder}};font:600 12px 'Poppins',sans-serif;color:{{t.dockText}};">Clear</div>
+                <div onClick="{{ onTakeTokens }}" style="cursor:pointer;padding:9px 17px;border-radius:11px;background:{{takeBg}};border:1px solid {{t.accentBorder}};font:700 12.5px 'Poppins',sans-serif;color:{{takeText}};opacity:{{takeOpacity}};box-shadow:0 3px 8px rgba(10,15,25,.2);">Take Energy</div>
+              </sc-if>
+              <sc-if value="{{ notSelecting }}" hint-placeholder-val="{{ true }}">
+                <sc-if value="{{ canUndo }}" hint-placeholder-val="{{ false }}">
+                  <div onClick="{{ onUndo }}" style="cursor:pointer;padding:9px 14px;border-radius:11px;background:transparent;border:1.5px solid {{t.dockGhostBorder}};font:600 12px 'Poppins',sans-serif;color:{{t.dockText}};">↩ Undo Action</div>
+                </sc-if>
+                <sc-if value="{{ showCatch }}" hint-placeholder-val="{{ true }}">
+                  <div onClick="{{ onCatch }}" style="cursor:pointer;padding:9px 14px;border-radius:11px;background:transparent;border:1.5px solid {{t.dockGhostBorder}};font:600 12px 'Poppins',sans-serif;color:{{t.dockText}};">Catch Mew</div>
+                </sc-if>
+                <div onClick="{{ onEndTurn }}" style="cursor:pointer;padding:9px 18px;border-radius:11px;background:{{t.dockBtnBg}};border:1px solid {{t.accentBorder}};font:700 12.5px 'Poppins',sans-serif;color:{{t.dockBtnText}};box-shadow:0 3px 8px rgba(10,15,25,.2);">End Turn</div>
+              </sc-if>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ============ POKEDEX ============ -->
+      <sc-if value="{{ isPokedex }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;inset:0;display:flex;flex-direction:column;">
+          <div style="height:52px;display:flex;align-items:center;gap:12px;padding:0 22px;background:{{t.topBg}};border-bottom:1px solid {{t.ring}};flex-shrink:0;">
+            <div onClick="{{ goHome }}" style="cursor:pointer;width:32px;height:32px;border-radius:9px;background:{{t.pillBg}};display:flex;align-items:center;justify-content:center;color:{{t.pillText}};font-size:15px;">←</div>
+            <h2 style="margin:0;font:700 19px 'Fredoka',sans-serif;color:{{t.topText}};">Pokédex</h2>
+            <span style="font:600 12px 'Poppins',sans-serif;color:{{t.topDim}};margin-left:auto;">{{ownedCount}} / 151 caught · Kanto</span>
+          </div>
+          <div class="ps-scroll" style="flex:1;overflow-y:auto;padding:16px 20px;">
+            <div style="display:grid;grid-template-columns:repeat(13,1fr);gap:9px;">
+              <sc-for list="{{ pdlist }}" as="p" hint-placeholder-count="39">
+                <div style="aspect-ratio:1;border-radius:10px;background:{{p.bg}};border:1px solid {{p.border}};display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;">
+                  <img src="{{p.sprite}}" alt="" style="width:42px;height:42px;object-fit:contain;image-rendering:pixelated;filter:{{p.filter}};">
+                  <span style="position:absolute;bottom:2px;right:4px;font:600 7px 'Poppins',sans-serif;color:{{t.inkDim}};">{{p.num}}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ============ HOW TO PLAY ============ -->
+      <sc-if value="{{ isHowto }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;inset:0;display:flex;flex-direction:column;">
+          <div style="height:52px;display:flex;align-items:center;gap:12px;padding:0 22px;background:{{t.topBg}};border-bottom:1px solid {{t.ring}};flex-shrink:0;">
+            <div onClick="{{ goHome }}" style="cursor:pointer;width:32px;height:32px;border-radius:9px;background:{{t.pillBg}};display:flex;align-items:center;justify-content:center;color:{{t.pillText}};font-size:15px;">←</div>
+            <h2 style="margin:0;font:700 19px 'Fredoka',sans-serif;color:{{t.topText}};">How to Play</h2>
+          </div>
+          <div class="ps-scroll" style="flex:1;overflow-y:auto;padding:18px 24px;display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+            <sc-for list="{{ rules }}" as="r" hint-placeholder-count="6">
+              <div style="background:{{t.surface}};border:1px solid {{t.ring}};border-radius:13px;padding:13px 15px;">
+                <div style="display:flex;align-items:center;gap:9px;margin-bottom:7px;">
+                  <div style="width:26px;height:26px;border-radius:8px;background:{{r.color}};display:flex;align-items:center;justify-content:center;font:700 13px 'Fredoka',sans-serif;color:#fff;">{{r.icon}}</div>
+                  <span style="font:700 14px 'Fredoka',sans-serif;color:{{t.ink}};">{{r.title}}</span>
+                </div>
+                <p style="margin:0;font:400 11.5px/1.55 'Poppins',sans-serif;color:{{t.inkDim}};">{{r.body}}</p>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ============ GAME OVER ============ -->
+      <sc-if value="{{ isGameover }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px;">
+          <img src="{{heroSprite}}" alt="" style="width:120px;height:120px;object-fit:contain;animation:ps-bob 3s ease-in-out infinite;filter:drop-shadow(0 10px 16px rgba(0,0,0,.25));">
+          <div style="font:600 12px 'Poppins',sans-serif;color:{{t.inkDim}};letter-spacing:3px;text-transform:uppercase;margin-top:6px;">Final Round complete</div>
+          <h1 style="margin:4px 0 18px;font:700 40px 'Fredoka',sans-serif;color:{{t.accentSolid}};">{{goTitle}}</h1>
+          <div style="display:flex;gap:14px;margin-bottom:22px;">
+            <sc-for list="{{ goScores }}" as="sc" hint-placeholder-count="2">
+              <div style="width:200px;background:{{t.surface}};border:2px solid {{sc.border}};border-radius:15px;padding:15px 18px;">
+                <div style="display:flex;align-items:center;justify-content:space-between;">
+                  <span style="font:700 15px 'Fredoka',sans-serif;color:{{t.ink}};">{{sc.name}}</span>
+                  <span style="font:700 30px 'Fredoka',sans-serif;color:{{sc.color}};">{{sc.tp}}</span>
+                </div>
+                <div style="font:500 11px 'Poppins',sans-serif;color:{{t.inkDim}};margin-top:4px;">{{sc.detail}}</div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="display:flex;gap:10px;">
+            <div onClick="{{ goHome }}" style="cursor:pointer;padding:13px 24px;border-radius:12px;background:{{t.surface}};border:1px solid {{t.ring}};color:{{t.ink}};font:600 14px 'Poppins',sans-serif;">Home</div>
+            <div onClick="{{ startGame }}" style="cursor:pointer;padding:13px 28px;border-radius:12px;background:{{t.accent}};border:1px solid {{t.accentBorder}};color:{{t.accentText}};font:700 14px 'Fredoka',sans-serif;box-shadow:0 5px 14px rgba(10,15,25,.18);">Play Again</div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ============ HANDOFF ============ -->
+      <sc-if value="{{ isHandoff }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:{{t.appBg}};">
+          <div style="position:relative;width:64px;height:64px;border-radius:50%;background:linear-gradient(#ee4b3b 0 49%,#fff 51% 100%);border:4px solid {{t.ink}};margin-bottom:20px;animation:ps-bob 2.6s ease-in-out infinite;">
+            <div style="position:absolute;top:calc(50% - 2.5px);left:-4px;right:-4px;height:5px;background:{{t.ink}};"></div>
+            <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:18px;height:18px;border-radius:50%;background:#fff;border:4px solid {{t.ink}};"></div>
+          </div>
+          <div style="font:500 14px 'Poppins',sans-serif;color:{{t.inkDim}};">{{handoffSub}}</div>
+          <div style="font:700 32px 'Fredoka',sans-serif;color:{{t.ink}};margin:6px 0 26px;">{{handoffName}}</div>
+          <div onClick="{{ onAckHandoff }}" style="cursor:pointer;padding:14px 34px;border-radius:13px;background:{{t.accent}};border:1px solid {{t.accentBorder}};color:{{t.accentText}};font:700 15px 'Fredoka',sans-serif;box-shadow:0 5px 14px rgba(10,15,25,.18);">{{handoffBtn}}</div>
+        </div>
+      </sc-if>
+
+      <!-- ============ CARD DETAIL MODAL ============ -->
+      <sc-if value="{{ detailOpen }}" hint-placeholder-val="{{ false }}">
+        <div onClick="{{ onCloseDetail }}" style="position:absolute;inset:0;background:{{t.overlay}};display:flex;align-items:center;justify-content:center;z-index:20;">
+          <div onClick="{{ stop }}" style="display:flex;gap:18px;background:{{t.modalBg}};border-radius:20px;padding:20px;width:560px;box-shadow:0 24px 60px rgba(0,0,0,.4);">
+            <div style="width:170px;flex-shrink:0;border-radius:15px;background:{{d.color}};position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;">
+              <div style="position:absolute;inset:0;background:linear-gradient(160deg,rgba(255,255,255,.28),transparent 60%);"></div>
+              <img src="{{d.sprite}}" alt="{{d.name}}" style="width:150px;height:150px;object-fit:contain;filter:drop-shadow(0 8px 12px rgba(0,0,0,.35));z-index:1;">
+              <div style="position:absolute;top:10px;left:10px;padding:3px 9px;border-radius:8px;background:rgba(0,0,0,.28);font:700 11px 'Poppins',sans-serif;color:#fff;">{{d.tierName}}</div>
+              <sc-if value="{{ d.hasTp }}" hint-placeholder-val="{{ true }}">
+                <div style="position:absolute;bottom:10px;right:10px;width:34px;height:34px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font:700 16px 'Fredoka',sans-serif;color:{{d.color}};box-shadow:0 2px 6px rgba(0,0,0,.3);">{{d.tp}}</div>
+              </sc-if>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;">
+              <div style="display:flex;align-items:center;justify-content:space-between;">
+                <h3 style="margin:0;font:700 24px 'Fredoka',sans-serif;color:{{t.modalText}};">{{d.name}}</h3>
+                <div onClick="{{ onCloseDetail }}" style="cursor:pointer;width:28px;height:28px;border-radius:8px;background:{{t.surface}};display:flex;align-items:center;justify-content:center;color:{{t.inkDim}};font-size:15px;">✕</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:7px;margin:4px 0 14px;">
+                <span style="padding:3px 10px;border-radius:7px;background:{{d.color}};color:{{d.typeText}};font:600 11px 'Poppins',sans-serif;">{{d.type}}</span>
+                <span style="font:500 11px 'Poppins',sans-serif;color:{{t.inkDim}};">{{d.bonusText}}</span>
+              </div>
+              <div style="font:700 10px 'Poppins',sans-serif;color:{{t.inkDim}};text-transform:uppercase;letter-spacing:1px;margin-bottom:7px;">Training cost</div>
+              <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px;">
+                <sc-for list="{{ d.costRows }}" as="cr" hint-placeholder-count="2">
+                  <div style="display:flex;align-items:center;gap:9px;">
+                    <div style="width:24px;height:24px;border-radius:50%;background:{{cr.color}};border:2px solid rgba(255,255,255,.7);display:flex;align-items:center;justify-content:center;font:700 11px 'Fredoka',sans-serif;color:{{cr.text}};box-shadow:0 1px 3px rgba(0,0,0,.2);">{{cr.need}}</div>
+                    <span style="font:500 12px 'Poppins',sans-serif;color:{{t.modalText}};">{{cr.label}}</span>
+                    <span style="margin-left:auto;font:600 12px 'Poppins',sans-serif;color:{{cr.statusColor}};">{{cr.status}}</span>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="margin-top:auto;display:flex;gap:9px;">
+                <div onClick="{{ onReserve }}" style="cursor:pointer;flex:1;padding:12px;border-radius:11px;background:transparent;border:1.5px solid {{t.ring2}};color:{{t.modalText}};font:600 13px 'Poppins',sans-serif;text-align:center;opacity:{{d.scoutOpacity}};">{{d.scoutLabel}}</div>
+                <div onClick="{{ onTrainCard }}" style="cursor:pointer;flex:1.4;padding:12px;border-radius:11px;background:{{d.trainBg}};border:1px solid {{t.accentBorder}};color:{{d.trainText}};font:700 13px 'Fredoka',sans-serif;text-align:center;opacity:{{d.trainOpacity}};box-shadow:0 4px 10px rgba(10,15,25,.16);">{{d.trainLabel}}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ============ CATCH MEW MODAL ============ -->
+      <sc-if value="{{ catchOpen }}" hint-placeholder-val="{{ false }}">
+        <div onClick="{{ onCloseCatch }}" style="position:absolute;inset:0;background:{{t.overlay}};display:flex;align-items:center;justify-content:center;z-index:21;">
+          <div onClick="{{ stop }}" style="width:420px;background:{{t.modalBg}};border-radius:20px;padding:22px;box-shadow:0 24px 60px rgba(0,0,0,.45);text-align:center;">
+            <div style="position:relative;width:130px;height:130px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;">
+              <div style="position:absolute;width:130px;height:130px;border-radius:50%;background:radial-gradient(circle,rgba(228,107,176,.28),transparent 68%);"></div>
+              <img src="{{c.mewSprite}}" alt="Mew" style="width:120px;height:120px;object-fit:contain;filter:drop-shadow(0 8px 14px rgba(0,0,0,.25));z-index:1;{{c.mewAnim}}">
+            </div>
+            <sc-if value="{{ c.selecting }}" hint-placeholder-val="{{ true }}">
+              <h3 style="margin:0 0 2px;font:700 24px 'Fredoka',sans-serif;color:#e46bb0;">Catch Mew!</h3>
+              <p style="margin:0 0 15px;font:400 12px 'Poppins',sans-serif;color:{{t.inkDim}};">Pick a Poké Ball — a failed throw still spends it.</p>
+              <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;">
+                <sc-for list="{{ c.balls }}" as="ball" hint-placeholder-count="2">
+                  <div onClick="{{ ball.onPick }}" style="cursor:pointer;display:flex;align-items:center;gap:11px;padding:11px 13px;border-radius:12px;background:{{ball.bg}};border:1.5px solid {{ball.border}};">
+                    <div style="position:relative;width:26px;height:26px;border-radius:50%;background:linear-gradient({{ball.top}} 0 48%,#fff 52% 100%);border:2.5px solid #1d2530;flex-shrink:0;">
+                      <div style="position:absolute;top:calc(50% - 1.5px);left:-2.5px;right:-2.5px;height:3px;background:#1d2530;"></div>
+                      <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:8px;height:8px;border-radius:50%;background:#fff;border:2.5px solid #1d2530;"></div>
+                    </div>
+                    <div style="flex:1;text-align:left;">
+                      <div style="font:700 13px 'Poppins',sans-serif;color:{{t.modalText}};">{{ball.label}}</div>
+                      <div style="font:500 10px 'Poppins',sans-serif;color:{{t.inkDim}};">{{ball.count}} available</div>
+                    </div>
+                    <div style="font:700 20px 'Fredoka',sans-serif;color:{{ball.rateColor}};">{{ball.rate}}%</div>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="display:flex;gap:9px;">
+                <div onClick="{{ onCloseCatch }}" style="cursor:pointer;flex:1;padding:12px;border-radius:11px;background:transparent;border:1.5px solid {{t.ring2}};color:{{t.modalText}};font:600 13px 'Poppins',sans-serif;">Not now</div>
+                <div onClick="{{ onThrow }}" style="cursor:pointer;flex:1.5;padding:12px;border-radius:11px;background:{{c.throwBg}};border:1px solid {{t.accentBorder}};color:{{c.throwText}};font:700 13px 'Fredoka',sans-serif;opacity:{{c.throwOpacity}};">{{c.throwLabel}}</div>
+              </div>
+            </sc-if>
+            <sc-if value="{{ c.throwing }}" hint-placeholder-val="{{ false }}">
+              <h3 style="margin:0 0 4px;font:700 22px 'Fredoka',sans-serif;color:{{t.modalText}};">…</h3>
+              <p style="margin:0;font:400 12px 'Poppins',sans-serif;color:{{t.inkDim}};">The ball is shaking…</p>
+            </sc-if>
+            <sc-if value="{{ c.resulted }}" hint-placeholder-val="{{ false }}">
+              <h3 style="margin:0 0 4px;font:700 26px 'Fredoka',sans-serif;color:{{c.resultColor}};">{{c.resultTitle}}</h3>
+              <p style="margin:0 0 16px;font:400 12.5px 'Poppins',sans-serif;color:{{t.inkDim}};">{{c.resultMsg}}</p>
+              <div onClick="{{ onCloseCatch }}" style="cursor:pointer;padding:12px 28px;border-radius:11px;background:{{t.accent}};border:1px solid {{t.accentBorder}};color:{{t.accentText}};font:700 14px 'Fredoka',sans-serif;display:inline-block;">Continue</div>
+            </sc-if>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ============ SCOUTED HAND TRAY ============ -->
+      <sc-if value="{{ handOpen }}" hint-placeholder-val="{{ false }}">
+        <div onClick="{{ onCloseHand }}" style="position:absolute;inset:0;background:{{t.overlay}};display:flex;align-items:center;justify-content:center;z-index:20;">
+          <div onClick="{{ stop }}" style="width:600px;background:{{t.modalBg}};border-radius:20px;padding:20px 22px;box-shadow:0 24px 60px rgba(0,0,0,.4);">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;">
+              <h3 style="margin:0;font:700 22px 'Fredoka',sans-serif;color:{{t.modalText}};">Your Hand</h3>
+              <div onClick="{{ onCloseHand }}" style="cursor:pointer;width:28px;height:28px;border-radius:8px;background:{{t.surface}};display:flex;align-items:center;justify-content:center;color:{{t.inkDim}};font-size:15px;">✕</div>
+            </div>
+            <p style="margin:0 0 16px;font:400 12px 'Poppins',sans-serif;color:{{t.inkDim}};">Scouted cards — only you can see these. Tap one to review and train it. ({{handLabel}})</p>
+            <sc-if value="{{ hasScouted }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex;gap:16px;justify-content:center;padding:4px 0 6px;">
+                <sc-for list="{{ scoutedCards }}" as="card" hint-placeholder-count="2">
+                  <div onClick="{{ card.onPress }}" style="cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:8px;">
+                    <div style="position:relative;width:100px;height:118px;border-radius:13px;background:{{t.cardBg}};border:2px solid {{card.color}};overflow:hidden;box-shadow:0 5px 14px rgba(10,15,25,.24);">
+                      <div style="position:absolute;top:0;left:0;right:0;height:28px;background:{{card.color}};opacity:.15;"></div>
+                      <sc-if value="{{ card.hasTp }}" hint-placeholder-val="{{ true }}">
+                        <div style="position:absolute;top:6px;left:6px;width:23px;height:23px;border-radius:50%;background:{{card.color}};display:flex;align-items:center;justify-content:center;font:700 13px 'Fredoka',sans-serif;color:{{card.tpText}};z-index:4;box-shadow:0 1px 2px rgba(0,0,0,.3);">{{card.tp}}</div>
+                      </sc-if>
+                      <div style="position:absolute;top:7px;right:8px;font:700 9px 'Fredoka',sans-serif;color:{{t.cardSub}};z-index:4;">{{card.tierLabel}}</div>
+                      <div style="position:absolute;top:22px;left:0;right:0;height:64px;display:flex;align-items:center;justify-content:center;z-index:1;">
+                        <img src="{{card.sprite}}" alt="{{card.name}}" style="max-width:62px;max-height:62px;object-fit:contain;filter:drop-shadow(0 2px 2px rgba(0,0,0,.22));">
+                      </div>
+                      <div style="position:absolute;left:5px;bottom:28px;display:flex;flex-direction:column;gap:2px;z-index:3;">
+                        <sc-for list="{{ card.pips }}" as="pip" hint-placeholder-count="2">
+                          <div style="width:18px;height:18px;border-radius:50%;background:{{pip.color}};border:1.5px solid rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center;font:700 10px 'Fredoka',sans-serif;color:{{pip.text}};box-shadow:0 1px 2px rgba(0,0,0,.3);">{{pip.n}}</div>
+                        </sc-for>
+                      </div>
+                      <div style="position:absolute;left:0;right:0;bottom:0;height:21px;background:{{card.color}};display:flex;align-items:center;justify-content:center;z-index:3;">
+                        <span style="font:600 9.5px 'Poppins',sans-serif;color:{{card.nameText}};">{{card.name}}</span>
+                      </div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:5px;">
+                      <div style="width:7px;height:7px;border-radius:50%;background:{{card.affordColor}};"></div>
+                      <span style="font:600 10.5px 'Poppins',sans-serif;color:{{card.affordColor}};">{{card.affordText}}</span>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+            <sc-if value="{{ noScouted }}" hint-placeholder-val="{{ false }}">
+              <div style="padding:26px 0 30px;text-align:center;">
+                <div style="font:700 15px 'Fredoka',sans-serif;color:{{t.modalText}};margin-bottom:5px;">No scouted cards yet</div>
+                <p style="margin:0 auto;max-width:390px;font:400 12px/1.55 'Poppins',sans-serif;color:{{t.inkDim}};">Tap <b>Scout</b> on a face-up card or a deck stack to reserve a card here (up to 3). Scouting also earns a wild Ditto token while supply remains.</p>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ============ DISCARD (over 10 tokens) ============ -->
+      <sc-if value="{{ discardOpen }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;inset:0;background:{{t.overlay}};display:flex;align-items:center;justify-content:center;z-index:45;">
+          <div style="width:440px;background:{{t.modalBg}};border-radius:18px;padding:22px;box-shadow:0 24px 60px rgba(0,0,0,.45);">
+            <div style="display:flex;align-items:center;gap:11px;margin-bottom:5px;">
+              <div style="width:34px;height:34px;border-radius:50%;background:#F0483C;display:flex;align-items:center;justify-content:center;font:800 17px 'Fredoka',sans-serif;color:#fff;flex-shrink:0;">10</div>
+              <h3 style="margin:0;font:700 18px 'Fredoka',sans-serif;color:{{t.modalText}};">Token limit reached</h3>
+            </div>
+            <p style="margin:0 0 16px;font:400 13px/1.6 'Poppins',sans-serif;color:{{t.inkDim}};">You can hold at most 10 tokens. Tap to return tokens to the supply — you’re <b style="color:#F0483C;">{{discardOverLabel}}</b>.</p>
+            <div style="display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin-bottom:18px;">
+              <sc-for list="{{ discardTokens }}" as="dt" hint-placeholder-count="3">
+                <div onClick="{{ dt.onDiscard }}" style="cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;">
+                  <div style="position:relative;width:46px;height:46px;border-radius:50%;background:{{dt.color}};border:2px solid rgba(255,255,255,.8);box-shadow:inset 0 2px 4px rgba(255,255,255,.5),0 2px 5px rgba(0,0,0,.2);display:flex;align-items:center;justify-content:center;font:800 19px 'Fredoka',sans-serif;color:{{dt.text}};">{{dt.count}}</div>
+                  <span style="font:600 9px 'Poppins',sans-serif;color:{{t.inkDim}};text-transform:uppercase;letter-spacing:.4px;">{{dt.ty}}</span>
+                </div>
+              </sc-for>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+              <span style="font:600 12px 'Poppins',sans-serif;color:{{t.inkDim}};">Holding <b style="color:{{t.modalText}};font-size:14px;">{{discardTotal}}</b> / 10</span>
+              <div style="display:flex;align-items:center;gap:9px;">
+                <sc-if value="{{ discardDirty }}" hint-placeholder-val="{{ false }}">
+                  <div onClick="{{ onResetDiscard }}" style="cursor:pointer;padding:11px 16px;border-radius:11px;background:transparent;border:1.5px solid {{t.ring2}};color:{{t.modalText}};font:600 12.5px 'Poppins',sans-serif;">↩ Reset</div>
+                </sc-if>
+                <div onClick="{{ onFinishDiscard }}" style="cursor:pointer;padding:11px 22px;border-radius:11px;background:{{discardBtnBg}};border:1px solid {{discardBtnBorder}};color:{{discardBtnText}};font:700 13px 'Fredoka',sans-serif;opacity:{{discardBtnOpacity}};">Done</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ============ CONFIRM (non-undoable action) ============ -->
+      <sc-if value="{{ confirmOpen }}" hint-placeholder-val="{{ false }}">
+        <div onClick="{{ onConfirmCancel }}" style="position:absolute;inset:0;background:{{t.overlay}};display:flex;align-items:center;justify-content:center;z-index:40;">
+          <div onClick="{{ stop }}" style="width:384px;background:{{t.modalBg}};border-radius:18px;padding:22px;box-shadow:0 24px 60px rgba(0,0,0,.45);">
+            <div style="display:flex;align-items:center;gap:11px;margin-bottom:11px;">
+              <div style="width:34px;height:34px;border-radius:50%;background:{{t.accent}};display:flex;align-items:center;justify-content:center;font:800 19px 'Fredoka',sans-serif;color:{{t.accentText}};flex-shrink:0;">!</div>
+              <h3 style="margin:0;font:700 18px 'Fredoka',sans-serif;color:{{t.modalText}};">{{confirmTitle}}</h3>
+            </div>
+            <p style="margin:0 0 18px;font:400 13px/1.6 'Poppins',sans-serif;color:{{t.inkDim}};">{{confirmMsg}}</p>
+            <div style="display:flex;gap:10px;">
+              <div onClick="{{ onConfirmCancel }}" style="cursor:pointer;flex:1;padding:11px;border-radius:11px;background:transparent;border:1.5px solid {{t.ring2}};color:{{t.modalText}};font:600 13px 'Poppins',sans-serif;text-align:center;">Cancel</div>
+              <div onClick="{{ onConfirmProceed }}" style="cursor:pointer;flex:1.3;padding:11px;border-radius:11px;background:{{t.accent}};border:1px solid {{t.accentBorder}};color:{{t.accentText}};font:700 13px 'Fredoka',sans-serif;text-align:center;box-shadow:0 4px 10px rgba(10,15,25,.18);">{{confirmLabel}}</div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ============ TOAST ============ -->
+      <sc-if value="{{ hasToast }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;bottom:92px;left:50%;transform:translateX(-50%);background:rgba(20,26,36,.94);color:#fff;padding:10px 18px;border-radius:11px;font:600 12.5px 'Poppins',sans-serif;z-index:30;box-shadow:0 8px 20px rgba(0,0,0,.3);">{{toastMsg}}</div>
+      </sc-if>
+
+    </div>
+  </div>
+
+  <div style="width:914px;margin-top:13px;font:400 12px 'Poppins',sans-serif;color:#828c9a;text-align:center;">Tap energy tokens to take them · tap a card to Train or Scout · switch the theme above (A / B / C) — each player can pick their own look.</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.uid = 0;
+    this.state = this.freshState('A');
+  }
+
+  // ---------- data helpers ----------
+  ART(d){ return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${d}.png`; }
+  PIX(d){ return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${d}.png`; }
+  TC(){ return { Fire:'#F0483C', Water:'#2E8BE6', Grass:'#46B25A', Electric:'#F5C211', Psychic:'#A24DD0', Ditto:'#C9CDD6' }; }
+  DARK(){ return { Electric:true, Ditto:true }; }
+  txt(ty){ return this.DARK()[ty] ? '#243049' : '#ffffff'; }
+
+  mkCard(dex,name,type,tier,tp,cost){
+    const TC=this.TC();
+    return {
+      id:++this.uid, dex, name, type, tier, tp, cost,
+      color:TC[type], sprite:this.ART(dex),
+      tierLabel:{1:'I',2:'II',3:'III'}[tier], tierName:{1:'Basic',2:'Stage 1',3:'Stage 2'}[tier],
+      isTier3: tier===3, hasTp: tp>0, tpText:this.txt(type), nameText:this.txt(type),
+      bonusType: dex===133 ? null : type,
+      pips: Object.entries(cost).map(([ty,n])=>({n,color:TC[ty],text:this.txt(ty)})),
+    };
+  }
+
+  freshState(theme){
+    this.uid = 0;
+    const C=(d,n,t,ti,tp,co)=>this.mkCard(d,n,t,ti,tp,co);
+    const board = {
+      rows: [
+        { tier:3, label:'Stage 2',
+          slots:[ C(6,'Charizard','Fire',3,5,{Fire:7,Water:3}), C(9,'Blastoise','Water',3,5,{Water:7,Grass:3}), C(3,'Venusaur','Grass',3,5,{Grass:7,Fire:3}), C(65,'Alakazam','Psychic',3,3,{Psychic:5,Water:2}) ],
+          deck:[ C(94,'Gengar','Psychic',3,3,{Psychic:5,Water:2}), C(68,'Machamp','Fire',3,3,{Fire:5,Water:2}), C(34,'Nidoking','Grass',3,3,{Grass:5,Fire:2}) ] },
+        { tier:2, label:'Stage 1',
+          slots:[ C(59,'Arcanine','Fire',2,2,{Fire:4}), C(130,'Gyarados','Water',2,2,{Water:4}), C(26,'Raichu','Electric',2,1,{Electric:3}), C(93,'Haunter','Psychic',2,1,{Psychic:3}) ],
+          deck:[ C(64,'Kadabra','Psychic',2,1,{Psychic:3}), C(8,'Wartortle','Water',2,1,{Water:3}), C(2,'Ivysaur','Grass',2,1,{Grass:3}), C(5,'Charmeleon','Fire',2,1,{Fire:3}) ] },
+        { tier:1, label:'Basic',
+          slots:[ C(25,'Pikachu','Electric',1,0,{Electric:2}), C(7,'Squirtle','Water',1,0,{Water:2}), C(1,'Bulbasaur','Grass',1,0,{Grass:2}), C(4,'Charmander','Fire',1,0,{Fire:2}) ],
+          deck:[ C(63,'Abra','Psychic',1,0,{Psychic:2}), C(66,'Machop','Fire',1,0,{Fire:2}), C(92,'Gastly','Psychic',1,0,{Psychic:2}), C(77,'Ponyta','Fire',1,0,{Fire:2}), C(129,'Magikarp','Water',1,0,{}) ] },
+      ],
+      supply: { Fire:5, Water:4, Grass:6, Electric:5, Psychic:3, Ditto:5 },
+      mewPresent: true, mewCaughtBy: null,
+    };
+    const legendaries = [
+      { key:'Articuno', name:'Articuno', sprite:this.ART(144), tp:3, req:{Water:4,Psychic:3} },
+      { key:'Zapdos',   name:'Zapdos',   sprite:this.ART(145), tp:3, req:{Electric:4,Fire:3} },
+      { key:'Moltres',  name:'Moltres',  sprite:this.ART(146), tp:3, req:{Fire:4,Grass:3} },
+    ];
+    return {
+      theme,
+      screen:'home',
+      players:2, mode:'solo', ai:'normal', deck:'first151',
+      sel:{}, acted:false, undoSnap:null, turnCount:0, round:1, active:0,
+      board, legendaries,
+      roster:[], seats:[],
+      you: this.freshSeat(),
+      detail:null, detailSource:null, handOpen:false,
+      catch:null, catchBall:null, catchPhase:'idle', catchResult:null,
+      confirm:null, discard:false, discardSnap:null,
+      toast:null,
+    };
+  }
+
+  freshSeat(){ return { tp:0, tokens:{Fire:0,Water:0,Grass:0,Electric:0,Psychic:0,Ditto:0}, bonuses:{Fire:0,Water:0,Grass:0,Electric:0,Psychic:0}, balls:{Pokeball:0,GreatBall:0,UltraBall:0,MasterBall:0}, scouted:[], legendaries:[], owned:[] }; }
+
+  THEMES(){
+    return {
+      A:{ tag:'A', label:'TCG',
+        ink:'#eef3fa', inkDim:'#9aa9bd', appBg:'radial-gradient(125% 95% at 50% -12%, #2b3d54 0%, #1a2533 52%, #0f1620 100%)',
+        surface:'rgba(255,255,255,0.06)', ring:'rgba(255,255,255,0.09)', ring2:'rgba(255,255,255,0.2)', bezel:'#06080c',
+        topBg:'rgba(8,12,18,0.5)', topText:'#eaf0f8', topDim:'#94a3b8', pillBg:'rgba(255,255,255,0.07)', pillText:'#eaf0f8',
+        cardBg:'linear-gradient(#202c3e,#161f2c)', cardText:'#eef3fa', cardSub:'rgba(214,224,238,0.6)', deckBg:'#1d2838',
+        dock:'rgba(8,12,18,0.55)', dockText:'#eef3fa', dockDim:'#8a99ad', tpDock:'#ffcb05',
+        accent:'#ffcb05', accentBorder:'#e0ad00', accentText:'#23304a', accentSolid:'#ffcb05', accentGlow:'rgba(255,203,5,0.3)',
+        mewBg:'rgba(228,107,176,0.12)', sheen:'rgba(255,255,255,0.22)',
+        dockBtnBg:'#ffcb05', dockBtnText:'#23304a', dockGhostBorder:'rgba(255,255,255,0.25)',
+        modalBg:'#18222f', modalText:'#eef3fa', overlay:'rgba(4,7,12,0.7)' },
+      B:{ tag:'B', label:'Clean',
+        ink:'#212a36', inkDim:'#7c8696', appBg:'linear-gradient(#eef3fa,#e1e8f2)',
+        surface:'#ffffff', ring:'rgba(20,28,40,0.10)', ring2:'rgba(20,28,40,0.18)', bezel:'#222b38',
+        topBg:'#ffffff', topText:'#212a36', topDim:'#8893a3', pillBg:'#eef3fa', pillText:'#212a36',
+        cardBg:'#ffffff', cardText:'#212a36', cardSub:'#8893a3', deckBg:'#e6ecf5',
+        dock:'#ffffff', dockText:'#212a36', dockDim:'#8893a3', tpDock:'#2E8BE6',
+        accent:'#2E8BE6', accentBorder:'#2576c9', accentText:'#ffffff', accentSolid:'#2E8BE6', accentGlow:'rgba(46,139,230,0.22)',
+        mewBg:'rgba(228,107,176,0.08)', sheen:'rgba(255,255,255,0.6)',
+        dockBtnBg:'#2E8BE6', dockBtnText:'#ffffff', dockGhostBorder:'rgba(20,28,40,0.18)',
+        modalBg:'#ffffff', modalText:'#212a36', overlay:'rgba(20,28,40,0.45)' },
+      C:{ tag:'C', label:'Pokédex',
+        ink:'#23282f', inkDim:'#7c8696', appBg:'linear-gradient(#f8fafd,#e9eef5)',
+        surface:'#ffffff', ring:'rgba(20,28,40,0.10)', ring2:'rgba(20,28,40,0.18)', bezel:'#b1271c',
+        topBg:'linear-gradient(#e8483b,#c8362b)', topText:'#ffffff', topDim:'rgba(255,255,255,0.82)', pillBg:'#ffffff', pillText:'#c8362b',
+        cardBg:'#ffffff', cardText:'#23282f', cardSub:'#8893a3', deckBg:'#eef2f8',
+        dock:'linear-gradient(#e8483b,#cf3a2e)', dockText:'#ffffff', dockDim:'rgba(255,255,255,0.82)', tpDock:'#ffffff',
+        accent:'#e8483b', accentBorder:'#c5362b', accentText:'#ffffff', accentSolid:'#e8483b', accentGlow:'rgba(232,72,59,0.22)',
+        mewBg:'rgba(228,107,176,0.08)', sheen:'rgba(255,255,255,0.6)',
+        dockBtnBg:'#ffffff', dockBtnText:'#e8483b', dockGhostBorder:'rgba(255,255,255,0.5)',
+        modalBg:'#ffffff', modalText:'#23282f', overlay:'rgba(40,20,18,0.5)' },
+    };
+  }
+  T(){ return this.THEMES()[this.state.theme]; }
+
+  // ---------- actions ----------
+  toast(msg){ this.setState({toast:msg}); clearTimeout(this._tt); this._tt=setTimeout(()=>this.setState({toast:null}),1900); }
+  nav(s){ this.setState({screen:s}); }
+  setTheme(id){ this.setState({theme:id}); }
+  startGame(){
+    const st=this.state;
+    const base=this.freshState(st.theme); // fresh board + legendaries (uid reset)
+    const avatars=[25,4,7,1]; // Pikachu, Charmander, Squirtle, Bulbasaur
+    let roster;
+    if(st.mode==='pass'){
+      roster=Array.from({length:st.players},(_,i)=>({ name:'Player '+(i+1), kind:'human', avatar:avatars[i%avatars.length] }));
+    } else {
+      // 1 human + (players-1) AI rivals
+      const aiAvatars=[150,149,130,146]; // Mewtwo, Dragonite, Gyarados, Moltres
+      roster=[{name:'You',kind:'human',avatar:25}];
+      for(let i=1;i<st.players;i++){
+        roster.push({ name: st.players>2 ? 'Rival '+(i) : 'Rival', kind:'ai', avatar:aiAvatars[(i-1)%aiAvatars.length] });
+      }
+    }
+    const seats=roster.map(()=>this.freshSeat());
+    this.setState({
+      ...base,
+      theme:st.theme, mode:st.mode, players:st.players, ai:st.ai, deck:st.deck,
+      screen:'board', round:1, turnCount:0, active:0,
+      roster, seats, you:this.freshSeat(),
+    });
+  }
+
+  totalSel(){ return Object.values(this.state.sel).reduce((a,n)=>a+(n||0),0); }
+  canTap(type){
+    const sup=this.state.board.supply, sel=this.state.sel;
+    const cur=sel[type]||0, tot=this.totalSel();
+    if((sup[type]||0)-cur<=0) return false;
+    const types=Object.keys(sel).filter(t=>(sel[t]||0)>0);
+    if(tot>=3) return false;
+    if(tot===2 && types.length===1) return false;
+    if(tot===1 && types.length===1){ if(type===types[0]) return (sup[type]||0)>=4; return true; }
+    if(tot===2 && types.length===2) return !types.includes(type);
+    return true;
+  }
+  tapToken(type){
+    if(this.state.acted){ this.toast('You already acted this turn'); return; }
+    if(type==='Ditto'){ this.toast('Ditto is earned by Scouting'); return; }
+    if(!this.canTap(type)){ this.toast('Take 3 different, or 2 of one (4+ in supply)'); return; }
+    const sel={...this.state.sel}; sel[type]=(sel[type]||0)+1; this.setState({sel});
+  }
+  clearSel(){ this.setState({sel:{}}); }
+  selValid(){
+    const sup=this.state.board.supply;
+    const e=Object.entries(this.state.sel).filter(([,n])=>n>0); const tot=e.reduce((a,[,n])=>a+n,0);
+    if(tot===0) return false;
+    // 2 of one type — only if that color still has 4+ in supply
+    if(tot===2 && e.length===1){ return (sup[e[0][0]]||0)>=4; }
+    // distinct singles: 3 different, OR fewer when the supply has no other colors left to take
+    if(e.every(([,n])=>n===1)){
+      if(tot===3) return true;
+      const distinctAvail=Object.keys(sup).filter(t=>t!=='Ditto' && (sup[t]||0)>0).length;
+      return tot===Math.min(3, distinctAvail);
+    }
+    return false;
+  }
+  takeTokens(){
+    if(!this.selValid()){ this.toast('Pick up to 3 different, or 2 of one type (4+ in supply)'); return; }
+    const snap={you:JSON.parse(JSON.stringify(this.state.you)),board:JSON.parse(JSON.stringify(this.state.board))};
+    const sup={...this.state.board.supply}, tok={...this.state.you.tokens};
+    for(const [ty,n] of Object.entries(this.state.sel)){ if(n>0){ sup[ty]-=n; tok[ty]=(tok[ty]||0)+n; } }
+    this.setState({ board:{...this.state.board,supply:sup}, you:{...this.state.you,tokens:tok}, sel:{}, acted:true, undoSnap:snap });
+    this.toast('Took energy');
+  }
+
+  undoAction(){
+    const snap=this.state.undoSnap; if(!snap) return;
+    this.setState({ you:JSON.parse(JSON.stringify(snap.you)), board:JSON.parse(JSON.stringify(snap.board)),
+      acted:false, undoSnap:null, sel:{},
+      detail:null, detailSource:null, handOpen:false,
+      catch:false, catchBall:null, catchPhase:'idle', catchResult:null });
+    this.toast('Action undone · choose again');
+  }
+  // ----- confirm gate for actions that can't be undone -----
+  askScoutDeck(tier){
+    if(this.state.acted){ this.toast('You already acted this turn'); return; }
+    if(this.state.you.scouted.length>=3){ this.toast('Scout hand is full (3)'); return; }
+    const row=this.state.board.rows.find(r=>r.tier===tier);
+    if(!row||!row.deck.length){ this.toast('That deck is empty'); return; }
+    this.setState({ confirm:{
+      title:'Scout from the deck?',
+      message:'You\u2019ll draw the top card face-down into your hand. Because only you get to see it, this move can\u2019t be undone.',
+      confirmLabel:'Scout blind',
+      run:()=>this.scoutDeck(tier)
+    }});
+  }
+  askThrow(){
+    const k=this.state.catchBall;
+    const hasBall=Object.values(this.state.you.balls||{}).some(n=>n>0);
+    if(!hasBall){ this.toast('Train cards to earn Pok\u00e9 Balls'); return; }
+    if(!k){ this.toast('Pick a Pok\u00e9 Ball first'); return; }
+    if(this.state.acted){ this.toast('You already acted this turn'); return; }
+    if((this.state.you.balls[k]||0)<=0){ this.toast('No '+k+' available'); return; }
+    const rates={Pokeball:'40%',GreatBall:'65%',UltraBall:'85%',MasterBall:'100%'};
+    const nice=k.replace(/([A-Z])/g,' $1').trim();
+    this.setState({ confirm:{
+      title:'Throw your '+nice+'?',
+      message:'Catch chance is '+(rates[k]||'?')+'. Win or lose, this uses your turn and the ball \u2014 it can\u2019t be undone.',
+      confirmLabel:'Throw it!',
+      run:()=>this.throwBall()
+    }});
+  }
+  confirmCancel(){ this.setState({confirm:null}); }
+  confirmProceed(){ const c=this.state.confirm; this.setState({confirm:null}); if(c&&c.run) c.run(); }
+  // Flip up the next card for any slot emptied this turn (deferred until the turn is committed,
+  // so undoing a face-up Scout/Train never reveals the next hidden card).
+  refillSlots(board){
+    for(const row of board.rows){
+      for(let i=0;i<row.slots.length;i++){
+        if(!row.slots[i] && row.deck.length){ row.slots[i]=row.deck.shift(); }
+      }
+    }
+    return board;
+  }
+
+  openCard(card,source){ this.setState({detail:card, detailSource:source}); }
+  closeCard(){ this.setState({detail:null, detailSource:null}); }
+  openHand(){ this.setState({handOpen:true}); }
+  closeHand(){ this.setState({handOpen:false}); }
+  openScouted(stored){ const c=this.mkCard(stored.dex,stored.name,stored.type,stored.tier,stored.tp,stored.cost); c.id=stored.id; this.setState({detail:c, detailSource:'scouted', handOpen:false}); }
+
+  affordCheck(card){
+    const you=this.state.you; let ditto=you.tokens.Ditto||0; let need=0;
+    for(const [ty,n] of Object.entries(card.cost)){ const after=Math.max(0,n-(you.bonuses[ty]||0)); const have=you.tokens[ty]||0; need+=Math.max(0,after-have); }
+    return need<=ditto;
+  }
+  legendaryCheck(you){
+    const got=[];
+    const owned=new Set(you.legendaries.map(l=>l.key));
+    for(const leg of this.state.legendaries){
+      if(owned.has(leg.key)) continue;
+      let ok=true; for(const [ty,n] of Object.entries(leg.req)){ if((you.bonuses[ty]||0)<n){ ok=false; break; } }
+      if(ok) got.push(leg);
+    }
+    return got;
+  }
+  trainCard(){
+    const card=this.state.detail; if(!card) return;
+    if(this.state.acted){ this.toast('You already acted this turn'); return; }
+    const snap={you:JSON.parse(JSON.stringify(this.state.you)),board:JSON.parse(JSON.stringify(this.state.board))};
+    if(!this.affordCheck(card)){ this.toast('Not enough energy for '+card.name); return; }
+    const you=JSON.parse(JSON.stringify(this.state.you));
+    let ditto=you.tokens.Ditto||0;
+    for(const [ty,n] of Object.entries(card.cost)){
+      let after=Math.max(0,n-(you.bonuses[ty]||0));
+      const pay=Math.min(after,you.tokens[ty]||0); you.tokens[ty]-=pay; after-=pay;
+      const d=Math.min(after,ditto); ditto-=d; after-=d;
+    }
+    you.tokens.Ditto=ditto;
+    if(card.bonusType) you.bonuses[card.bonusType]=(you.bonuses[card.bonusType]||0)+1;
+    you.tp+=card.tp;
+    const bt={1:'Pokeball',2:'GreatBall',3:'UltraBall'}[card.tier]; you.balls[bt]=(you.balls[bt]||0)+1;
+    if(!you.owned.includes(card.dex)) you.owned.push(card.dex);
+    // remove from board / scouted + refill
+    const board=JSON.parse(JSON.stringify(this.state.board));
+    // re-attach methods lost by clone not needed; we rebuild display in renderVals from raw fields
+    if(this.state.detailSource==='scouted'){ you.scouted=you.scouted.filter(c=>c.id!==card.id); }
+    else {
+      for(const row of board.rows){ const idx=row.slots.findIndex(c=>c&&c.id===card.id); if(idx>=0){ row.slots[idx]=null; break; } }
+    }
+    // legendary auto-collect
+    const got=this.legendaryCheck(you); let legMsg='';
+    if(got.length){ for(const g of got){ you.legendaries.push({key:g.key,name:g.name,tp:g.tp}); you.tp+=g.tp; } legMsg=' · '+got.map(g=>g.name).join(' & ')+' joined!'; }
+    const over = you.tp>=20;
+    const seatSave = this.state.seats.slice();
+    if(over && seatSave.length) seatSave[this.state.active]=JSON.parse(JSON.stringify(you));
+    this.setState({ you, board, seats:seatSave, detail:null, detailSource:null, acted:true, undoSnap: over?null:snap, screen: over?'gameover':this.state.screen });
+    this.toast('Trained '+card.name+legMsg);
+  }
+  scoutFromCard(){
+    const card=this.state.detail; if(!card) return;
+    if(this.state.detailSource!=='face'){ this.toast('Already in your hand'); return; }
+    if(this.state.acted){ this.toast('You already acted this turn'); return; }
+    if(this.state.you.scouted.length>=3){ this.toast('Scout hand is full (3)'); return; }
+    const snap={you:JSON.parse(JSON.stringify(this.state.you)),board:JSON.parse(JSON.stringify(this.state.board))};
+    const you=JSON.parse(JSON.stringify(this.state.you));
+    const board=JSON.parse(JSON.stringify(this.state.board));
+    you.scouted.push({id:card.id,dex:card.dex,name:card.name,type:card.type,tier:card.tier,tp:card.tp,cost:card.cost});
+    const gotDitto=(board.supply.Ditto||0)>0;
+    if(gotDitto){ board.supply.Ditto-=1; you.tokens.Ditto=(you.tokens.Ditto||0)+1; }
+    for(const row of board.rows){ const idx=row.slots.findIndex(c=>c&&c.id===card.id); if(idx>=0){ row.slots[idx]=null; break; } }
+    this.setState({ you, board, detail:null, detailSource:null, acted:true, undoSnap:snap });
+    this.toast('Scouted '+card.name+(gotDitto?' (+1 Ditto)':' · no Ditto left'));
+  }
+  scoutDeck(tier){
+    if(this.state.acted){ this.toast('You already acted this turn'); return; }
+    if(this.state.you.scouted.length>=3){ this.toast('Scout hand is full (3)'); return; }
+    const board=JSON.parse(JSON.stringify(this.state.board));
+    const row=board.rows.find(r=>r.tier===tier); if(!row||!row.deck.length){ this.toast('That deck is empty'); return; }
+    const card=row.deck.shift();
+    const you=JSON.parse(JSON.stringify(this.state.you));
+    you.scouted.push({id:card.id,dex:card.dex,name:card.name,type:card.type,tier:card.tier,tp:card.tp,cost:card.cost});
+    const gotDitto=(board.supply.Ditto||0)>0;
+    if(gotDitto){ board.supply.Ditto-=1; you.tokens.Ditto=(you.tokens.Ditto||0)+1; }
+    this.setState({ you, board, acted:true, undoSnap:null });
+    this.toast('Scouted from deck'+(gotDitto?' (+1 Ditto)':' · no Ditto left')+' · can\u2019t be undone');
+  }
+
+  tokenTotal(tokens){ return Object.values(tokens||{}).reduce((a,n)=>a+(n||0),0); }
+  endTurn(){
+    if(!this.state.acted){ this.toast('Take an action first'); return; }
+    if(this.tokenTotal(this.state.you.tokens)>10){
+      this.setState({ discard:true, discardSnap:{ tokens:JSON.parse(JSON.stringify(this.state.you.tokens)), supply:JSON.parse(JSON.stringify(this.state.board.supply)) } });
+      return;
+    }
+    this.commitTurn();
+  }
+  discardToken(ty){
+    if((this.state.you.tokens[ty]||0)<=0) return;
+    const you=JSON.parse(JSON.stringify(this.state.you));
+    const board=JSON.parse(JSON.stringify(this.state.board));
+    you.tokens[ty]-=1;
+    board.supply[ty]=(board.supply[ty]||0)+1; // returned to the shared supply
+    this.setState({ you, board });
+  }
+  resetDiscard(){
+    const snap=this.state.discardSnap; if(!snap) return;
+    const you=JSON.parse(JSON.stringify(this.state.you));
+    const board=JSON.parse(JSON.stringify(this.state.board));
+    you.tokens=JSON.parse(JSON.stringify(snap.tokens));
+    board.supply=JSON.parse(JSON.stringify(snap.supply));
+    this.setState({ you, board });
+    this.toast('Discards reset');
+  }
+  finishDiscard(){
+    if(this.tokenTotal(this.state.you.tokens)>10){ this.toast('Still over the limit — discard more'); return; }
+    this.setState({ discard:false, discardSnap:null });
+    this.commitTurn();
+  }
+  commitTurn(){
+    const board=this.refillSlots(JSON.parse(JSON.stringify(this.state.board)));
+    const seats=this.state.seats.slice();
+    if(seats.length) seats[this.state.active]=JSON.parse(JSON.stringify(this.state.you));
+    this.setState({ board, seats, screen:'handoff', sel:{}, undoSnap:null, discard:false, discardSnap:null });
+  }
+  ackHandoff(){
+    const st=this.state, roster=st.roster, len=roster.length||1;
+    const seats=st.seats.slice();
+    let tc=st.turnCount+1;
+    let nextIdx=(st.active+1)%len;
+    // Loop through consecutive AI players, simulating each turn until we reach a human.
+    while(roster[nextIdx] && roster[nextIdx].kind==='ai'){
+      const aiSeat=JSON.parse(JSON.stringify(seats[nextIdx]||this.freshSeat()));
+      aiSeat.tp += 1+Math.floor(Math.random()*(st.ai==='easy'?2:3));
+      seats[nextIdx]=aiSeat;
+      if(aiSeat.tp>=20){ this.setState({ seats, turnCount:tc, active:nextIdx, screen:'gameover' }); return; }
+      nextIdx=(nextIdx+1)%len; tc+=1;
+    }
+    const round=Math.floor(tc/len)+1;
+    const you=JSON.parse(JSON.stringify(seats[nextIdx]||this.freshSeat()));
+    this.setState({ seats, turnCount:tc, active:nextIdx, round, you, acted:false, sel:{}, screen:'board' });
+  }
+
+  openCatch(){
+    if(!this.state.board.mewPresent){ this.toast('Mew has already been caught'); return; }
+    if(this.state.acted){ this.toast('You already acted this turn'); return; }
+    this.setState({catch:true, catchBall:null, catchPhase:'idle', catchResult:null});
+  }
+  closeCatch(){
+    const won=this.state.you.tp>=20;
+    const seatSave=this.state.seats.slice();
+    if(won && seatSave.length) seatSave[this.state.active]=JSON.parse(JSON.stringify(this.state.you));
+    this.setState({catch:false, catchBall:null, catchPhase:'idle', catchResult:null, seats:seatSave, screen: won?'gameover':this.state.screen});
+  }
+  pickBall(k){ this.setState({catchBall:k}); }
+  throwBall(){
+    const k=this.state.catchBall; if(!k) return;
+    if(this.state.acted){ this.toast('You already acted this turn'); return; }
+    if((this.state.you.balls[k]||0)<=0){ this.toast('No '+k+' available'); return; }
+    const rates={Pokeball:0.4,GreatBall:0.65,UltraBall:0.85,MasterBall:1.0};
+    this.setState({catchPhase:'throwing'});
+    clearTimeout(this._ct);
+    this._ct=setTimeout(()=>{
+      const caught=Math.random()<rates[k];
+      const you=JSON.parse(JSON.stringify(this.state.you));
+      you.balls[k]=Math.max(0,(you.balls[k]||0)-1);
+      let board=this.state.board, over=false;
+      if(caught){ you.tp+=5; board=JSON.parse(JSON.stringify(this.state.board)); board.mewPresent=false; board.mewCaughtBy=(this.state.roster[this.state.active]||{}).name||'You'; over=you.tp>=20; }
+      this.setState({ you, board, catchPhase:'result', catchResult:caught, acted:true, undoSnap:null });
+    },1300);
+  }
+
+  stop(e){ if(e&&e.stopPropagation) e.stopPropagation(); }
+
+  // ---------- render ----------
+  renderVals(){
+    const t=this.T(), st=this.state, TC=this.TC(), DARK=this.DARK();
+    const screen=st.screen;
+    const themes=this.THEMES();
+
+    const themeBtns=['A','B','C'].map(id=>{
+      const active=st.theme===id;
+      return { tag:id, label:themes[id].label, onTap:()=>this.setTheme(id),
+        bg: active? '#1a212c':'transparent', color: active? '#fff':'#5a6473' };
+    });
+
+    // board display
+    const sel=st.sel;
+    const rows=st.board.rows.map(row=>({
+      label:row.label, deckCount:row.deck.length,
+      onDeck:()=>this.askScoutDeck(row.tier),
+      slots:row.slots.map(c=>{
+        if(!c) return {empty:true, filled:false};
+        return {empty:false, filled:true, card:{
+          ...c, onPress:()=>this.openCard(c,'face')
+        }};
+      }),
+    }));
+    const supplyTypes=['Fire','Water','Grass','Electric','Psychic','Ditto'];
+    const supply=supplyTypes.map(ty=>{
+      const s=(sel[ty]||0);
+      return { type:ty, color:TC[ty], text:this.txt(ty), count:(st.board.supply[ty]||0)-s,
+        selected:s, hasSel:s>0, ring: s>0 ? '#ffffff' : 'rgba(255,255,255,0.85)',
+        onTap:()=>this.tapToken(ty) };
+    });
+    const legendaries=st.legendaries.map(l=>({ name:l.name, sprite:l.sprite, tp:l.tp,
+      reqs:Object.entries(l.req).map(([ty,n])=>({n,color:TC[ty],text:this.txt(ty)})) }));
+
+    const bonuses=['Fire','Water','Grass','Electric','Psychic'].map(ty=>{
+      const n=st.you.bonuses[ty]||0; return { color:TC[ty], count:n, opacity:n>0?'1':'0.24', text:this.txt(ty) };
+    });
+    const heldTokens=supplyTypes.map(ty=>({ty,color:TC[ty],count:st.you.tokens[ty]||0})).filter(x=>x.count>0);
+    const energyCount='· '+heldTokens.reduce((a,x)=>a+x.count,0);
+    const ballTop={Pokeball:'#ee4b3b',GreatBall:'#3a78d8',UltraBall:'#f5c211',MasterBall:'#6a4aa0'};
+    const heldBalls=['Pokeball','GreatBall','UltraBall','MasterBall'].map(k=>({k,count:st.you.balls[k]||0,top:ballTop[k]})).filter(x=>x.count>0);
+
+    // scouted hand
+    const scoutedRaw=st.you.scouted;
+    const handCount=scoutedRaw.length;
+    const scoutedMini=scoutedRaw.slice(0,3).map(s=>({ sprite:this.ART(s.dex), color:TC[s.type] }));
+    const scoutedCards=scoutedRaw.map(s=>{
+      const cc=this.mkCard(s.dex,s.name,s.type,s.tier,s.tp,s.cost); cc.id=s.id;
+      const afford=this.affordCheck(cc);
+      return { ...cc, onPress:()=>this.openScouted(s),
+        affordText: afford ? 'Ready to train' : 'Need more energy',
+        affordColor: afford ? '#46B25A' : t.inkDim };
+    });
+
+    const selecting=this.totalSel()>0;
+    const valid=this.selValid();
+
+    // setup segmented
+    const seg=(label,active,onTap,sub)=>({ label, sub, onTap,
+      bg: active? t.accent:'transparent', color: active? t.accentText:t.ink, border: active? t.accentBorder:t.ring2 });
+    const modeOpts=[ seg('Solo vs AI', st.mode==='solo', ()=>this.setState({mode:'solo'})), seg('Pass & Play', st.mode==='pass', ()=>this.setState({mode:'pass'})) ];
+    const aiOpts=[ seg('Easy', st.ai==='easy', ()=>this.setState({ai:'easy'})), seg('Normal', st.ai==='normal', ()=>this.setState({ai:'normal'})) ];
+    const deckOpts=[ seg('First 151', st.deck==='first151', ()=>this.setState({deck:'first151'}), 'All Kanto'), seg('Balanced', st.deck==='balanced', ()=>this.setState({deck:'balanced'}), '~25 / type') ];
+
+    // detail modal
+    let detailOpen=false, d=null;
+    if(st.detail){
+      detailOpen=true; const c=st.detail; const you=st.you;
+      const costRows=Object.entries(c.cost).map(([ty,n])=>{
+        const bonus=you.bonuses[ty]||0; const afterBonus=Math.max(0,n-bonus); const have=you.tokens[ty]||0;
+        const ok=have>=afterBonus;
+        return { color:TC[ty], text:this.txt(ty), need:n,
+          label: ty + (bonus>0? '  (−'+bonus+' bonus)':''),
+          status: afterBonus===0 ? 'covered by bonus' : (ok? 'you have '+have : 'have '+have+' / need '+afterBonus),
+          statusColor: (afterBonus===0||ok)? '#46B25A' : t.inkDim };
+      });
+      if(costRows.length===0) costRows.push({color:'#C9CDD6',text:'#243049',need:0,label:'Free',status:'no cost',statusColor:'#46B25A'});
+      const afford=this.affordCheck(c);
+      const canScout=st.detailSource==='face' && you.scouted.length<3 && !st.acted;
+      const canTrain=afford && !st.acted;
+      d={ sprite:c.sprite, name:c.name, type:c.type, typeText:this.txt(c.type), color:c.color,
+        tierName:c.tierName, tp:c.tp, hasTp:c.hasTp,
+        bonusText: c.bonusType? ('Grants +1 '+c.bonusType+' bonus · '+c.tp+' TP') : ('No type bonus · '+c.tp+' TP'),
+        costRows,
+        trainLabel: st.acted? 'Acted this turn' : (afford? 'Train':'Can\'t afford'),
+        trainBg: canTrain? t.accent : t.ring2, trainText: canTrain? t.accentText : t.inkDim, trainOpacity: canTrain? '1':'0.55',
+        scoutLabel: st.detailSource==='scouted' ? 'In your hand' : ((st.board.supply.Ditto||0)>0 ? 'Scout (+Ditto)' : 'Scout'),
+        scoutOpacity: canScout? '1':'0.45',
+        onTrain:()=>this.trainCard(), onScout:()=> canScout? this.scoutFromCard() : this.toast(st.detailSource==='scouted'?'Already in hand':'Scout hand full or acted'),
+      };
+    }
+
+    // catch modal
+    let catchOpen=false, c=null;
+    if(st.catch){
+      catchOpen=true;
+      const rates={Pokeball:40,GreatBall:65,UltraBall:85,MasterBall:100};
+      const rateColor={Pokeball:'#8893a3',GreatBall:'#2E8BE6',UltraBall:'#46B25A',MasterBall:'#ffcb05'};
+      const balls=['Pokeball','GreatBall','UltraBall','MasterBall'].map(k=>{
+        const count=st.you.balls[k]||0; if(count<=0) return null;
+        const selected=st.catchBall===k;
+        return { key:k, label:k.replace(/([A-Z])/g,' $1').trim(), count, rate:rates[k], rateColor:rateColor[k],
+          top:ballTop[k], bg: selected? t.mewBg:'transparent', border: selected? '#e46bb0':t.ring2,
+          onPick:()=>this.pickBall(k) };
+      }).filter(Boolean);
+      const phase=st.catchPhase;
+      const hasBall=balls.length>0;
+      c={ mewSprite:this.ART(151),
+        selecting: phase==='idle', throwing: phase==='throwing', resulted: phase==='result',
+        balls, 
+        mewAnim: phase==='throwing' ? 'animation:ps-wiggle .5s ease-in-out infinite;' : '',
+        throwBg: st.catchBall? t.accent:t.ring2, throwText: st.catchBall? t.accentText:t.inkDim, throwOpacity: st.catchBall?'1':'0.55',
+        throwLabel: hasBall? (st.catchBall? 'Throw '+st.catchBall.replace(/([A-Z])/g,' $1').trim()+'!' : 'Pick a ball') : 'No Poké Balls yet',
+        onThrow:()=> hasBall? this.throwBall() : this.toast('Train cards to earn Poké Balls'),
+        resultColor: st.catchResult? '#46B25A':'#e8483b',
+        resultTitle: st.catchResult? 'Gotcha! Mew was caught!' : 'Oh no! Mew escaped!',
+        resultMsg: st.catchResult? 'Mew joined your team — that\'s +5 Trainer Points.' : 'The ball was spent. Try again on a later turn.',
+      };
+      if(!hasBall && phase==='idle'){ /* still show with disabled throw */ }
+    }
+
+    // pokedex
+    const owned=new Set([1,2,3,4,5,6,7,8,9,25,26,58,59,65,68,77,93,94,129,130,131,143,144,145,146,150,151,...st.you.owned]);
+    const pdlist=Array.from({length:151},(_,i)=>{ const dex=i+1; const o=owned.has(dex);
+      return { dex, num:'#'+String(dex).padStart(3,'0'), sprite:this.PIX(dex), owned:o,
+        filter:o?'none':'brightness(0) opacity(0.3)', bg: o? t.surface : 'transparent', border: o? t.ring : t.ring }; });
+
+    // rules
+    const rules=[
+      {icon:'⚡',color:'#F5C211',title:'Take Energy',body:'On your turn, take 3 energy tokens of different types, OR 2 of one type when 4+ remain in supply. Hold at most 10 at end of turn.'},
+      {icon:'★',color:'#46B25A',title:'Train Pokémon',body:'Pay a card\'s cost in energy + your matching Type Bonuses. Trained cards give a permanent bonus, Trainer Points, and a Poké Ball.'},
+      {icon:'☆',color:'#2E8BE6',title:'Scout',body:'Reserve a face-up or face-down card to your hand (max 3) and gain a wild Ditto token. Opponents can\'t see your scouted cards.'},
+      {icon:'♛',color:'#A24DD0',title:'Legendaries',body:'Meet a Legendary\'s Type-Bonus requirement and it\'s auto-collected like a noble — worth 3 TP each. No tokens spent.'},
+      {icon:'✦',color:'#e46bb0',title:'Mew & Poké Balls',body:'Own 2 Legendaries, then spend a Poké Ball for a Catch Attempt. Higher-tier balls have better odds; a failed throw still spends the ball.'},
+      {icon:'▲',color:'#F0483C',title:'Winning',body:'First to 20 Trainer Points triggers the Final Round. Everyone finishes the round; highest TP wins, fewest Pokémon trained breaks ties.'},
+    ];
+
+    // ----- multiplayer view model -----
+    const roster=st.roster||[];
+    const active=st.active||0;
+    const activeR=roster[active]||{name:'You',kind:'human',avatar:25};
+    const activeName=activeR.name;
+    const activeAvatar=this.ART(activeR.avatar||25);
+    const opponents=roster.map((r,i)=> i===active ? null : ({
+      label: r.name+(r.kind==='ai'?' · AI':''),
+      tp: (st.seats[i] ? st.seats[i].tp : 0),
+      avatar: this.ART(r.avatar||25),
+    })).filter(Boolean);
+    const pendingIdx = roster.length ? (active+1)%roster.length : 0;
+    const pending = roster[pendingIdx] || {name:'Player', kind:'human'};
+
+    // game over — rank all players
+    const liveSeats = (st.seats||[]).map((s,i)=> i===active ? st.you : s);
+    const scoreSeats = liveSeats.length ? liveSeats : [st.you];
+    const maxTp = Math.max(...scoreSeats.map(s=>s.tp));
+    const winIdx = scoreSeats.findIndex(s=>s.tp===maxTp);
+    const winnerName = roster[winIdx] ? roster[winIdx].name : 'You';
+    const goScores = scoreSeats.map((s,i)=>{
+      const win = s.tp===maxTp;
+      return { name:(roster[i]?roster[i].name:'You'), tp:s.tp,
+        color: win? t.accentSolid : t.inkDim, border: win? t.accentSolid : t.ring,
+        detail:(s.owned?s.owned.length:0)+' Pokémon · '+(s.legendaries?s.legendaries.length:0)+' Legendary' };
+    });
+    const youWin = winnerName==='You';
+    const goTitle = winnerName==='You' ? 'You Win!' : winnerName+' Wins!';
+
+    return {
+      t, themeBtns, heroSprite:this.ART(25),
+      typeDots:[TC.Fire,TC.Water,TC.Grass,TC.Electric,TC.Psychic],
+      isHome:screen==='home', isSetup:screen==='setup', isBoard:screen==='board',
+      isPokedex:screen==='pokedex', isHowto:screen==='howto', isGameover:screen==='gameover', isHandoff:screen==='handoff',
+      goHome:()=>this.nav('home'), goSetup:()=>this.nav('setup'), goPokedex:()=>this.nav('pokedex'), goHowto:()=>this.nav('howto'),
+      startGame:()=>this.startGame(),
+      // setup
+      modeOpts, aiOpts, deckOpts, players:st.players,
+      playersHint: st.mode==='pass' ? 'humans, pass-and-play' : '1 you + '+(st.players-1)+' AI',
+      playersDec:()=>this.setState({players:Math.max(2,st.players-1)}), playersInc:()=>this.setState({players:Math.min(4,st.players+1)}),
+      // board
+      rows, supply, legendaries, mew:{sprite:this.ART(151)},
+      mewAvailable: st.board.mewPresent, mewGone: !st.board.mewPresent,
+      mewCaughtLabel: st.board.mewCaughtBy ? ('Caught by '+st.board.mewCaughtBy) : 'Already caught',
+      bonuses, heldTokens, energyCount, heldBalls,
+      youTp:st.you.tp, opponents, activeName, activeAvatar,
+      turnText:'Round '+(st.round||1)+' · '+(st.mode==='pass'? activeName+'’s turn' : 'Your turn'),
+      selecting, notSelecting:!selecting, selCount:this.totalSel(),
+      onClearSel:()=>this.clearSel(), onTakeTokens:()=>this.takeTokens(),
+      takeBg: valid? t.dockBtnBg : t.ring2, takeText: valid? t.dockBtnText : t.inkDim, takeOpacity: valid?'1':'0.55',
+      onCatch:()=>this.openCatch(), onEndTurn:()=>this.endTurn(),
+      canUndo: st.acted && !!st.undoSnap, showCatch: !st.acted && st.board.mewPresent, onUndo:()=>this.undoAction(),
+      // discard (token cap)
+      discardOpen: !!st.discard,
+      discardTokens: supplyTypes.map(ty=>({ ty, color:TC[ty], text:this.txt(ty), count:st.you.tokens[ty]||0, onDiscard:()=>this.discardToken(ty) })).filter(x=>x.count>0),
+      discardTotal: this.tokenTotal(st.you.tokens),
+      discardOver: Math.max(0, this.tokenTotal(st.you.tokens)-10),
+      discardReady: this.tokenTotal(st.you.tokens)<=10,
+      discardOverLabel: (this.tokenTotal(st.you.tokens)-10)+' over the limit',
+      onFinishDiscard:()=>this.finishDiscard(),
+      onResetDiscard:()=>this.resetDiscard(),
+      discardDirty: !!(st.discardSnap && this.tokenTotal(st.you.tokens) < this.tokenTotal(st.discardSnap.tokens)),
+      discardBtnBg: (this.tokenTotal(st.you.tokens)<=10)? t.dockBtnBg : t.ring2,
+      discardBtnBorder: (this.tokenTotal(st.you.tokens)<=10)? t.accentBorder : t.ring2,
+      discardBtnText: (this.tokenTotal(st.you.tokens)<=10)? t.dockBtnText : t.inkDim,
+      discardBtnOpacity: (this.tokenTotal(st.you.tokens)<=10)? '1' : '0.5',
+      // pokedex / howto
+      pdlist, ownedCount:[...owned].filter(x=>x<=151).length, rules,
+      // gameover
+      goTitle,
+      goScores,
+      // handoff
+      handoffSub: st.mode==='pass' ? 'Pass the device to' : 'Now playing',
+      handoffName: st.mode==='pass' ? pending.name : 'Rival · AI',
+      handoffBtn: st.mode==='pass' ? 'I\'m ready' : 'Continue',
+      onAckHandoff:()=>this.ackHandoff(),
+      // modals
+      detailOpen, d, onCloseDetail:()=>this.closeCard(),
+      onTrainCard:()=>this.trainCard(), onReserve:()=>this.scoutFromCard(),
+      catchOpen, c, onCloseCatch:()=>this.closeCatch(), onThrow:()=>this.askThrow(),
+      confirmOpen: !!st.confirm,
+      confirmTitle: st.confirm ? st.confirm.title : '',
+      confirmMsg: st.confirm ? st.confirm.message : '',
+      confirmLabel: st.confirm ? st.confirm.confirmLabel : 'Confirm',
+      onConfirmCancel:()=>this.confirmCancel(), onConfirmProceed:()=>this.confirmProceed(),
+      handOpen:st.handOpen, onOpenHand:()=>this.openHand(), onCloseHand:()=>this.closeHand(),
+      scoutedMini, scoutedCards, hasScouted: handCount>0, noScouted: handCount===0, handLabel: handCount+'/3 scouted',
+      stop:(e)=>this.stop(e),
+      // toast
+      hasToast:!!st.toast, toastMsg:st.toast,
+    };
+  }
+}
+</script>
+</body>
+</html>
