@@ -26,7 +26,7 @@ function BallGlyph({ ball, size }: { ball: PokeballTier; size: number }) {
 export default function Dock({
   game, scale, selecting, selectionTotal, selectionValid,
   onClear, onTake, onEndTurn, endTurnEnabled, mewEligible, onCatchMew, onScoutedPress,
-  canUndo, onUndo,
+  canUndo, onUndo, showActions,
 }: {
   game: GameState;
   scale: number;
@@ -42,6 +42,7 @@ export default function Dock({
   onScoutedPress: (card: PokemonCard) => void;
   canUndo: boolean;
   onUndo: () => void;
+  showActions: boolean;
 }) {
   const { theme } = useTheme();
   const z = (n: number) => n * scale;
@@ -162,6 +163,7 @@ export default function Dock({
         </View>
       </View>
 
+      {showActions && (
       <View style={{ marginLeft: 'auto', flexDirection: 'row', alignItems: 'center', gap: z(8) }}>
         {selecting ? (
           <>
@@ -217,6 +219,7 @@ export default function Dock({
           </>
         )}
       </View>
+      )}
     </LinearGradient>
   );
 }
