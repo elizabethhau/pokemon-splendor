@@ -60,7 +60,7 @@ Rebuild to match `design_prototype/` (see decisions in the redesign plan). HITL 
 | [#25](https://github.com/elizabethhau/pokemon-splendor/issues/25) | Board screen rebuild + toasts (HITL)                         | #23        | [x]                                                                                |
 | [#26](https://github.com/elizabethhau/pokemon-splendor/issues/26) | Modal package: scouted hand, Catch Mew, discard              | #25        | [ ]                                                                                |
 | [#27](https://github.com/elizabethhau/pokemon-splendor/issues/27) | Undo system + confirm gates + deferred refill                | #25        | [x]                                                                                |
-| [#28](https://github.com/elizabethhau/pokemon-splendor/issues/28) | On-board AI turn presentation                                | #24, #25   | [ ]                                                                                |
+| [#28](https://github.com/elizabethhau/pokemon-splendor/issues/28) | On-board AI turn presentation                                | #24, #25   | [x]                                                                                |
 | [#29](https://github.com/elizabethhau/pokemon-splendor/issues/29) | Game Over + Handoff screens                                  | #23        | [ ]                                                                                |
 | [#30](https://github.com/elizabethhau/pokemon-splendor/issues/30) | Pokédex, How to Play, Stats screens                          | #23        | [ ]                                                                                |
 
