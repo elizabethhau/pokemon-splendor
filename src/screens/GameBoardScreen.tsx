@@ -91,6 +91,8 @@ export default function GameBoardScreen({ navigation }: Props) {
   const [aiPulse, setAiPulse] = useState<{ tokens: Partial<Record<TokenType, number>>; key: number } | null>(null);
   const aiTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const cardNodes = useRef<Map<number, View>>(new Map());
+  const mountedRef = useRef(true);
+  useEffect(() => () => { mountedRef.current = false; }, []);
 
   const registerCardNode = useCallback((dex: number, node: View | null) => {
     if (node) cardNodes.current.set(dex, node);
@@ -143,8 +145,11 @@ export default function GameBoardScreen({ navigation }: Props) {
           const node = cardNodes.current.get(action.card.pokedexNumber);
           const card = action.card;
           const winH = Dimensions.get('window').height;
+          const flyTurn = g.turnNumber;
           node?.measureInWindow((x, y, w, h) => {
-            if (w > 0) setAiFly({ card, from: { x, y, width: w, height: h }, to: { x: z(14), y: winH - z(58) } });
+            // Ignore a late callback that resolves after the turn advanced or the screen unmounted
+            if (w <= 0 || !mountedRef.current || useGameStore.getState().game?.turnNumber !== flyTurn) return;
+            setAiFly({ card, from: { x, y, width: w, height: h }, to: { x: z(14), y: winH - z(58) } });
           });
         }
 
@@ -467,6 +472,7 @@ export default function GameBoardScreen({ navigation }: Props) {
         onScoutedPress={card => handleCardPress(card, 'scouted')}
         canUndo={undoSnapshot !== null}
         onUndo={handleUndo}
+        showActions={!aiActive}
       />
 
       {aiActive && <View style={StyleSheet.absoluteFill} pointerEvents="auto" />}
