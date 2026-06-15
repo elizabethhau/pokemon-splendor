@@ -1,7 +1,7 @@
 # Graph Report - pokemon-splendor  (2026-06-14)
 
 ## Corpus Check
-- 61 files · ~27,778 words
+- 61 files · ~27,791 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -10,7 +10,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `cdfca93c`
+- Built from commit: `4d702723`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 

@@ -92,8 +92,12 @@ export default function TokenDiscardModal() {
           fontFamily: 'Poppins_400Regular', fontSize: z(13), lineHeight: z(21),
           color: theme.inkDim, marginBottom: z(16),
         }}>
-          You can hold at most {MAX_TOKENS} tokens. Tap to return tokens to the supply — you’re{' '}
-          <Text style={{ color: '#F0483C', fontFamily: 'Poppins_700Bold' }}>{over} over the limit</Text>.
+          You can hold at most {MAX_TOKENS} tokens. Tap to return tokens to the supply —{' '}
+          {over > 0 ? (
+            <>you’re <Text style={{ color: '#F0483C', fontFamily: 'Poppins_700Bold' }}>{over} over the limit</Text>.</>
+          ) : (
+            'you’re under the limit.'
+          )}
         </Text>
 
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: z(9), justifyContent: 'center', marginBottom: z(18) }}>
