@@ -12,6 +12,9 @@
   },
   "jest": {
     "preset": "jest-expo",
+    "setupFilesAfterEnv": [
+      "<rootDir>/jest.setup.js"
+    ],
     "testMatch": [
       "**/__tests__/**/*.test.ts",
       "**/__tests__/**/*.test.tsx"
@@ -40,11 +43,13 @@
     "zustand": "^5.0.13"
   },
   "devDependencies": {
+    "@testing-library/react-native": "^13.3.3",
     "@types/jest": "29.5.14",
     "@types/node": "^25.6.2",
     "@types/react": "~19.1.0",
     "babel-preset-expo": "~54.0.10",
     "jest-expo": "~54.0.17",
+    "react-test-renderer": "^19.1.0",
     "typescript": "~5.9.2"
   },
   "private": true

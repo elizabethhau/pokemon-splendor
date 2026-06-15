@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { EnergyType, GameState, PokeballTier, PokemonCard, TokenType } from '../../types/game';
+import { EnergyType, GameState, PokeballTier, TokenType } from '../../types/game';
 import { TYPE_COLORS } from '../../constants';
 import { trainerPoints } from '../../store/selectors';
 import { useTheme } from '../../theme/ThemeContext';
@@ -25,7 +25,7 @@ function BallGlyph({ ball, size }: { ball: PokeballTier; size: number }) {
 
 export default function Dock({
   game, scale, selecting, selectionTotal, selectionValid,
-  onClear, onTake, onEndTurn, endTurnEnabled, mewEligible, onCatchMew, onScoutedPress,
+  onClear, onTake, onEndTurn, endTurnEnabled, mewEligible, onCatchMew, onOpenHand,
   canUndo, onUndo, showActions,
 }: {
   game: GameState;
@@ -39,7 +39,7 @@ export default function Dock({
   endTurnEnabled: boolean;
   mewEligible: boolean;
   onCatchMew: () => void;
-  onScoutedPress: (card: PokemonCard) => void;
+  onOpenHand: () => void;
   canUndo: boolean;
   onUndo: () => void;
   showActions: boolean;
@@ -141,27 +141,33 @@ export default function Dock({
         </View>
       </View>
 
-      <View style={{ gap: z(4) }}>
+      <TouchableOpacity style={{ gap: z(4) }} onPress={onOpenHand}>
         <Text style={label}>HAND {player.scoutedCards.length}/3</Text>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: z(4), minHeight: z(20) }}>
           {player.scoutedCards.length === 0 ? (
             <Text style={{ fontFamily: 'Poppins_400Regular', fontSize: z(10), color: theme.dockDim }}>empty</Text>
-          ) : player.scoutedCards.map(card => (
-            <TouchableOpacity
-              key={card.pokedexNumber}
-              onPress={() => onScoutedPress(card)}
-              style={{
-                width: z(17), height: z(23), borderRadius: z(4),
-                backgroundColor: TYPE_COLORS[card.energyType],
-                borderWidth: 1, borderColor: 'rgba(255,255,255,0.65)',
-                alignItems: 'center', justifyContent: 'center', overflow: 'hidden',
-              }}
-            >
-              <ArtworkImage dex={card.pokedexNumber} style={{ width: z(16), height: z(16) }} />
-            </TouchableOpacity>
-          ))}
+          ) : (
+            <>
+              {player.scoutedCards.map(card => (
+                <View
+                  key={card.pokedexNumber}
+                  style={{
+                    width: z(17), height: z(23), borderRadius: z(4),
+                    backgroundColor: TYPE_COLORS[card.energyType],
+                    borderWidth: 1, borderColor: 'rgba(255,255,255,0.65)',
+                    alignItems: 'center', justifyContent: 'center', overflow: 'hidden',
+                  }}
+                >
+                  <ArtworkImage dex={card.pokedexNumber} style={{ width: z(16), height: z(16) }} />
+                </View>
+              ))}
+              <Text style={{ fontFamily: 'Poppins_600SemiBold', fontSize: z(9.5), color: theme.accentSolid, marginLeft: z(1) }}>
+                View
+              </Text>
+            </>
+          )}
         </View>
-      </View>
+      </TouchableOpacity>
 
       {showActions && (
       <View style={{ marginLeft: 'auto', flexDirection: 'row', alignItems: 'center', gap: z(8) }}>

@@ -267,6 +267,26 @@ Persistent collection tracker across all sessions. Shows all 151 Kanto Pokemon:
 - Tracks acquisition count and (optionally) first acquired date
 - Stored locally via AsyncStorage alongside stats
 
+### Modals & Overlays
+
+The Phase 2 redesign renders modals as **in-screen overlays** — absolutely-positioned `Pressable`/`View` inside the board screen tree — **not** React Native `Modal`. An RN `Modal` opens a separate native window above the React root, which hides the app's toast layer. In-screen overlays let toasts (rendered at the root by `ToastProvider`) paint on top, so error/feedback toasts stay visible while a modal is open.
+
+Stacking inside the board tree is controlled by `zIndex`:
+
+| Overlay | `zIndex` |
+|---------|----------|
+| Card Detail / Scouted Hand tray | 20 |
+| Catch Mew / Confirm gate | 21 |
+| Token Discard | 45 |
+
+- The confirm gate (`ConfirmModal`) is rendered **after** the Catch Mew modal in JSX so the equal-`zIndex` (21) gate paints above it.
+- The **toast** is the one exception: it's a root-level sibling of the whole navigator (`App.tsx`), so it always paints above every in-tree overlay regardless of the overlay's `zIndex` (cross-parent `zIndex` doesn't apply — tree order wins).
+- All modal colors come from theme tokens (`modalBg`, `overlay`, `accent`, …) so each modal renders correctly in all three themes.
+
+**Catch Mew** runs a three-phase flow inside one modal — `select` → `throwing` (Mew wiggles via Reanimated) → `result` — gated by the shared confirm modal. The engine rules (catch rates, ball consumption, 2-Legendary gate) live in the store and are untouched by the UI.
+
+**Token Discard** uses a local pending-selection model: tapping a token marks it for return and the net discard is applied once via `discardTokens` on Done (Done only enables at ≤10 held).
+
 ---
 
 ## Phase 2 Additions (Planned, Not Designed)
