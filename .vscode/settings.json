@@ -1,0 +1,7 @@
+{
+  // design_prototype/*.dc.html use a `{{ }}` template DSL inside inline styles.
+  // VS Code's embedded-CSS validator can't parse that and reports false errors,
+  // so disable embedded style/script validation for HTML in this workspace.
+  "html.validate.styles": false,
+  "html.validate.scripts": false
+}
