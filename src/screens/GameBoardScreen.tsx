@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
-  View, Text, TouchableOpacity, StyleSheet, Modal, ActivityIndicator,
+  View, Text, TouchableOpacity, StyleSheet, Modal, Dimensions,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -24,6 +24,10 @@ import BoardCard from '../components/board/BoardCard';
 import SupplyColumn from '../components/board/SupplyColumn';
 import LegendariesColumn from '../components/board/LegendariesColumn';
 import Dock from '../components/board/Dock';
+import AIThinkingPill from '../components/board/AIThinkingPill';
+import AIMoveFly, { Rect } from '../components/board/AIMoveFly';
+import { AI_AVATAR_DEX } from '../components/board/util';
+import { formatAIMove, AIMoveOutcome } from '../ai/aiMoveSummary';
 import TokenDiscardModal from '../components/TokenDiscardModal';
 import CardDetailModal from '../components/CardDetailModal';
 import ConfirmModal, { ConfirmRequest } from '../components/ConfirmModal';
@@ -39,6 +43,25 @@ const BALL_ORDER: PokeballTier[] = ['Pokeball', 'GreatBall', 'UltraBall', 'Maste
 const BALL_LABELS: Record<PokeballTier, string> = {
   Pokeball: 'Pokeball', GreatBall: 'Great Ball', UltraBall: 'Ultra Ball', MasterBall: 'Master Ball',
 };
+
+// AI turn pacing — the think delay also spaces out consecutive AI rivals
+const AI_THINK_MS = 900;
+const AI_SETTLE_MS = 750; // > FLY_MS so the card-fly finishes before the turn advances
+
+// Wraps a board card so its on-screen rect can be measured for the AI move-fly
+function MeasuredCard({ card, scale, onPress, register }: {
+  card: PokemonCard;
+  scale: number;
+  onPress: () => void;
+  register: (dex: number, node: View | null) => void;
+}) {
+  const ref = useRef<View>(null);
+  return (
+    <View ref={ref} collapsable={false} onLayout={() => register(card.pokedexNumber, ref.current)}>
+      <BoardCard card={card} scale={scale} onPress={onPress} />
+    </View>
+  );
+}
 
 export default function GameBoardScreen({ navigation }: Props) {
   const game = useGameStore(s => s.game);
@@ -63,8 +86,15 @@ export default function GameBoardScreen({ navigation }: Props) {
   const [catchModalVisible, setCatchModalVisible] = useState(false);
   const [selectedBall, setSelectedBall] = useState<PokeballTier | null>(null);
   const [confirm, setConfirm] = useState<ConfirmRequest | null>(null);
-  const [aiThinking, setAiThinking] = useState(false);
+  const [aiThinking, setAiThinking] = useState<{ name: string; color: string; avatarDex: number } | null>(null);
+  const [aiFly, setAiFly] = useState<{ card: PokemonCard; from: Rect; to: { x: number; y: number } } | null>(null);
+  const [aiPulse, setAiPulse] = useState<{ tokens: Partial<Record<TokenType, number>>; key: number } | null>(null);
   const aiTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const cardNodes = useRef<Map<number, View>>(new Map());
+
+  const registerCardNode = useCallback((dex: number, node: View | null) => {
+    if (node) cardNodes.current.set(dex, node);
+  }, []);
 
   useEffect(() => {
     if (game?.phase === PHASE.GAME_OVER) {
@@ -78,49 +108,96 @@ export default function GameBoardScreen({ navigation }: Props) {
     setCatchModalVisible(false);
   }, [game?.currentPlayerIndex, game?.turnNumber]);
 
-  // AI turn trigger
+  // AI turn: think (board visible) → act on the board with a summary toast → pause → advance.
+  // Consecutive AI rivals chain through this effect re-firing per turn, so the think
+  // delay doubles as readable pacing between them.
   useEffect(() => {
     if (!game) return;
     const player = currentPlayer(game);
     if (!player.isAI || game.pendingHandoff || game.phase === PHASE.GAME_OVER || game.actionTakenThisTurn) return;
     if (aiTimerRef.current !== null) return; // already scheduled for this turn
 
-    setAiThinking(true);
+    const idx = game.currentPlayerIndex;
+    setAiThinking({
+      name: player.name,
+      color: PLAYER_COLORS[idx] ?? '#888',
+      avatarDex: AI_AVATAR_DEX[Math.max(0, idx - 1) % AI_AVATAR_DEX.length],
+    });
+
     aiTimerRef.current = setTimeout(() => {
-      aiTimerRef.current = null;
       const store = useGameStore.getState();
       const g = store.game;
-      if (!g) { setAiThinking(false); return; }
+      if (!g) { aiTimerRef.current = null; setAiThinking(null); return; }
 
       const difficulty = g.config.aiDifficulty ?? 'greedy';
       const getMove = difficulty === 'heuristic' ? getHeuristicMove : getGreedyMove;
+      const rivalName = currentPlayer(g).name;
 
+      let outcome: AIMoveOutcome = { kind: 'pass' };
       try {
         const action = getMove(g);
-        store.dispatchAction(action);
+
+        // Capture the source card's on-screen rect before dispatch so the fly
+        // starts from its slot (the slot refills underneath the floating clone).
+        if (action.type === 'trainCard' || action.type === 'scoutFaceUp') {
+          const node = cardNodes.current.get(action.card.pokedexNumber);
+          const card = action.card;
+          const winH = Dimensions.get('window').height;
+          node?.measureInWindow((x, y, w, h) => {
+            if (w > 0) setAiFly({ card, from: { x, y, width: w, height: h }, to: { x: z(14), y: winH - z(58) } });
+          });
+        }
+
+        const legNamesBefore = g.board.availableLegendaries.map(l => l.name);
+        const result = store.dispatchAction(action);
+        const after = useGameStore.getState().game;
+
+        switch (action.type) {
+          case 'takeTokens':
+            setAiPulse({ tokens: action.tokens, key: Date.now() });
+            outcome = { kind: 'takeTokens', tokens: action.tokens };
+            break;
+          case 'trainCard': {
+            const claimed = after
+              ? legNamesBefore.filter(n => !after.board.availableLegendaries.some(l => l.name === n))
+              : [];
+            outcome = { kind: 'trainCard', cardName: action.card.name, claimedLegendaries: claimed };
+            break;
+          }
+          case 'scoutFaceUp':   outcome = { kind: 'scoutFaceUp', cardName: action.card.name }; break;
+          case 'scoutFromDeck': outcome = { kind: 'scoutFromDeck', tier: action.tier }; break;
+          case 'catchMew':      outcome = { kind: 'catchMew', caught: result }; break;
+          case 'pass':          outcome = { kind: 'pass' }; break;
+        }
       } catch (e) {
         // The AI passes when stuck, so reaching here means an AI bug — surface it
         console.warn('AI move failed:', e);
       }
 
-      // Advance turn — the >10-token discard check now happens here
-      const afterAction = useGameStore.getState().game;
-      if (afterAction && afterAction.phase !== PHASE.GAME_OVER) {
-        try { store.advanceTurn(); } catch { /* advance error */ }
-      }
+      setAiThinking(null);
+      toast(formatAIMove(rivalName, outcome));
 
-      // If End Turn entered the discard phase, the AI discards and commits again
-      const afterAdvance = useGameStore.getState().game;
-      if (afterAdvance?.phase === PHASE.DISCARDING) {
-        const aiPlayer = currentPlayer(afterAdvance);
-        try {
-          store.discardTokens(getAIDiscard(aiPlayer));
-          store.advanceTurn();
-        } catch { /* discard error */ }
-      }
+      // Let the move animation play, then commit the turn.
+      aiTimerRef.current = setTimeout(() => {
+        aiTimerRef.current = null;
+        setAiFly(null);
 
-      setAiThinking(false);
-    }, 1200);
+        const afterAction = useGameStore.getState().game;
+        if (afterAction && afterAction.phase !== PHASE.GAME_OVER) {
+          try { store.advanceTurn(); } catch { /* advance error */ }
+        }
+
+        // If End Turn entered the discard phase, the AI discards and commits again
+        const afterAdvance = useGameStore.getState().game;
+        if (afterAdvance?.phase === PHASE.DISCARDING) {
+          const aiPlayer = currentPlayer(afterAdvance);
+          try {
+            store.discardTokens(getAIDiscard(aiPlayer));
+            store.advanceTurn();
+          } catch { /* discard error */ }
+        }
+      }, AI_SETTLE_MS);
+    }, AI_THINK_MS);
 
     return () => {
       if (aiTimerRef.current) {
@@ -139,17 +216,8 @@ export default function GameBoardScreen({ navigation }: Props) {
   }
 
   const player = currentPlayer(game);
-  const playerColor = PLAYER_COLORS[game.currentPlayerIndex] ?? '#888';
-
-  if (aiThinking || (player.isAI && !game.actionTakenThisTurn && game.phase !== PHASE.GAME_OVER)) {
-    return (
-      <View style={s.aiThinking}>
-        <ActivityIndicator size="large" color={playerColor} />
-        <Text style={[s.aiThinkingName, { color: playerColor }]}>{player.name}</Text>
-        <Text style={s.aiThinkingText}>is thinking...</Text>
-      </View>
-    );
-  }
+  // AI turns now play out on the board; this overlay blocks human input while they do.
+  const aiActive = player.isAI && game.phase !== PHASE.GAME_OVER && !game.pendingHandoff;
 
   if (game.pendingHandoff) {
     const nextPlayer = game.players[game.currentPlayerIndex];
@@ -349,11 +417,12 @@ export default function GameBoardScreen({ navigation }: Props) {
           {rows.map(row => (
             <View key={row.tier} style={{ flexDirection: 'row', gap: z(7), justifyContent: 'center' }}>
               {row.face.map(card => (
-                <BoardCard
+                <MeasuredCard
                   key={card.pokedexNumber}
                   card={card}
                   scale={scale}
                   onPress={() => handleCardPress(card, 'face')}
+                  register={registerCardNode}
                 />
               ))}
               {Array.from({ length: FACE_UP_COUNT - row.face.length }).map((_, i) => (
@@ -371,6 +440,8 @@ export default function GameBoardScreen({ navigation }: Props) {
           selection={tokenSelection}
           scale={scale}
           onTokenTap={handleTokenTap}
+          pulse={aiPulse?.tokens}
+          pulseKey={aiPulse?.key}
         />
         <LegendariesColumn
           legendaries={game.board.availableLegendaries}
@@ -397,6 +468,17 @@ export default function GameBoardScreen({ navigation }: Props) {
         canUndo={undoSnapshot !== null}
         onUndo={handleUndo}
       />
+
+      {aiActive && <View style={StyleSheet.absoluteFill} pointerEvents="auto" />}
+      {aiFly && <AIMoveFly card={aiFly.card} from={aiFly.from} to={aiFly.to} scale={scale} />}
+      {aiThinking && (
+        <AIThinkingPill
+          name={aiThinking.name}
+          color={aiThinking.color}
+          avatarDex={aiThinking.avatarDex}
+          scale={scale}
+        />
+      )}
 
       <CardDetailModal
         card={selectedCard}
@@ -470,10 +552,6 @@ export default function GameBoardScreen({ navigation }: Props) {
 const s = StyleSheet.create({
   center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   centerText: { color: '#aaa', fontSize: 16 },
-
-  aiThinking: { flex: 1, backgroundColor: '#0d1b2a', alignItems: 'center', justifyContent: 'center', gap: 12 },
-  aiThinkingName: { fontSize: 28, fontWeight: '800' },
-  aiThinkingText: { fontSize: 16, color: '#aaa' },
 
   handoff: { flex: 1, backgroundColor: '#0d1b2a', alignItems: 'center', justifyContent: 'center', padding: 32 },
   handoffPrompt: { fontSize: 20, color: '#aaa', marginBottom: 8 },
