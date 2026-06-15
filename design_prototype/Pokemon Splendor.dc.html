@@ -23,6 +23,8 @@
   @keyframes ps-fade{from{opacity:0}to{opacity:1}}
   @keyframes ps-rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
   @keyframes ps-spin{to{transform:rotate(360deg)}}
+  @keyframes ps-legfly{0%{transform:translateY(-30px) scale(.7);opacity:0}25%{transform:translateY(0) scale(1.08);opacity:1}66%{transform:translateY(0) scale(1)}100%{transform:translateY(130px) scale(.28);opacity:0}}
+  @keyframes ps-ballpop{0%{transform:scale(0) rotate(-40deg);opacity:0}60%{transform:scale(1.3) rotate(10deg);opacity:1}100%{transform:scale(1) rotate(0);opacity:1}}
 </style>
 </helmet>
 <div style="min-height:100vh;background:#e6e8ee;font-family:'Poppins',sans-serif;padding:30px 24px 56px;display:flex;flex-direction:column;align-items:center;">
@@ -140,7 +142,7 @@
           <div style="height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;background:{{t.topBg}};border-bottom:1px solid {{t.ring}};flex-shrink:0;">
             <div style="display:flex;align-items:center;gap:13px;">
               <sc-for list="{{ opponents }}" as="op" hint-placeholder-count="1">
-                <div style="display:flex;align-items:center;gap:7px;">
+                <div onClick="{{ op.onTap }}" title="View this player's board" style="cursor:pointer;display:flex;align-items:center;gap:7px;padding:3px 8px 3px 3px;border-radius:999px;background:{{t.pillBg}};border:1px solid {{t.ring}};">
                   <div style="width:27px;height:27px;border-radius:50%;background:#4a5066;display:flex;align-items:center;justify-content:center;overflow:hidden;border:2px solid rgba(255,255,255,.25);">
                     <img src="{{op.avatar}}" alt="" style="width:25px;height:25px;object-fit:contain;">
                   </div>
@@ -148,6 +150,7 @@
                     <span style="font:600 10px 'Poppins',sans-serif;color:{{t.topDim}};">{{op.label}}</span>
                     <span style="font:700 13px 'Fredoka',sans-serif;color:{{t.topText}};">{{op.tp}}<span style="font-size:8px;font-weight:600;"> TP</span></span>
                   </div>
+                  <div style="width:15px;height:15px;border-radius:50%;border:1.5px solid {{t.topDim}};display:flex;align-items:center;justify-content:center;font:700 9px 'Fredoka',sans-serif;color:{{t.topDim}};">i</div>
                 </div>
               </sc-for>
             </div>
@@ -341,6 +344,9 @@
               <sc-if value="{{ notSelecting }}" hint-placeholder-val="{{ true }}">
                 <sc-if value="{{ canUndo }}" hint-placeholder-val="{{ false }}">
                   <div onClick="{{ onUndo }}" style="cursor:pointer;padding:9px 14px;border-radius:11px;background:transparent;border:1.5px solid {{t.dockGhostBorder}};font:600 12px 'Poppins',sans-serif;color:{{t.dockText}};">↩ Undo Action</div>
+                </sc-if>
+                <sc-if value="{{ canClaimLeg }}" hint-placeholder-val="{{ false }}">
+                  <div onClick="{{ onOpenLegPrompt }}" style="cursor:pointer;padding:9px 14px;border-radius:11px;background:{{t.accent}};border:1px solid {{t.accentBorder}};font:700 12px 'Fredoka',sans-serif;color:{{t.accentText}};box-shadow:0 3px 8px rgba(10,15,25,.2);">♛ Claim Legendary</div>
                 </sc-if>
                 <sc-if value="{{ showCatch }}" hint-placeholder-val="{{ true }}">
                   <div onClick="{{ onCatch }}" style="cursor:pointer;padding:9px 14px;border-radius:11px;background:transparent;border:1.5px solid {{t.dockGhostBorder}};font:600 12px 'Poppins',sans-serif;color:{{t.dockText}};">Catch Mew</div>
@@ -611,6 +617,163 @@
         </div>
       </sc-if>
 
+      <!-- ============ OPPONENT INSPECT ============ -->
+      <sc-if value="{{ inspectOpen }}" hint-placeholder-val="{{ false }}">
+        <div onClick="{{ onCloseInspect }}" style="position:absolute;inset:0;background:{{t.overlay}};display:flex;align-items:center;justify-content:center;z-index:24;animation:ps-fade .14s ease;">
+          <div onClick="{{ stop }}" style="position:relative;width:452px;background:{{t.modalBg}};border-radius:20px;padding:20px 22px;box-shadow:0 24px 60px rgba(0,0,0,.45);">
+            <div onClick="{{ onCloseInspect }}" style="cursor:pointer;position:absolute;top:15px;right:15px;width:28px;height:28px;border-radius:8px;background:{{t.surface}};display:flex;align-items:center;justify-content:center;color:{{t.inkDim}};font-size:15px;z-index:2;">✕</div>
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="width:44px;height:44px;border-radius:50%;background:#4a5066;display:flex;align-items:center;justify-content:center;overflow:hidden;border:2.5px solid rgba(255,255,255,.25);flex-shrink:0;">
+                <img src="{{ins.avatar}}" alt="" style="width:40px;height:40px;object-fit:contain;">
+              </div>
+              <div style="flex:1;min-width:0;">
+                <div style="font:700 19px 'Fredoka',sans-serif;color:{{t.modalText}};line-height:1.05;">{{ins.name}}</div>
+                <div style="font:500 11px 'Poppins',sans-serif;color:{{t.inkDim}};">Opponent board · view only, no turn spent</div>
+              </div>
+              <div style="text-align:center;padding-right:32px;">
+                <div style="font:700 26px 'Fredoka',sans-serif;color:{{t.accentSolid}};line-height:1;">{{ins.tp}}</div>
+                <div style="font:700 8px 'Poppins',sans-serif;color:{{t.inkDim}};letter-spacing:1px;">TP</div>
+              </div>
+            </div>
+            <div style="height:1px;background:{{t.ring}};margin:13px 0 14px;"></div>
+            <div style="display:flex;flex-direction:column;gap:14px;">
+              <div>
+                <div style="font:700 8px 'Poppins',sans-serif;color:{{t.inkDim}};letter-spacing:1px;text-transform:uppercase;margin-bottom:7px;">Type bonus</div>
+                <div style="display:flex;gap:6px;">
+                  <sc-for list="{{ ins.bonuses }}" as="b" hint-placeholder-count="5">
+                    <div style="flex:1;height:40px;border-radius:9px;background:{{b.color}};opacity:{{b.opacity}};display:flex;align-items:center;justify-content:center;font:700 16px 'Fredoka',sans-serif;color:{{b.text}};">{{b.count}}</div>
+                  </sc-for>
+                </div>
+              </div>
+              <div style="display:flex;gap:16px;">
+                <div style="flex:1;">
+                  <div style="font:700 8px 'Poppins',sans-serif;color:{{t.inkDim}};letter-spacing:1px;text-transform:uppercase;margin-bottom:7px;">Energy · {{ins.energyTotal}}</div>
+                  <div style="display:flex;flex-wrap:wrap;gap:7px;min-height:26px;align-items:center;">
+                    <sc-if value="{{ ins.hasTokens }}" hint-placeholder-val="{{ true }}">
+                      <sc-for list="{{ ins.tokens }}" as="tk" hint-placeholder-count="3">
+                        <div style="width:22px;height:22px;border-radius:50%;background:{{tk.color}};border:1.5px solid rgba(255,255,255,.8);box-shadow:inset 0 1px 2px rgba(255,255,255,.5);display:flex;align-items:center;justify-content:center;font:700 11px 'Fredoka',sans-serif;color:{{tk.text}};">{{tk.count}}</div>
+                      </sc-for>
+                    </sc-if>
+                    <sc-if value="{{ ins.noTokens }}" hint-placeholder-val="{{ false }}">
+                      <span style="font:500 11px 'Poppins',sans-serif;color:{{t.inkDim}};">No energy held</span>
+                    </sc-if>
+                  </div>
+                </div>
+                <div style="flex:1;">
+                  <div style="font:700 8px 'Poppins',sans-serif;color:{{t.inkDim}};letter-spacing:1px;text-transform:uppercase;margin-bottom:7px;">Poké Balls · {{ins.ballTotal}}</div>
+                  <div style="display:flex;flex-wrap:wrap;gap:9px;min-height:26px;align-items:center;">
+                    <sc-if value="{{ ins.hasBalls }}" hint-placeholder-val="{{ true }}">
+                      <sc-for list="{{ ins.balls }}" as="bl" hint-placeholder-count="2">
+                        <div style="display:flex;align-items:center;gap:3px;">
+                          <div style="position:relative;width:19px;height:19px;border-radius:50%;background:linear-gradient({{bl.top}} 0 48%,#fff 52% 100%);border:2px solid #1d2530;">
+                            <div style="position:absolute;top:calc(50% - 1px);left:-2px;right:-2px;height:2px;background:#1d2530;"></div>
+                          </div>
+                          <span style="font:700 11px 'Fredoka',sans-serif;color:{{t.modalText}};">{{bl.count}}</span>
+                        </div>
+                      </sc-for>
+                    </sc-if>
+                    <sc-if value="{{ ins.noBalls }}" hint-placeholder-val="{{ false }}">
+                      <span style="font:500 11px 'Poppins',sans-serif;color:{{t.inkDim}};">None yet</span>
+                    </sc-if>
+                  </div>
+                </div>
+              </div>
+              <div style="display:flex;gap:16px;">
+                <div style="flex:1;">
+                  <div style="font:700 8px 'Poppins',sans-serif;color:{{t.inkDim}};letter-spacing:1px;text-transform:uppercase;margin-bottom:7px;">Scouted hand · {{ins.scoutSize}}/3</div>
+                  <div style="display:flex;gap:6px;align-items:center;min-height:30px;">
+                    <sc-if value="{{ ins.hasScout }}" hint-placeholder-val="{{ true }}">
+                      <sc-for list="{{ ins.scoutBacks }}" as="bk" hint-placeholder-count="2">
+                        <div style="width:22px;height:30px;border-radius:5px;background:linear-gradient(150deg,#3a4458,#222b3a);border:1px solid rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;">
+                          <div style="position:relative;width:12px;height:12px;border-radius:50%;background:linear-gradient(#ee4b3b 0 48%,#fff 52% 100%);border:1.5px solid #1d2530;">
+                            <div style="position:absolute;top:calc(50% - .75px);left:-1.5px;right:-1.5px;height:1.5px;background:#1d2530;"></div>
+                          </div>
+                        </div>
+                      </sc-for>
+                      <span style="font:500 10px 'Poppins',sans-serif;color:{{t.inkDim}};margin-left:2px;">contents hidden</span>
+                    </sc-if>
+                    <sc-if value="{{ ins.noScout }}" hint-placeholder-val="{{ false }}">
+                      <span style="font:500 11px 'Poppins',sans-serif;color:{{t.inkDim}};">Empty</span>
+                    </sc-if>
+                  </div>
+                </div>
+                <div style="flex:1.1;">
+                  <div style="font:700 8px 'Poppins',sans-serif;color:{{t.inkDim}};letter-spacing:1px;text-transform:uppercase;margin-bottom:7px;">Legendary · Nobles</div>
+                  <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;min-height:30px;">
+                    <sc-if value="{{ ins.hasLeg }}" hint-placeholder-val="{{ true }}">
+                      <sc-for list="{{ ins.legendaries }}" as="lg" hint-placeholder-count="1">
+                        <div style="display:flex;align-items:center;gap:4px;background:{{t.surface}};border:1px solid {{t.ring}};border-radius:9px;padding:3px 8px 3px 4px;">
+                          <img src="{{lg.sprite}}" alt="{{lg.name}}" style="width:24px;height:24px;object-fit:contain;">
+                          <span style="font:700 12px 'Fredoka',sans-serif;color:{{t.accentSolid}};">{{lg.tp}}</span>
+                        </div>
+                      </sc-for>
+                    </sc-if>
+                    <sc-if value="{{ ins.noLeg }}" hint-placeholder-val="{{ false }}">
+                      <span style="font:500 11px 'Poppins',sans-serif;color:{{t.inkDim}};">None claimed</span>
+                    </sc-if>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ============ LEGENDARY CLAIM PROMPT ============ -->
+      <sc-if value="{{ legPromptOpen }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;inset:0;background:{{t.overlay}};display:flex;align-items:center;justify-content:center;z-index:43;animation:ps-fade .16s ease;">
+          <div style="max-width:540px;background:{{t.modalBg}};border-radius:20px;padding:22px;box-shadow:0 24px 60px rgba(0,0,0,.5);animation:ps-pop .22s ease;">
+            <div style="display:flex;align-items:center;gap:11px;margin-bottom:4px;">
+              <div style="width:36px;height:36px;border-radius:50%;background:{{t.accent}};display:flex;align-items:center;justify-content:center;font:700 18px 'Fredoka',sans-serif;color:{{t.accentText}};flex-shrink:0;">♛</div>
+              <h3 style="margin:0;font:700 20px 'Fredoka',sans-serif;color:{{t.modalText}};">{{legPrompt.title}}</h3>
+            </div>
+            <p style="margin:0 0 16px;font:400 12.5px/1.55 'Poppins',sans-serif;color:{{t.inkDim}};">A Legendary is drawn to your Type Bonuses. Claiming is <b style="color:{{t.modalText}};">free</b> — it won’t end your turn — and a bonus Poké Ball is procured. Pick one to add to your team.</p>
+            <div style="display:flex;gap:12px;justify-content:center;margin-bottom:18px;">
+              <sc-for list="{{ legPrompt.cards }}" as="lc" hint-placeholder-count="1">
+                <div onClick="{{ lc.onPick }}" style="cursor:pointer;width:150px;border-radius:15px;background:{{lc.bg}};border:2px solid {{lc.border}};padding:13px 12px;display:flex;flex-direction:column;align-items:center;gap:7px;transition:all .15s;">
+                  <div style="position:relative;width:84px;height:84px;display:flex;align-items:center;justify-content:center;">
+                    <div style="position:absolute;width:84px;height:84px;border-radius:50%;background:radial-gradient(circle,{{t.accentGlow}},transparent 70%);"></div>
+                    <img src="{{lc.sprite}}" alt="{{lc.name}}" style="width:78px;height:78px;object-fit:contain;filter:drop-shadow(0 5px 9px rgba(0,0,0,.3));z-index:1;">
+                  </div>
+                  <div style="font:700 15px 'Fredoka',sans-serif;color:{{t.modalText}};">{{lc.name}}</div>
+                  <div style="display:flex;gap:5px;">
+                    <sc-for list="{{ lc.reqs }}" as="rq" hint-placeholder-count="2">
+                      <div style="display:flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 4px;border-radius:5px;background:{{rq.color}};font:700 10px 'Fredoka',sans-serif;color:{{rq.text}};">{{rq.n}}</div>
+                    </sc-for>
+                  </div>
+                  <div style="font:700 13px 'Fredoka',sans-serif;color:{{t.accentSolid}};">+{{lc.tp}} TP</div>
+                </div>
+              </sc-for>
+            </div>
+            <div style="display:flex;gap:10px;">
+              <div onClick="{{ onDeclineLeg }}" style="cursor:pointer;flex:1;padding:12px;border-radius:11px;background:transparent;border:1.5px solid {{t.ring2}};color:{{t.modalText}};font:600 13px 'Poppins',sans-serif;text-align:center;">Maybe later</div>
+              <div onClick="{{ onClaimLeg }}" style="cursor:pointer;flex:1.4;padding:12px;border-radius:11px;background:{{t.accent}};border:1px solid {{t.accentBorder}};color:{{t.accentText}};font:700 13px 'Fredoka',sans-serif;text-align:center;box-shadow:0 4px 10px rgba(10,15,25,.18);">Claim {{legPrompt.claimName}}</div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ============ LEGENDARY CLAIM ANIMATION ============ -->
+      <sc-if value="{{ claimOpen }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;inset:0;background:{{t.overlay}};display:flex;align-items:center;justify-content:center;z-index:48;animation:ps-fade .16s ease;">
+          <div style="background:{{t.modalBg}};border-radius:22px;padding:22px 44px 26px;box-shadow:0 24px 60px rgba(0,0,0,.5);display:flex;flex-direction:column;align-items:center;">
+            <div style="font:700 11px 'Poppins',sans-serif;color:{{t.accentSolid}};letter-spacing:3px;text-transform:uppercase;">Legendary claimed</div>
+            <div style="position:relative;width:190px;height:185px;display:flex;align-items:center;justify-content:center;overflow:hidden;">
+              <div style="position:absolute;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,{{t.accentGlow}},transparent 68%);animation:ps-pop .5s ease;"></div>
+              <img src="{{claim.sprite}}" alt="{{claim.name}}" style="width:172px;height:172px;object-fit:contain;filter:drop-shadow(0 12px 20px rgba(0,0,0,.4));animation:ps-legfly 1.5s cubic-bezier(.5,.05,.6,1) forwards;">
+            </div>
+            <div style="display:flex;align-items:center;gap:9px;animation:ps-ballpop .6s ease .55s both;">
+              <div style="position:relative;width:30px;height:30px;border-radius:50%;background:linear-gradient(#ee4b3b 0 48%,#fff 52% 100%);border:3px solid #1d2530;">
+                <div style="position:absolute;top:calc(50% - 1.5px);left:-3px;right:-3px;height:3px;background:#1d2530;"></div>
+                <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:9px;height:9px;border-radius:50%;background:#fff;border:2.5px solid #1d2530;"></div>
+              </div>
+              <span style="font:700 16px 'Fredoka',sans-serif;color:{{t.modalText}};">+1 Poké Ball procured</span>
+            </div>
+            <div style="font:700 21px 'Fredoka',sans-serif;color:{{t.modalText}};margin-top:9px;animation:ps-rise .5s ease .25s both;">{{claim.name}} joined your team!</div>
+          </div>
+        </div>
+      </sc-if>
+
       <!-- ============ TOAST ============ -->
       <sc-if value="{{ hasToast }}" hint-placeholder-val="{{ false }}">
         <div style="position:absolute;bottom:92px;left:50%;transform:translateX(-50%);background:rgba(20,26,36,.94);color:#fff;padding:10px 18px;border-radius:11px;font:600 12.5px 'Poppins',sans-serif;z-index:30;box-shadow:0 8px 20px rgba(0,0,0,.3);">{{toastMsg}}</div>
@@ -683,11 +846,12 @@ class Component extends DCLogic {
       detail:null, detailSource:null, handOpen:false,
       catch:null, catchBall:null, catchPhase:'idle', catchResult:null,
       confirm:null, discard:false, discardSnap:null,
+      inspect:null, legendaryPrompt:null, legSel:null, claimPhase:'idle', claimKey:null,
       toast:null,
     };
   }
 
-  freshSeat(){ return { tp:0, tokens:{Fire:0,Water:0,Grass:0,Electric:0,Psychic:0,Ditto:0}, bonuses:{Fire:0,Water:0,Grass:0,Electric:0,Psychic:0}, balls:{Pokeball:0,GreatBall:0,UltraBall:0,MasterBall:0}, scouted:[], legendaries:[], owned:[] }; }
+  freshSeat(){ return { tp:0, tokens:{Fire:0,Water:0,Grass:0,Electric:0,Psychic:0,Ditto:0}, bonuses:{Fire:0,Water:0,Grass:0,Electric:0,Psychic:0}, balls:{Pokeball:0,GreatBall:0,UltraBall:0,MasterBall:0}, scouted:[], legendaries:[], owned:[], legOffered:[] }; }
 
   THEMES(){
     return {
@@ -800,7 +964,8 @@ class Component extends DCLogic {
     this.setState({ you:JSON.parse(JSON.stringify(snap.you)), board:JSON.parse(JSON.stringify(snap.board)),
       acted:false, undoSnap:null, sel:{},
       detail:null, detailSource:null, handOpen:false,
-      catch:false, catchBall:null, catchPhase:'idle', catchResult:null });
+      catch:false, catchBall:null, catchPhase:'idle', catchResult:null,
+      legendaryPrompt:null, legSel:null, inspect:null });
     this.toast('Action undone · choose again');
   }
   // ----- confirm gate for actions that can't be undone -----
@@ -890,14 +1055,15 @@ class Component extends DCLogic {
     else {
       for(const row of board.rows){ const idx=row.slots.findIndex(c=>c&&c.id===card.id); if(idx>=0){ row.slots[idx]=null; break; } }
     }
-    // legendary auto-collect
-    const got=this.legendaryCheck(you); let legMsg='';
-    if(got.length){ for(const g of got){ you.legendaries.push({key:g.key,name:g.name,tp:g.tp}); you.tp+=g.tp; } legMsg=' · '+got.map(g=>g.name).join(' & ')+' joined!'; }
+    // legendary eligibility — no longer auto-collected; the player is prompted to claim
+    const elig=this.legendaryCheck(you).filter(g=>!(you.legOffered||[]).includes(g.key));
     const over = you.tp>=20;
     const seatSave = this.state.seats.slice();
     if(over && seatSave.length) seatSave[this.state.active]=JSON.parse(JSON.stringify(you));
-    this.setState({ you, board, seats:seatSave, detail:null, detailSource:null, acted:true, undoSnap: over?null:snap, screen: over?'gameover':this.state.screen });
-    this.toast('Trained '+card.name+legMsg);
+    const prompt = (!over && elig.length) ? elig : null;
+    if(prompt) you.legOffered=[...new Set([...(you.legOffered||[]), ...elig.map(g=>g.key)])];
+    this.setState({ you, board, seats:seatSave, detail:null, detailSource:null, acted:true, undoSnap: over?null:snap, screen: over?'gameover':this.state.screen, legendaryPrompt:prompt, legSel: prompt? prompt[0].key : null });
+    this.toast('Trained '+card.name);
   }
   scoutFromCard(){
     const card=this.state.detail; if(!card) return;
@@ -973,7 +1139,7 @@ class Component extends DCLogic {
     // Loop through consecutive AI players, simulating each turn until we reach a human.
     while(roster[nextIdx] && roster[nextIdx].kind==='ai'){
       const aiSeat=JSON.parse(JSON.stringify(seats[nextIdx]||this.freshSeat()));
-      aiSeat.tp += 1+Math.floor(Math.random()*(st.ai==='easy'?2:3));
+      this.simAiTurn(aiSeat, st.ai);
       seats[nextIdx]=aiSeat;
       if(aiSeat.tp>=20){ this.setState({ seats, turnCount:tc, active:nextIdx, screen:'gameover' }); return; }
       nextIdx=(nextIdx+1)%len; tc+=1;
@@ -1010,6 +1176,79 @@ class Component extends DCLogic {
       if(caught){ you.tp+=5; board=JSON.parse(JSON.stringify(this.state.board)); board.mewPresent=false; board.mewCaughtBy=(this.state.roster[this.state.active]||{}).name||'You'; over=you.tp>=20; }
       this.setState({ you, board, catchPhase:'result', catchResult:caught, acted:true, undoSnap:null });
     },1300);
+  }
+
+  // ----- opponent board inspection (non-committal) -----
+  openInspect(i){ this.setState({inspect:i}); }
+  closeInspect(){ this.setState({inspect:null}); }
+
+  // ----- legendary / noble claim -----
+  openLegendaryPrompt(){
+    const elig=this.legendaryCheck(this.state.you);
+    if(!elig.length){ this.toast('No Legendary available yet'); return; }
+    this.setState({ legendaryPrompt:elig, legSel:elig[0].key });
+  }
+  pickLeg(key){ this.setState({legSel:key}); }
+  declineLegendary(){
+    const p=this.state.legendaryPrompt||[];
+    const you=JSON.parse(JSON.stringify(this.state.you));
+    you.legOffered=[...new Set([...(you.legOffered||[]), ...p.map(g=>g.key)])];
+    this.setState({ legendaryPrompt:null, legSel:null, you });
+    this.toast('Left on the board — claim it later with ♛');
+  }
+  claimLegendary(){
+    const key=this.state.legSel; if(!key) return;
+    const leg=(this.state.legendaryPrompt||[]).find(g=>g.key===key) || this.state.legendaries.find(l=>l.key===key);
+    if(!leg) return;
+    this.setState({ legendaryPrompt:null, claimPhase:'flying', claimKey:key });
+    clearTimeout(this._lt);
+    this._lt=setTimeout(()=>{
+      const you=JSON.parse(JSON.stringify(this.state.you));
+      you.legendaries=you.legendaries||[]; you.legendaries.push({key:leg.key,name:leg.name,tp:leg.tp});
+      you.tp+=leg.tp;
+      you.balls.Pokeball=(you.balls.Pokeball||0)+1; // bonus Poké Ball procured
+      you.legOffered=[...new Set([...(you.legOffered||[]), leg.key])];
+      const over=you.tp>=20;
+      const seats=this.state.seats.slice();
+      if(seats.length) seats[this.state.active]=JSON.parse(JSON.stringify(you));
+      this.setState({ you, seats, claimPhase:'idle', claimKey:null, legSel:null, undoSnap:null, screen: over?'gameover':this.state.screen });
+      this.toast(leg.name+' joined your team · +1 Poké Ball');
+    },1550);
+  }
+
+  // ----- lightweight AI turn so inspected boards show real progress -----
+  simAiTurn(seat, ai){
+    const types=['Fire','Water','Grass','Electric','Psychic'];
+    seat.bonuses=seat.bonuses||{}; seat.tokens=seat.tokens||{}; seat.balls=seat.balls||{};
+    seat.scouted=seat.scouted||[]; seat.legendaries=seat.legendaries||[]; seat.owned=seat.owned||[];
+    const r=Math.random();
+    if(r<0.62){
+      // train a card: gain a type bonus, TP, a ball, a Pokémon; spend some energy
+      const ty=types[Math.floor(Math.random()*types.length)];
+      seat.bonuses[ty]=(seat.bonuses[ty]||0)+1;
+      seat.tp += 1+Math.floor(Math.random()*(ai==='easy'?2:3));
+      const roll=Math.random();
+      const bk= roll<0.6?'Pokeball':(roll<0.85?'GreatBall':'UltraBall');
+      seat.balls[bk]=(seat.balls[bk]||0)+1;
+      for(const tt of types){ if((seat.tokens[tt]||0)>0 && Math.random()<0.5) seat.tokens[tt]=Math.max(0,seat.tokens[tt]-1); }
+      const dexByType={Fire:[4,5,77],Water:[7,8,54],Grass:[1,2,43],Electric:[25,100,81],Psychic:[63,92,96]};
+      const pool=dexByType[ty]; const dx=pool[Math.floor(Math.random()*pool.length)];
+      if(!seat.owned.includes(dx)) seat.owned.push(dx);
+    } else if(r<0.86){
+      // take energy
+      let added=0; const shuffled=[...types].sort(()=>Math.random()-0.5);
+      for(const tt of shuffled){ if(added>=3) break; if(this.tokenTotal(seat.tokens)<10){ seat.tokens[tt]=(seat.tokens[tt]||0)+1; added++; } }
+    } else {
+      // scout (face-down) + a wild Ditto
+      if(seat.scouted.length<3){ seat.scouted.push({hidden:true}); if(this.tokenTotal(seat.tokens)<10) seat.tokens.Ditto=(seat.tokens.Ditto||0)+1; }
+    }
+    // AI auto-claims any Legendary it now qualifies for
+    const owned=new Set(seat.legendaries.map(l=>l.key));
+    for(const leg of this.state.legendaries){
+      if(owned.has(leg.key)) continue;
+      let ok=true; for(const [ty,n] of Object.entries(leg.req)){ if((seat.bonuses[ty]||0)<n){ ok=false; break; } }
+      if(ok){ seat.legendaries.push({key:leg.key,name:leg.name,tp:leg.tp}); seat.tp+=leg.tp; seat.balls.Pokeball=(seat.balls.Pokeball||0)+1; owned.add(leg.key); }
+    }
   }
 
   stop(e){ if(e&&e.stopPropagation) e.stopPropagation(); }
@@ -1161,6 +1400,7 @@ class Component extends DCLogic {
       label: r.name+(r.kind==='ai'?' · AI':''),
       tp: (st.seats[i] ? st.seats[i].tp : 0),
       avatar: this.ART(r.avatar||25),
+      idx: i, onTap:()=>this.openInspect(i),
     })).filter(Boolean);
     const pendingIdx = roster.length ? (active+1)%roster.length : 0;
     const pending = roster[pendingIdx] || {name:'Player', kind:'human'};
@@ -1179,6 +1419,54 @@ class Component extends DCLogic {
     });
     const youWin = winnerName==='You';
     const goTitle = winnerName==='You' ? 'You Win!' : winnerName+' Wins!';
+
+    // ----- opponent inspection view-model -----
+    const legSprite={}; st.legendaries.forEach(l=>{ legSprite[l.key]=l.sprite; });
+    let inspectOpen=false, ins=null;
+    if(st.inspect!=null && roster[st.inspect]){
+      const i=st.inspect; const seat=st.seats[i]||this.freshSeat(); const ir=roster[i];
+      const insTokens=supplyTypes.map(ty=>({color:TC[ty],text:this.txt(ty),count:seat.tokens[ty]||0})).filter(x=>x.count>0);
+      const insBalls=['Pokeball','GreatBall','UltraBall','MasterBall'].map(k=>({top:ballTop[k],count:seat.balls[k]||0})).filter(x=>x.count>0);
+      const scoutN=(seat.scouted?seat.scouted.length:0);
+      const legs=(seat.legendaries||[]);
+      inspectOpen=true;
+      ins={
+        name: ir.name+(ir.kind==='ai'?' · AI':''), avatar:this.ART(ir.avatar||25), tp:seat.tp,
+        bonuses:['Fire','Water','Grass','Electric','Psychic'].map(ty=>{ const n=seat.bonuses[ty]||0; return {color:TC[ty],text:this.txt(ty),count:n,opacity:n>0?'1':'0.22'}; }),
+        tokens:insTokens, hasTokens:insTokens.length>0, noTokens:insTokens.length===0, energyTotal:insTokens.reduce((a,x)=>a+x.count,0),
+        balls:insBalls, hasBalls:insBalls.length>0, noBalls:insBalls.length===0, ballTotal:insBalls.reduce((a,x)=>a+x.count,0),
+        scoutSize:scoutN, hasScout:scoutN>0, noScout:scoutN===0, scoutBacks:Array.from({length:scoutN},(_,k)=>({k})),
+        legendaries:legs.map(l=>({name:l.name,sprite:legSprite[l.key]||this.ART(144),tp:l.tp})),
+        hasLeg:legs.length>0, noLeg:legs.length===0,
+      };
+    }
+
+    // ----- legendary claim prompt + animation view-model -----
+    const eligLeg=this.legendaryCheck(st.you);
+    let legPromptOpen=false, legPrompt=null;
+    if(st.legendaryPrompt && st.legendaryPrompt.length){
+      const selName=(st.legendaryPrompt.find(g=>g.key===st.legSel)||st.legendaryPrompt[0]).name;
+      legPromptOpen=true;
+      legPrompt={
+        multi: st.legendaryPrompt.length>1,
+        title: st.legendaryPrompt.length>1 ? 'You qualify for these Legendaries!' : 'You qualify for a Legendary!',
+        claimName: st.legendaryPrompt.length>1 ? selName : 'Legendary',
+        cards: st.legendaryPrompt.map(g=>({
+          key:g.key, name:g.name, sprite:g.sprite, tp:g.tp,
+          reqs:Object.entries(g.req).map(([ty,n])=>({n,color:TC[ty],text:this.txt(ty)})),
+          selected: st.legSel===g.key,
+          bg: st.legSel===g.key ? t.mewBg : 'transparent',
+          border: st.legSel===g.key ? t.accentSolid : t.ring2,
+          onPick:()=>this.pickLeg(g.key),
+        })),
+      };
+    }
+    const canClaimLeg = eligLeg.length>0 && !st.legendaryPrompt && st.claimPhase!=='flying' && screen==='board';
+    let claimOpen=false, claim=null;
+    if(st.claimPhase==='flying' && st.claimKey){
+      const leg=st.legendaries.find(l=>l.key===st.claimKey);
+      if(leg){ claimOpen=true; claim={name:leg.name, sprite:leg.sprite, tp:leg.tp}; }
+    }
 
     return {
       t, themeBtns, heroSprite:this.ART(25),
@@ -1241,6 +1529,13 @@ class Component extends DCLogic {
       stop:(e)=>this.stop(e),
       // toast
       hasToast:!!st.toast, toastMsg:st.toast,
+      // opponent inspection
+      inspectOpen, ins, onCloseInspect:()=>this.closeInspect(),
+      // legendary claim prompt + animation
+      legPromptOpen, legPrompt,
+      onClaimLeg:()=>this.claimLegendary(), onDeclineLeg:()=>this.declineLegendary(),
+      canClaimLeg, onOpenLegPrompt:()=>this.openLegendaryPrompt(),
+      claimOpen, claim,
     };
   }
 }
