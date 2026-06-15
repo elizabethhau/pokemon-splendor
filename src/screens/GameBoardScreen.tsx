@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
-  View, Text, TouchableOpacity, StyleSheet, Modal, Dimensions,
+  View, Text, TouchableOpacity, StyleSheet, Dimensions,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -30,6 +30,8 @@ import { AI_AVATAR_DEX } from '../components/board/util';
 import { formatAIMove, AIMoveOutcome } from '../ai/aiMoveSummary';
 import TokenDiscardModal from '../components/TokenDiscardModal';
 import CardDetailModal from '../components/CardDetailModal';
+import CatchMewModal, { CatchBall, CatchPhase } from '../components/CatchMewModal';
+import ScoutedHandModal from '../components/ScoutedHandModal';
 import ConfirmModal, { ConfirmRequest } from '../components/ConfirmModal';
 import { getGreedyMove } from '../ai/greedy';
 import { getHeuristicMove } from '../ai/heuristic';
@@ -43,6 +45,9 @@ const BALL_ORDER: PokeballTier[] = ['Pokeball', 'GreatBall', 'UltraBall', 'Maste
 const BALL_LABELS: Record<PokeballTier, string> = {
   Pokeball: 'Pokeball', GreatBall: 'Great Ball', UltraBall: 'Ultra Ball', MasterBall: 'Master Ball',
 };
+
+// Mew wiggles for this long before the catch resolves
+const CATCH_THROW_MS = 1300;
 
 // AI turn pacing — the think delay also spaces out consecutive AI rivals
 const AI_THINK_MS = 900;
@@ -85,6 +90,9 @@ export default function GameBoardScreen({ navigation }: Props) {
   const [selectedCardSource, setSelectedCardSource] = useState<'face' | 'scouted' | null>(null);
   const [catchModalVisible, setCatchModalVisible] = useState(false);
   const [selectedBall, setSelectedBall] = useState<PokeballTier | null>(null);
+  const [catchPhase, setCatchPhase] = useState<CatchPhase>('select');
+  const [catchResult, setCatchResult] = useState(false);
+  const [handVisible, setHandVisible] = useState(false);
   const [confirm, setConfirm] = useState<ConfirmRequest | null>(null);
   const [aiThinking, setAiThinking] = useState<{ name: string; color: string; avatarDex: number } | null>(null);
   const [aiFly, setAiFly] = useState<{ card: PokemonCard; from: Rect; to: { x: number; y: number } } | null>(null);
@@ -108,6 +116,9 @@ export default function GameBoardScreen({ navigation }: Props) {
     setTokenSelection({});
     setSelectedBall(null);
     setCatchModalVisible(false);
+    setCatchPhase('select');
+    setCatchResult(false);
+    setHandVisible(false);
   }, [game?.currentPlayerIndex, game?.turnNumber]);
 
   // AI turn: think (board visible) → act on the board with a summary toast → pause → advance.
@@ -360,37 +371,55 @@ export default function GameBoardScreen({ navigation }: Props) {
   const mewEligible = mewOnBoard !== null && canCatchMew(player, mewOnBoard) && actionAvailable;
   const mewCatcher = mewOnBoard ? null : game.players.find(p => p.mythical) ?? null;
   const hasMewtwo = player.legendaries.some(l => l.pokedexNumber === MEWTWO_POKEDEX_NUMBER);
-  const availableBalls = (Object.entries(player.pokeballs) as [PokeballTier, number][])
+  const ballPct = (ball: PokeballTier) =>
+    Math.round(Math.min(1, BASE_CATCH_RATES[ball] + (hasMewtwo ? MEWTWO_CATCH_BONUS : 0)) * 100);
+  const catchBalls: CatchBall[] = (Object.entries(player.pokeballs) as [PokeballTier, number][])
     .filter(([, n]) => n > 0)
-    .sort(([a], [b]) => BALL_ORDER.indexOf(a) - BALL_ORDER.indexOf(b));
+    .sort(([a], [b]) => BALL_ORDER.indexOf(a) - BALL_ORDER.indexOf(b))
+    .map(([ball, count]) => ({ tier: ball, count, pct: ballPct(ball) }));
+
+  function openCatch() {
+    setSelectedBall(null);
+    setCatchResult(false);
+    setCatchPhase('select');
+    setCatchModalVisible(true);
+  }
+
+  function closeCatch() {
+    setCatchModalVisible(false);
+    setSelectedBall(null);
+    setCatchPhase('select');
+    setCatchResult(false);
+  }
 
   function handleMewPress() {
     if (!mewOnBoard) return;
-    if (mewEligible) { setCatchModalVisible(true); return; }
+    if (mewEligible) { openCatch(); return; }
     if (!actionAvailable) { toast('You already acted this turn'); return; }
     toast(`Mew needs ${mewOnBoard.legendariesRequired} Legendaries + a Poké Ball`);
   }
 
+  // Confirm gate → throwing (Mew wiggles) → resolve via the engine → in-modal result.
   function handleThrowPress() {
     if (!selectedBall) return;
     const ball = selectedBall;
-    const hasMewtwoBonus = player.legendaries.some(l => l.pokedexNumber === MEWTWO_POKEDEX_NUMBER);
-    const pct = Math.round(Math.min(1, BASE_CATCH_RATES[ball] + (hasMewtwoBonus ? MEWTWO_CATCH_BONUS : 0)) * 100);
-    setCatchModalVisible(false);
     setConfirm({
       title: `Throw your ${BALL_LABELS[ball]}?`,
-      message: `Catch chance is ${pct}%. Win or lose, this uses your turn and the ball — it can’t be undone.`,
+      message: `Catch chance is ${ballPct(ball)}%. Win or lose, this uses your turn and the ball — it can’t be undone.`,
       confirmLabel: 'Throw it!',
       onProceed: () => {
-        try {
-          const caught = catchMew(ball);
-          setSelectedBall(null);
-          toast(caught
-            ? 'Mew caught! +5 Trainer Points!'
-            : `The ${BALL_LABELS[ball]} was spent — Mew escaped`);
-        } catch (e: unknown) {
-          toast(e instanceof Error ? e.message : String(e));
-        }
+        setCatchPhase('throwing');
+        setTimeout(() => {
+          if (!mountedRef.current) return;
+          try {
+            const caught = catchMew(ball);
+            setCatchResult(caught);
+            setCatchPhase('result');
+          } catch (e: unknown) {
+            closeCatch();
+            toast(e instanceof Error ? e.message : String(e));
+          }
+        }, CATCH_THROW_MS);
       },
     });
   }
@@ -468,8 +497,8 @@ export default function GameBoardScreen({ navigation }: Props) {
         onEndTurn={handleEndTurn}
         endTurnEnabled={endTurnEnabled}
         mewEligible={mewEligible}
-        onCatchMew={() => setCatchModalVisible(true)}
-        onScoutedPress={card => handleCardPress(card, 'scouted')}
+        onCatchMew={openCatch}
+        onOpenHand={() => setHandVisible(true)}
         canUndo={undoSnapshot !== null}
         onUndo={handleUndo}
         showActions={!aiActive}
@@ -498,62 +527,35 @@ export default function GameBoardScreen({ navigation }: Props) {
         onScout={handleScoutFaceUp}
       />
 
+      <ScoutedHandModal
+        visible={handVisible}
+        player={player}
+        scale={scale}
+        onClose={() => setHandVisible(false)}
+        onCardPress={card => { setHandVisible(false); handleCardPress(card, 'scouted'); }}
+      />
+
+      <CatchMewModal
+        visible={catchModalVisible}
+        phase={catchPhase}
+        caught={catchResult}
+        selectedBall={selectedBall}
+        balls={catchBalls}
+        scale={scale}
+        onPickBall={setSelectedBall}
+        onThrow={handleThrowPress}
+        onClose={closeCatch}
+      />
+
+      {/* After the catch modal so the confirm gate paints above it (equal zIndex). */}
       <ConfirmModal request={confirm} scale={scale} onClose={() => setConfirm(null)} />
 
       <TokenDiscardModal />
-
-      {/* Catch Mew modal — full prototype flow lands with issue #26 */}
-      <Modal visible={catchModalVisible} transparent animationType="slide" onRequestClose={() => { setCatchModalVisible(false); setSelectedBall(null); }}>
-        <View style={s.catchBackdrop}>
-          <TouchableOpacity style={StyleSheet.absoluteFill} onPress={() => { setCatchModalVisible(false); setSelectedBall(null); }} />
-          <View style={s.catchSheet}>
-            <Text style={s.catchTitle}>Catch Mew!</Text>
-            <Text style={s.catchSub}>Failed attempts consume the ball. Choose wisely.</Text>
-
-            {hasMewtwo && (
-              <View style={s.mewtwoBanner}>
-                <Text style={s.mewtwoBannerText}>
-                  Mewtwo bonus: +{Math.round(MEWTWO_CATCH_BONUS * 100)}% to all catch rates
-                </Text>
-              </View>
-            )}
-
-            {availableBalls.map(([ball, count]) => {
-              const baseRate = BASE_CATCH_RATES[ball];
-              const rate = Math.min(1, baseRate + (hasMewtwo ? MEWTWO_CATCH_BONUS : 0));
-              const pct = Math.round(rate * 100);
-              return (
-                <TouchableOpacity
-                  key={ball}
-                  style={[s.ballRow, selectedBall === ball && s.ballRowSelected]}
-                  onPress={() => setSelectedBall(ball)}
-                >
-                  <View style={s.ballInfo}>
-                    <Text style={s.ballName}>{BALL_LABELS[ball]}</Text>
-                    <Text style={s.ballCount}>x{count} available</Text>
-                  </View>
-                  <Text style={[s.ballRate, ball === 'MasterBall' && s.ballRatePerfect]}>{pct}%</Text>
-                </TouchableOpacity>
-              );
-            })}
-
-            <TouchableOpacity
-              style={[s.catchConfirmBtn, !selectedBall && s.catchConfirmBtnDisabled]}
-              onPress={handleThrowPress}
-              disabled={!selectedBall}
-            >
-              <Text style={s.catchConfirmText}>
-                {selectedBall ? `Throw ${BALL_LABELS[selectedBall]}!` : 'Select a Pokeball'}
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
     </LinearGradient>
   );
 }
 
-// ── Styles (interstitials + catch modal keep their pre-redesign look until #26/#28) ──
+// ── Styles (handoff interstitial keeps its pre-redesign look until #29) ──
 
 const s = StyleSheet.create({
   center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
@@ -564,21 +566,4 @@ const s = StyleSheet.create({
   handoffName: { fontSize: 32, fontWeight: '800', marginBottom: 48 },
   handoffBtn: { borderWidth: 2, borderRadius: 12, paddingVertical: 14, paddingHorizontal: 48 },
   handoffBtnText: { fontSize: 17, fontWeight: '600' },
-
-  catchBackdrop: { flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0.65)' },
-  catchSheet: { backgroundColor: '#fff', borderTopLeftRadius: 20, borderTopRightRadius: 20, padding: 20, paddingBottom: 40 },
-  catchTitle: { fontSize: 22, fontWeight: '800', color: '#6a1b9a', marginBottom: 4 },
-  catchSub: { fontSize: 13, color: '#888', marginBottom: 16 },
-  mewtwoBanner: { backgroundColor: '#f3e5f5', borderRadius: 8, padding: 8, marginBottom: 12 },
-  mewtwoBannerText: { fontSize: 12, color: '#6a1b9a', fontWeight: '600' },
-  ballRow: { flexDirection: 'row', alignItems: 'center', padding: 14, borderRadius: 10, borderWidth: 1.5, borderColor: '#e0e0e0', marginBottom: 8 },
-  ballRowSelected: { borderColor: '#6a1b9a', backgroundColor: '#f3e5f5' },
-  ballInfo: { flex: 1 },
-  ballName: { fontSize: 15, fontWeight: '700', color: '#222' },
-  ballCount: { fontSize: 11, color: '#999', marginTop: 2 },
-  ballRate: { fontSize: 20, fontWeight: '800', color: '#333' },
-  ballRatePerfect: { color: '#ffd700' },
-  catchConfirmBtn: { backgroundColor: '#6a1b9a', borderRadius: 10, paddingVertical: 14, alignItems: 'center', marginTop: 8 },
-  catchConfirmBtnDisabled: { backgroundColor: '#e0e0e0' },
-  catchConfirmText: { color: '#fff', fontSize: 15, fontWeight: '700' },
 });
