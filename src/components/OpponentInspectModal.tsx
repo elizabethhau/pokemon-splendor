@@ -58,7 +58,7 @@ export default function OpponentInspectModal({ visible, player, avatarDex, scale
       <Pressable
         onPress={() => {}}
         style={{
-          width: z(452), backgroundColor: theme.modalBg, borderRadius: z(20),
+          width: z(452), maxHeight: z(390), backgroundColor: theme.modalBg, borderRadius: z(20),
           paddingVertical: z(20), paddingHorizontal: z(22),
           shadowColor: '#000', shadowOpacity: 0.45, shadowRadius: 60, shadowOffset: { width: 0, height: 24 },
           elevation: 24,
@@ -95,6 +95,9 @@ export default function OpponentInspectModal({ visible, player, avatarDex, scale
 
         <View style={{ height: 1, backgroundColor: theme.ring, marginVertical: z(14) }} />
 
+        {/* Body scrolls vertically so a late-game board (many Legendaries) never
+            overflows the short landscape modal; the header/✕ above stays fixed. */}
+        <ScrollView showsVerticalScrollIndicator={false} style={{ flexShrink: 1 }}>
         {/* type bonus */}
         <View style={{ gap: z(7) }}>
           <Text style={label}>TYPE BONUS</Text>
@@ -197,6 +200,7 @@ export default function OpponentInspectModal({ visible, player, avatarDex, scale
             </ScrollView>
           )}
         </View>
+        </ScrollView>
       </Pressable>
     </Pressable>
   );

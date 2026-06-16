@@ -45,6 +45,8 @@ export default function TopBar({ game, scale, onMewPress, onHome, onInspectOppon
           <TouchableOpacity
             key={p.id}
             onPress={() => onInspectOpponent(p, avatarDex)}
+            accessibilityRole="button"
+            accessibilityLabel={`View ${p.name}'s board`}
             style={{ flexDirection: 'row', alignItems: 'center', gap: z(7) }}
           >
             <View style={{
