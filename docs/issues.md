@@ -70,7 +70,7 @@ Two features added to `design_prototype/` (see `task_plan.md` / `findings.md` fo
 
 | #                                                                 | Issue                                                       | Blocked by | PR  | Status |
 | ----------------------------------------------------------------- | ----------------------------------------------------------- | ---------- | --- | ------ |
-| [#39](https://github.com/elizabethhau/pokemon-splendor/issues/39) | Legendary claim rule change: ADR + CONTEXT.md (HITL)        | —          | —   | [ ]    |
+| [#39](https://github.com/elizabethhau/pokemon-splendor/issues/39) | Legendary claim rule change: ADR + CONTEXT.md (HITL)        | —          | #45 | [x]    |
 | [#40](https://github.com/elizabethhau/pokemon-splendor/issues/40) | Legendary claim: move to end-of-turn, one-per-turn (store)  | #39        | —   | [ ]    |
 | [#41](https://github.com/elizabethhau/pokemon-splendor/issues/41) | Legendary claim: pick-one prompt for multiple (HITL)        | #40        | —   | [ ]    |
 | [#42](https://github.com/elizabethhau/pokemon-splendor/issues/42) | Legendary claim celebration animation                       | #40        | —   | [ ]    |
