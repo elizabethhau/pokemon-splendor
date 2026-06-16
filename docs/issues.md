@@ -32,9 +32,9 @@ GitHub repo: https://github.com/elizabethhau/pokemon-splendor/issues
 | #                                                                 | Issue               | Blocked by | Status |
 | ----------------------------------------------------------------- | ------------------- | ---------- | ------ |
 | [#12](https://github.com/elizabethhau/pokemon-splendor/issues/12) | SFX Integration     | #7         | [ ]    |
-| [#13](https://github.com/elizabethhau/pokemon-splendor/issues/13) | Stats + Persistence | #7         | [ ]    |
-| [#14](https://github.com/elizabethhau/pokemon-splendor/issues/14) | Pokedex Screen      | #13        | [ ]    |
-| [#15](https://github.com/elizabethhau/pokemon-splendor/issues/15) | Rulebook Screen     | #1         | [ ]    |
+| [#13](https://github.com/elizabethhau/pokemon-splendor/issues/13) | Persistence layer (stats, Pokédex, deck) | #7 | [ ] |
+| [#14](https://github.com/elizabethhau/pokemon-splendor/issues/14) | Pokedex Screen — superseded by #30 | #13 | [x] |
+| [#15](https://github.com/elizabethhau/pokemon-splendor/issues/15) | Rulebook Screen — superseded by #30 | #1 | [x] |
 | [#16](https://github.com/elizabethhau/pokemon-splendor/issues/16) | Balanced Deck Mode  | #5         | [ ]    |
 
 ## Phase 1 — UI
@@ -47,7 +47,7 @@ GitHub repo: https://github.com/elizabethhau/pokemon-splendor/issues
 
 | #                                                                 | Issue            | Blocked by | Status |
 | ----------------------------------------------------------------- | ---------------- | ---------- | ------ |
-| [#17](https://github.com/elizabethhau/pokemon-splendor/issues/17) | Animation Polish | #18        | [ ]    |
+| [#17](https://github.com/elizabethhau/pokemon-splendor/issues/17) | Animation polish (redesigned board) | #25 | [ ] |
 
 ## Phase 2 — Prototype Redesign
 
@@ -61,7 +61,7 @@ Rebuild to match `design_prototype/` (see decisions in the redesign plan). HITL 
 | [#26](https://github.com/elizabethhau/pokemon-splendor/issues/26) | Modal package: scouted hand, Catch Mew, discard              | #25        | [x]                                                                                |
 | [#27](https://github.com/elizabethhau/pokemon-splendor/issues/27) | Undo system + confirm gates + deferred refill                | #25        | [x]                                                                                |
 | [#28](https://github.com/elizabethhau/pokemon-splendor/issues/28) | On-board AI turn presentation                                | #24, #25   | [x]                                                                                |
-| [#29](https://github.com/elizabethhau/pokemon-splendor/issues/29) | Game Over + Handoff screens                                  | #23        | [ ]                                                                                |
+| [#29](https://github.com/elizabethhau/pokemon-splendor/issues/29) | Handoff screen (Game Over already done)                      | #23        | [ ]                                                                                |
 | [#30](https://github.com/elizabethhau/pokemon-splendor/issues/30) | Pokédex, How to Play, Stats screens                          | #23        | [ ]                                                                                |
 
 ## Phase 3 — New Features (post-redesign)
@@ -90,25 +90,25 @@ Two features added to `design_prototype/` (see `task_plan.md` / `findings.md` fo
                 │   └── #7 Turn Loop + P&P
                 │       ├── #8 Legendary
                 │       │   └── #9 Pokeball + Mew
-                │       │       └── #17 Animations
+                │       │       └── #17 → re-scoped to redesigned board (#25)
                 │       ├── #10 Greedy AI
                 │       │   └── #11 Heuristic AI
                 │       ├── #12 SFX
                 │       └── #13 Stats
-                │           └── #14 Pokedex
+                │           └── #14 Pokedex → superseded by #30
                 └── #16 Balanced Deck
 #9 → #18 Game Board UI
-    └── #17 Animations
-#1 → #15 Rulebook (parallel track)
+#1 → #15 Rulebook → superseded by #30
 
 #23 Redesign Foundation (HITL)
 ├── #24 Setup + Multi-AI ──┐
 ├── #25 Board Rebuild (HITL)
 │   ├── #26 Modal Package  │
 │   ├── #27 Undo System    │
-│   └── #28 AI Presentation ←┘
-├── #29 Game Over + Handoff
-└── #30 Pokédex / How to Play / Stats
+│   ├── #28 AI Presentation ←┘
+│   └── #17 Animation polish (redesigned board)
+├── #29 Handoff screen (Game Over done)
+└── #30 Pokédex / How to Play / Stats (supersedes #13-screen, #14, #15)
 
 #39 Legendary rule ADR + CONTEXT (HITL)
 └── #40 Legendary claim store (end-of-turn, one-per-turn)
