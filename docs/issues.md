@@ -74,7 +74,7 @@ Two features added to `design_prototype/` (see `task_plan.md` / `findings.md` fo
 | [#40](https://github.com/elizabethhau/pokemon-splendor/issues/40) | Legendary claim: move to end-of-turn, one-per-turn (store)  | #39        | —   | [ ]    |
 | [#41](https://github.com/elizabethhau/pokemon-splendor/issues/41) | Legendary claim: pick-one prompt for multiple (HITL)        | #40        | —   | [ ]    |
 | [#42](https://github.com/elizabethhau/pokemon-splendor/issues/42) | Legendary claim celebration animation                       | #40        | —   | [ ]    |
-| [#43](https://github.com/elizabethhau/pokemon-splendor/issues/43) | Opponent board inspection (read-only)                       | —          | —   | [ ]    |
+| [#43](https://github.com/elizabethhau/pokemon-splendor/issues/43) | Opponent board inspection (read-only)                       | —          | #44 | [x]    |
 
 ---
 
