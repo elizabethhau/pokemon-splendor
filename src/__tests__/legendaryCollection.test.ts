@@ -184,3 +184,51 @@ test('only the first Legendary ever claimed grants a MasterBall', () => {
   expect(useGameStore.getState().game!.players[1].legendaries).toHaveLength(1);
   expect(useGameStore.getState().game!.players[1].pokeballs.MasterBall).toBeUndefined();
 });
+
+// ─── claim is deferred when ending over the token limit ─────────────────────
+test('claim is deferred through the discard phase, then resolved once tokens are ≤10', () => {
+  setTypeBonuses({ Electric: 4, Fire: 3 }); // meets Zapdos
+  useGameStore.setState((s) => ({
+    game: {
+      ...s.game!,
+      actionTakenThisTurn: true,
+      players: s.game!.players.map((p, i) =>
+        i === 0 ? { ...p, energyTokens: { Fire: 12 } } : p // over the 10-token cap
+      ),
+    },
+  }));
+
+  useGameStore.getState().advanceTurn(); // enters discarding, does NOT claim yet
+  expect(useGameStore.getState().game!.phase).toBe('discarding');
+  expect(useGameStore.getState().game!.players[0].legendaries).toHaveLength(0);
+  expect(useGameStore.getState().game!.board.availableLegendaries).toHaveLength(1);
+
+  useGameStore.getState().discardTokens({ Fire: 2 }); // down to 10
+  useGameStore.getState().advanceTurn(); // real end of turn → claims now
+
+  expect(useGameStore.getState().game!.players[0].legendaries.map(l => l.name)).toEqual(['Zapdos']);
+  expect(useGameStore.getState().game!.board.availableLegendaries).toHaveLength(0);
+});
+
+// ─── claim still happens on the turn that ends the game ──────────────────────
+test('the player ending the final round still claims a Legendary as the game ends', () => {
+  // Bob (index 1) takes the last turn: phase FINAL_ROUND, trigger was player 0,
+  // so advancing back to 0 ends the game. He still claims at end of turn.
+  setBoardLegendaries([MOLTRES]);
+  setTypeBonuses({ Fire: 4, Grass: 3 }, 1); // Bob meets Moltres
+  useGameStore.setState((s) => ({
+    game: {
+      ...s.game!,
+      currentPlayerIndex: 1,
+      actionTakenThisTurn: true,
+      phase: 'finalRound',
+      finalRoundTriggerPlayerIndex: 0,
+    },
+  }));
+
+  useGameStore.getState().advanceTurn();
+
+  expect(useGameStore.getState().game!.phase).toBe('gameOver');
+  expect(useGameStore.getState().game!.players[1].legendaries.map(l => l.name)).toEqual(['Moltres']);
+  expect(useGameStore.getState().game!.board.availableLegendaries).toHaveLength(0);
+});
