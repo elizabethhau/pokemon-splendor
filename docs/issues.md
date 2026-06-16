@@ -64,6 +64,18 @@ Rebuild to match `design_prototype/` (see decisions in the redesign plan). HITL 
 | [#29](https://github.com/elizabethhau/pokemon-splendor/issues/29) | Game Over + Handoff screens                                  | #23        | [ ]                                                                                |
 | [#30](https://github.com/elizabethhau/pokemon-splendor/issues/30) | Pokédex, How to Play, Stats screens                          | #23        | [ ]                                                                                |
 
+## Phase 3 — New Features (post-redesign)
+
+Two features added to `design_prototype/` (see `task_plan.md` / `findings.md` for the settled design). HITL = needs design/decision review before merge.
+
+| #                                                                 | Issue                                                       | Blocked by | PR  | Status |
+| ----------------------------------------------------------------- | ----------------------------------------------------------- | ---------- | --- | ------ |
+| [#39](https://github.com/elizabethhau/pokemon-splendor/issues/39) | Legendary claim rule change: ADR + CONTEXT.md (HITL)        | —          | —   | [ ]    |
+| [#40](https://github.com/elizabethhau/pokemon-splendor/issues/40) | Legendary claim: move to end-of-turn, one-per-turn (store)  | #39        | —   | [ ]    |
+| [#41](https://github.com/elizabethhau/pokemon-splendor/issues/41) | Legendary claim: pick-one prompt for multiple (HITL)        | #40        | —   | [ ]    |
+| [#42](https://github.com/elizabethhau/pokemon-splendor/issues/42) | Legendary claim celebration animation                       | #40        | —   | [ ]    |
+| [#43](https://github.com/elizabethhau/pokemon-splendor/issues/43) | Opponent board inspection (read-only)                       | —          | —   | [ ]    |
+
 ---
 
 ## Dependency Graph
@@ -97,4 +109,10 @@ Rebuild to match `design_prototype/` (see decisions in the redesign plan). HITL 
 │   └── #28 AI Presentation ←┘
 ├── #29 Game Over + Handoff
 └── #30 Pokédex / How to Play / Stats
+
+#39 Legendary rule ADR + CONTEXT (HITL)
+└── #40 Legendary claim store (end-of-turn, one-per-turn)
+    ├── #41 Pick-one prompt (HITL)
+    └── #42 Claim celebration animation
+#43 Opponent board inspection (parallel track)
 ```
