@@ -9,7 +9,7 @@ import { useGameStore } from '../store/useGameStore';
 import { currentPlayer, canCatchMew, hasLegalMove } from '../store/selectors';
 import { canAddToken, isSelectionValid, TokenSelection } from '../store/tokenSelection';
 import {
-  EvolutionTier, PokemonCard, PokeballTier, TokenType,
+  EvolutionTier, PokemonCard, PokeballTier, TokenType, PlayerState,
 } from '../types/game';
 import {
   PLAYER_COLORS, PHASE, SCOUT_HAND_LIMIT,
@@ -32,6 +32,7 @@ import TokenDiscardModal from '../components/TokenDiscardModal';
 import CardDetailModal from '../components/CardDetailModal';
 import CatchMewModal, { CatchBall, CatchPhase } from '../components/CatchMewModal';
 import ScoutedHandModal from '../components/ScoutedHandModal';
+import OpponentInspectModal from '../components/OpponentInspectModal';
 import ConfirmModal, { ConfirmRequest } from '../components/ConfirmModal';
 import { getGreedyMove } from '../ai/greedy';
 import { getHeuristicMove } from '../ai/heuristic';
@@ -93,6 +94,7 @@ export default function GameBoardScreen({ navigation }: Props) {
   const [catchPhase, setCatchPhase] = useState<CatchPhase>('select');
   const [catchResult, setCatchResult] = useState(false);
   const [handVisible, setHandVisible] = useState(false);
+  const [inspect, setInspect] = useState<{ player: PlayerState; avatarDex: number } | null>(null);
   const [confirm, setConfirm] = useState<ConfirmRequest | null>(null);
   const [aiThinking, setAiThinking] = useState<{ name: string; color: string; avatarDex: number } | null>(null);
   const [aiFly, setAiFly] = useState<{ card: PokemonCard; from: Rect; to: { x: number; y: number } } | null>(null);
@@ -439,6 +441,7 @@ export default function GameBoardScreen({ navigation }: Props) {
         scale={scale}
         onMewPress={handleMewPress}
         onHome={() => navigation.navigate('Home')}
+        onInspectOpponent={(player, avatarDex) => setInspect({ player, avatarDex })}
       />
 
       <View style={{ flex: 1, flexDirection: 'row', gap: z(9), paddingVertical: z(8), paddingHorizontal: z(12), minHeight: 0 }}>
@@ -533,6 +536,14 @@ export default function GameBoardScreen({ navigation }: Props) {
         scale={scale}
         onClose={() => setHandVisible(false)}
         onCardPress={card => { setHandVisible(false); handleCardPress(card, 'scouted'); }}
+      />
+
+      <OpponentInspectModal
+        visible={!!inspect}
+        player={inspect?.player ?? null}
+        avatarDex={inspect?.avatarDex ?? 0}
+        scale={scale}
+        onClose={() => setInspect(null)}
       />
 
       <CatchMewModal
