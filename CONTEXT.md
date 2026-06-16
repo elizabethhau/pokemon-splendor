@@ -32,7 +32,7 @@ Terms used consistently throughout the codebase and design docs. When in doubt, 
 
 ## Special Pokemon
 
-**Legendary** — one of 5 special Pokemon (Articuno, Zapdos, Moltres, Mewtwo, Dragonite) that are auto-collected (not purchased) when a player's accumulated Type Bonuses (from any tier of Pokemon Card) meet the Legendary's requirements. Worth 3 Trainer Points (TP). Analogous to noble tiles in Splendor.
+**Legendary** — one of 5 special Pokemon (Articuno, Zapdos, Moltres, Mewtwo, Dragonite) that are claimed (not purchased) when a player's accumulated Type Bonuses (from any tier of Pokemon Card) meet the Legendary's requirements. Worth 3 Trainer Points (TP). Analogous to noble tiles in Splendor. Claiming is mandatory but capped at **one Legendary per turn**, evaluated at the **end of every turn**: if exactly one is newly eligible it is auto-claimed; if two or more are eligible the player picks one (AI picks the lowest Pokédex number) and the rest carry over to later turns. The **first Legendary a player ever claims grants a MasterBall**; there is no per-claim Poké Ball. See [ADR 0002](docs/adr/0002-legendary-claim-one-per-turn.md).
 
 **Mythical** — Mew (#151). Worth 5 Trainer Points (TP). Requires owning any 2 Legendaries to become eligible for a Catch Attempt. Multiple players can independently qualify; Mew is unique — first successful catch removes it from the game. Owning Mewtwo grants +10% to all Pokeball catch rates. Only one Mythical exists in Phase 1.
 
