@@ -4,7 +4,7 @@ import { EnergyType, EvolutionTier } from '../types/game';
 // move-summary toast that plays after the action animates on the board.
 export type AIMoveOutcome =
   | { kind: 'takeTokens'; tokens: Partial<Record<EnergyType, number>> }
-  | { kind: 'trainCard'; cardName: string; claimedLegendaries: string[] }
+  | { kind: 'trainCard'; cardName: string }
   | { kind: 'scoutFaceUp'; cardName: string }
   | { kind: 'scoutFromDeck'; tier: EvolutionTier }
   | { kind: 'catchMew'; caught: boolean }
@@ -20,9 +20,9 @@ export function formatAIMove(rivalName: string, outcome: AIMoveOutcome): string 
       return `${rivalName} took ${total} Energy`;
     }
     case 'trainCard':
-      return outcome.claimedLegendaries.length > 0
-        ? `${rivalName} trained ${outcome.cardName} and caught ${outcome.claimedLegendaries.join(' & ')}!`
-        : `${rivalName} trained ${outcome.cardName}`;
+      // Legendary claims resolve at end of turn, not on train, so they are
+      // reported by a separate end-of-turn toast (see GameBoardScreen).
+      return `${rivalName} trained ${outcome.cardName}`;
     case 'scoutFaceUp':
       return `${rivalName} scouted ${outcome.cardName}`;
     case 'scoutFromDeck':

@@ -8,15 +8,8 @@ test('takeTokens summarises the total energy taken', () => {
 });
 
 test('trainCard names the card', () => {
-  expect(formatAIMove('Rival', { kind: 'trainCard', cardName: 'Arcanine', claimedLegendaries: [] }))
+  expect(formatAIMove('Rival', { kind: 'trainCard', cardName: 'Arcanine' }))
     .toBe('Rival trained Arcanine');
-});
-
-test('trainCard appends claimed legendaries when the train triggers a collection', () => {
-  expect(formatAIMove('Blue', { kind: 'trainCard', cardName: 'Arcanine', claimedLegendaries: ['Moltres'] }))
-    .toBe('Blue trained Arcanine and caught Moltres!');
-  expect(formatAIMove('Blue', { kind: 'trainCard', cardName: 'Arcanine', claimedLegendaries: ['Moltres', 'Zapdos'] }))
-    .toBe('Blue trained Arcanine and caught Moltres & Zapdos!');
 });
 
 test('scoutFaceUp names the revealed card; scoutFromDeck hides it behind the deck label', () => {

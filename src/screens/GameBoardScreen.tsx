@@ -166,22 +166,16 @@ export default function GameBoardScreen({ navigation }: Props) {
           });
         }
 
-        const legNamesBefore = g.board.availableLegendaries.map(l => l.name);
         const result = store.dispatchAction(action);
-        const after = useGameStore.getState().game;
 
         switch (action.type) {
           case 'takeTokens':
             setAiPulse({ tokens: action.tokens, key: Date.now() });
             outcome = { kind: 'takeTokens', tokens: action.tokens };
             break;
-          case 'trainCard': {
-            const claimed = after
-              ? legNamesBefore.filter(n => !after.board.availableLegendaries.some(l => l.name === n))
-              : [];
-            outcome = { kind: 'trainCard', cardName: action.card.name, claimedLegendaries: claimed };
+          case 'trainCard':
+            outcome = { kind: 'trainCard', cardName: action.card.name };
             break;
-          }
           case 'scoutFaceUp':   outcome = { kind: 'scoutFaceUp', cardName: action.card.name }; break;
           case 'scoutFromDeck': outcome = { kind: 'scoutFromDeck', tier: action.tier }; break;
           case 'catchMew':      outcome = { kind: 'catchMew', caught: result }; break;
@@ -201,6 +195,7 @@ export default function GameBoardScreen({ navigation }: Props) {
         setAiFly(null);
 
         const afterAction = useGameStore.getState().game;
+        const legNamesBefore = afterAction ? afterAction.board.availableLegendaries.map(l => l.name) : [];
         if (afterAction && afterAction.phase !== PHASE.GAME_OVER) {
           try { store.advanceTurn(); } catch { /* advance error */ }
         }
@@ -214,6 +209,13 @@ export default function GameBoardScreen({ navigation }: Props) {
             store.advanceTurn();
           } catch { /* discard error */ }
         }
+
+        // The AI's end-of-turn claim removes the Legendary from the board pool.
+        const settled = useGameStore.getState().game;
+        const claimed = settled
+          ? legNamesBefore.filter(n => !settled.board.availableLegendaries.some(l => l.name === n))
+          : [];
+        if (claimed.length > 0) toast(`${rivalName} claimed ${claimed.join(' and ')}!`);
       }, AI_SETTLE_MS);
     }, AI_THINK_MS);
 
@@ -296,17 +298,11 @@ export default function GameBoardScreen({ navigation }: Props) {
   }
 
   function handleTrain(card: PokemonCard) {
-    const legNamesBefore = game!.board.availableLegendaries.map(l => l.name);
     try {
       trainCard(card);
       closeDetail();
-      const newGame = useGameStore.getState().game;
-      const claimed = newGame
-        ? legNamesBefore.filter(name => !newGame.board.availableLegendaries.some(l => l.name === name))
-        : [];
-      toast(claimed.length > 0
-        ? `${claimed.join(' and ')} joined your team!`
-        : `Trained ${card.name}`);
+      // Legendary claims resolve at end of turn (handleEndTurn), not here.
+      toast(`Trained ${card.name}`);
     } catch (e: unknown) {
       toast(e instanceof Error ? e.message : String(e));
     }
@@ -361,7 +357,14 @@ export default function GameBoardScreen({ navigation }: Props) {
         store.passTurn();
         toast('No legal moves — turn passed');
       }
+      const legNamesBefore = store.game!.board.availableLegendaries.map(l => l.name);
       advanceTurn();
+      // The end-of-turn claim removes the Legendary from the board pool.
+      const after = useGameStore.getState().game;
+      const claimed = after
+        ? legNamesBefore.filter(name => !after.board.availableLegendaries.some(l => l.name === name))
+        : [];
+      if (claimed.length > 0) toast(`${claimed.join(' and ')} joined your team!`);
     } catch (e: unknown) {
       toast(e instanceof Error ? e.message : String(e));
     }
