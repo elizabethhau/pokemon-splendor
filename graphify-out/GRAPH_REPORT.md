@@ -1,16 +1,16 @@
 # Graph Report - pokemon-splendor  (2026-06-16)
 
 ## Corpus Check
-- 67 files · ~30,158 words
+- 67 files · ~30,459 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 380 nodes · 908 edges · 11 communities
+- 384 nodes · 914 edges · 18 communities
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `e0388010`
+- Built from commit: `82552f8c`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -26,6 +26,13 @@
 - [[_COMMUNITY_Scout Card Tests|Scout Card Tests]]
 - [[_COMMUNITY_Sprite Cache & URI|Sprite Cache & URI]]
 - [[_COMMUNITY_Community 10|Community 10]]
+- [[_COMMUNITY_Community 11|Community 11]]
+- [[_COMMUNITY_Community 12|Community 12]]
+- [[_COMMUNITY_Community 13|Community 13]]
+- [[_COMMUNITY_Community 14|Community 14]]
+- [[_COMMUNITY_Community 15|Community 15]]
+- [[_COMMUNITY_Community 16|Community 16]]
+- [[_COMMUNITY_Community 17|Community 17]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `useTheme()` - 34 edges
@@ -33,7 +40,7 @@
 3. `useGameStore` - 25 edges
 4. `EnergyType` - 18 edges
 5. `GameConfig` - 17 edges
-6. `PlayerState` - 16 edges
+6. `PlayerState` - 17 edges
 7. `TokenType` - 15 edges
 8. `currentPlayer()` - 13 edges
 9. `TYPE_COLORS` - 12 edges
@@ -42,79 +49,107 @@
 ## Surprising Connections (you probably didn't know these)
 - `HomeScreen()` --calls--> `useTheme()`  [EXTRACTED]
   screens/HomeScreen.tsx → theme/ThemeContext.tsx
+- `ConfirmModal()` --calls--> `useTheme()`  [EXTRACTED]
+  components/ConfirmModal.tsx → theme/ThemeContext.tsx
+- `SupplyColumn()` --calls--> `useTheme()`  [EXTRACTED]
+  components/board/SupplyColumn.tsx → theme/ThemeContext.tsx
 - `GameSetupScreen()` --calls--> `useTheme()`  [EXTRACTED]
   screens/GameSetupScreen.tsx → theme/ThemeContext.tsx
 - `GameSetupScreen()` --calls--> `useGameStore`  [EXTRACTED]
   screens/GameSetupScreen.tsx → store/useGameStore.ts
-- `GameBoardScreen()` --calls--> `useGameStore`  [EXTRACTED]
-  screens/GameBoardScreen.tsx → store/useGameStore.ts
-- `GameBoardScreen()` --calls--> `useTheme()`  [EXTRACTED]
-  screens/GameBoardScreen.tsx → theme/ThemeContext.tsx
 
-## Communities (11 total, 0 thin omitted)
+## Communities (18 total, 0 thin omitted)
 
 ### Community 0 - "Game Constants & Setup"
-Cohesion: 0.06
-Nodes (52): AIMoveOutcome, DECK_LABELS, formatAIMove(), Rect, BoardCard(), TIER_LABELS, DeckRail(), TierRowData (+44 more)
+Cohesion: 0.05
+Nodes (43): Props, CostRow, canAfford(), canClaimLegendary(), ENERGY_TYPES, cards, counts, eevee (+35 more)
 
 ### Community 1 - "Game Selectors & Logic"
-Cohesion: 0.06
-Nodes (38): useBoardScale(), s, ToastContext, useToast(), s, TokenDiscardModal(), BASE_CATCH_RATES, applyScout() (+30 more)
+Cohesion: 0.07
+Nodes (38): BoardCard(), TIER_LABELS, DeckRail(), TierRowData, BALL_ORDER, Dock(), ENERGY_TYPES, LegendariesColumn() (+30 more)
 
 ### Community 2 - "Navigation & Screen Routing"
-Cohesion: 0.08
-Nodes (40): getGreedyMove(), bestScoutableTier3(), ENERGY_TYPES, focusType(), getHeuristicMove(), BALL_ORDER, bestAffordableCard(), bestTokenSelection() (+32 more)
+Cohesion: 0.06
+Nodes (31): AIMoveOutcome, DECK_LABELS, formatAIMove(), Rect, AnimatedTouchable, SupplyColumn(), TOKEN_ORDER, TokenChip() (+23 more)
 
 ### Community 3 - "Settings Screen & Store"
-Cohesion: 0.05
-Nodes (32): canClaimLegendary(), ARTICUNO, caught, { game }, MEW, MEWTWO, TWO_PLAYER, ZAPDOS (+24 more)
+Cohesion: 0.1
+Nodes (33): getGreedyMove(), bestScoutableTier3(), ENERGY_TYPES, focusType(), getHeuristicMove(), BALL_ORDER, bestAffordableCard(), bestTokenSelection() (+25 more)
 
 ### Community 4 - "Token Economy & Card Tests"
 Cohesion: 0.08
-Nodes (22): BreakdownRow, CardDetailModal(), computeBreakdown(), Props, s, TIER_NAMES, LIGHT_TYPES, Props (+14 more)
+Nodes (27): buildGameConfig(), SetupDifficulty, SetupMode, AI_NAMES, Difficulty, GameSetupScreen(), Mode, Props (+19 more)
 
 ### Community 5 - "Deck Building & Balancing"
-Cohesion: 0.07
-Nodes (27): Props, s, SettingsScreen(), useGameStore, givePlayerTokens(), putCardInFace(), CHARMANDER, MOLTRES (+19 more)
+Cohesion: 0.09
+Nodes (24): useBoardScale(), s, ToastContext, useToast(), s, TokenDiscardModal(), applyScout(), buildDecks() (+16 more)
 
 ### Community 6 - "Legendary & Mew Catch Tests"
 Cohesion: 0.09
-Nodes (25): buildGameConfig(), SetupDifficulty, SetupMode, AI_NAMES, Difficulty, GameSetupScreen(), Mode, Props (+17 more)
-
-### Community 7 - "Turn Loop Tests"
-Cohesion: 0.09
 Nodes (14): RootStackParamList, Stack, GameOverScreen(), Props, styles, HomeScreen(), Props, s (+6 more)
 
+### Community 7 - "Turn Loop Tests"
+Cohesion: 0.17
+Nodes (10): BULBASAUR, deckBefore, EEVEE, faceBefore, { game }, IVYSAUR, NOT_AVAILABLE, SCOUTED_ONLY (+2 more)
+
 ### Community 8 - "Scout Card Tests"
+Cohesion: 0.2
+Nodes (6): ARTICUNO, CHARMANDER, MOLTRES, SQUIRTLE, TWO_PLAYER, ZAPDOS
+
+### Community 9 - "Sprite Cache & URI"
 Cohesion: 0.22
 Nodes (7): BULBASAUR, FOUR_PLAYER, { game }, ONE_PLAYER, THREE_PLAYER, TWO_PLAYER, TWO_PLAYER_PNP
 
-### Community 9 - "Sprite Cache & URI"
-Cohesion: 0.25
-Nodes (5): affordable, c, onCardPress, onClose, unaffordable
-
 ### Community 10 - "Community 10"
+Cohesion: 0.22
+Nodes (7): ARTICUNO, caught, { game }, MEW, MEWTWO, TWO_PLAYER, ZAPDOS
+
+### Community 11 - "Community 11"
 Cohesion: 0.25
 Nodes (7): CatchBall, BALLS, base, onClose, onPickBall, onThrow, { rerender }
 
+### Community 12 - "Community 12"
+Cohesion: 0.29
+Nodes (6): putCardInFace(), BULBASAUR, { game }, maxCost, NOT_ON_BOARD, TWO_PLAYER
+
+### Community 13 - "Community 13"
+Cohesion: 0.47
+Nodes (4): SettingsScreen(), useGameStore, givePlayerTokens(), TWO_PLAYER
+
+### Community 14 - "Community 14"
+Cohesion: 0.33
+Nodes (5): { game }, { takeTokens }, total, totalAfter, TWO_PLAYER
+
+### Community 15 - "Community 15"
+Cohesion: 0.4
+Nodes (3): game, onInspectOpponent, TWO_PLAYER
+
+### Community 16 - "Community 16"
+Cohesion: 0.4
+Nodes (3): EEVEE, TWO_PLAYER, VENUSAUR
+
+### Community 17 - "Community 17"
+Cohesion: 0.4
+Nodes (3): discardTokens, TWO_PLAYER, GameConfig
+
 ## Knowledge Gaps
-- **173 isolated node(s):** `CardCost`, `LegendaryRequirements`, `Stack`, `Props`, `SegOption` (+168 more)
+- **174 isolated node(s):** `CardCost`, `LegendaryRequirements`, `Stack`, `Props`, `SegOption` (+169 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `PokemonCard` connect `Token Economy & Card Tests` to `Game Constants & Setup`, `Game Selectors & Logic`, `Navigation & Screen Routing`, `Settings Screen & Store`, `Deck Building & Balancing`, `Scout Card Tests`, `Sprite Cache & URI`?**
-  _High betweenness centrality (0.070) - this node is a cross-community bridge._
-- **Why does `useGameStore` connect `Deck Building & Balancing` to `Game Constants & Setup`, `Game Selectors & Logic`, `Navigation & Screen Routing`, `Settings Screen & Store`, `Legendary & Mew Catch Tests`, `Turn Loop Tests`, `Scout Card Tests`?**
-  _High betweenness centrality (0.055) - this node is a cross-community bridge._
-- **Why does `useTheme()` connect `Game Constants & Setup` to `Game Selectors & Logic`, `Navigation & Screen Routing`, `Token Economy & Card Tests`, `Deck Building & Balancing`, `Legendary & Mew Catch Tests`, `Turn Loop Tests`?**
-  _High betweenness centrality (0.045) - this node is a cross-community bridge._
+- **Why does `PokemonCard` connect `Game Constants & Setup` to `Game Selectors & Logic`, `Navigation & Screen Routing`, `Settings Screen & Store`, `Deck Building & Balancing`, `Turn Loop Tests`, `Scout Card Tests`, `Sprite Cache & URI`, `Community 12`, `Community 13`, `Community 16`?**
+  _High betweenness centrality (0.071) - this node is a cross-community bridge._
+- **Why does `useGameStore` connect `Community 13` to `Game Constants & Setup`, `Navigation & Screen Routing`, `Settings Screen & Store`, `Token Economy & Card Tests`, `Deck Building & Balancing`, `Legendary & Mew Catch Tests`, `Turn Loop Tests`, `Scout Card Tests`, `Sprite Cache & URI`, `Community 10`, `Community 12`, `Community 14`, `Community 15`, `Community 16`, `Community 17`?**
+  _High betweenness centrality (0.056) - this node is a cross-community bridge._
+- **Why does `useTheme()` connect `Game Selectors & Logic` to `Game Constants & Setup`, `Navigation & Screen Routing`, `Settings Screen & Store`, `Token Economy & Card Tests`, `Deck Building & Balancing`, `Legendary & Mew Catch Tests`, `Community 13`?**
+  _High betweenness centrality (0.044) - this node is a cross-community bridge._
 - **What connects `CardCost`, `LegendaryRequirements`, `Stack` to the rest of the system?**
-  _173 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _174 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Game Constants & Setup` be split into smaller, more focused modules?**
-  _Cohesion score 0.06 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.05 - nodes in this community are weakly interconnected._
 - **Should `Game Selectors & Logic` be split into smaller, more focused modules?**
-  _Cohesion score 0.06 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.07 - nodes in this community are weakly interconnected._
 - **Should `Navigation & Screen Routing` be split into smaller, more focused modules?**
-  _Cohesion score 0.08 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.06 - nodes in this community are weakly interconnected._

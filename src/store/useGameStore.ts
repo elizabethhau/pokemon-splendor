@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { EnergyType, EvolutionTier, GameAction, GameConfig, GamePhase, GameState, PokemonCard, Legendary, Mythical, PokeballTier, TokenType } from '../types/game';
+import { EnergyType, EvolutionTier, GameAction, GameConfig, GamePhase, GameState, PlayerState, PokemonCard, Legendary, Mythical, PokeballTier, TokenType } from '../types/game';
 import legData from '../data/legendaries.json';
 import mewData from '../data/mew.json';
 import { trainerPoints, canAfford, hasLegalMove } from './selectors';
@@ -18,6 +18,15 @@ function refillTier(face: PokemonCard[], deck: PokemonCard[]): [PokemonCard[], P
   if (missing <= 0 || deck.length === 0) return [face, deck];
   const take = Math.min(missing, deck.length);
   return [[...face, ...deck.slice(0, take)], deck.slice(take)];
+}
+
+// End-of-turn Legendary resolution: the outgoing player claims at most one
+// eligible Legendary, deterministically the lowest Pokédex # (ADR 0002). The
+// human pick-one UI for when 2+ are eligible lands in a later slice.
+function pickLegendaryToClaim(player: PlayerState, available: Legendary[]): Legendary | null {
+  const eligible = claimLegendaries(player.typeBonuses, available);
+  if (eligible.length === 0) return null;
+  return eligible.reduce((lo, l) => (l.pokedexNumber < lo.pokedexNumber ? l : lo));
 }
 
 interface GameStore {
@@ -114,7 +123,22 @@ export const useGameStore = create<GameStore>((set, get) => ({
       return;
     }
 
-    const prevPlayer = game.players[game.currentPlayerIndex];
+    const board = game.board;
+    const outgoing = game.players[game.currentPlayerIndex];
+
+    // Claim at most one Legendary before the final-round trigger is evaluated,
+    // so the claimed Legendary's TP counts toward it.
+    const claimed = pickLegendaryToClaim(outgoing, board.availableLegendaries);
+    const isFirstLegendary = claimed !== null && !board.firstLegendaryClaimed;
+    const prevPlayer: PlayerState = claimed
+      ? {
+          ...outgoing,
+          legendaries: [...outgoing.legendaries, claimed],
+          pokeballs: isFirstLegendary
+            ? { ...outgoing.pokeballs, MasterBall: (outgoing.pokeballs.MasterBall ?? 0) + 1 }
+            : outgoing.pokeballs,
+        }
+      : outgoing;
     const prevTP = trainerPoints(prevPlayer);
     const next = (game.currentPlayerIndex + 1) % game.players.length;
     const nextTurn = game.turnNumber + 1;
@@ -142,7 +166,15 @@ export const useGameStore = create<GameStore>((set, get) => ({
       undoSnapshot: null,
       game: {
         ...game,
-        board: { ...game.board, tier1Face, tier1Deck, tier2Face, tier2Deck, tier3Face, tier3Deck },
+        players: game.players.map((p, i) => i === game.currentPlayerIndex ? prevPlayer : p),
+        board: {
+          ...board,
+          tier1Face, tier1Deck, tier2Face, tier2Deck, tier3Face, tier3Deck,
+          availableLegendaries: claimed
+            ? board.availableLegendaries.filter(l => l.pokedexNumber !== claimed.pokedexNumber)
+            : board.availableLegendaries,
+          firstLegendaryClaimed: board.firstLegendaryClaimed || isFirstLegendary,
+        },
         currentPlayerIndex: next,
         turnNumber: nextTurn,
         phase,
@@ -293,17 +325,9 @@ export const useGameStore = create<GameStore>((set, get) => ({
       newTypeBonuses[card.typeBonus] = (newTypeBonuses[card.typeBonus] ?? 0) + 1;
     }
 
-    const claimed = claimLegendaries(newTypeBonuses, board.availableLegendaries);
-    const newAvailableLegendaries = board.availableLegendaries.filter(
-      l => !claimed.some(c => c.pokedexNumber === l.pokedexNumber)
-    );
-
+    // Legendary claims are resolved at end of turn (advanceTurn), not here.
     const newPokeballs = { ...player.pokeballs };
     newPokeballs[pokeballTier] = (newPokeballs[pokeballTier] ?? 0) + 1;
-    const isFirstLegendary = claimed.length > 0 && !board.firstLegendaryClaimed;
-    if (isFirstLegendary) {
-      newPokeballs['MasterBall'] = (newPokeballs['MasterBall'] ?? 0) + 1;
-    }
 
     set({
       undoSnapshot: game,
@@ -316,15 +340,12 @@ export const useGameStore = create<GameStore>((set, get) => ({
           typeBonuses: newTypeBonuses,
           trainedCards: [...player.trainedCards, card],
           scoutedCards: newScouted,
-          legendaries: [...player.legendaries, ...claimed],
           pokeballs: newPokeballs,
         } : p),
         board: {
           ...board,
           [faceKey]: faceIdx !== -1 ? newFace : board[faceKey],
           energySupply: supplyAfter,
-          availableLegendaries: newAvailableLegendaries,
-          firstLegendaryClaimed: board.firstLegendaryClaimed || isFirstLegendary,
         },
       },
     });

@@ -169,6 +169,22 @@ export default function Dock({
         </View>
       </TouchableOpacity>
 
+      <View style={{ gap: z(4) }}>
+        <Text style={label}>LEGENDARIES {player.legendaries.length}</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: z(4), minHeight: z(20) }}>
+          {player.legendaries.length === 0 ? (
+            <Text style={{ fontFamily: 'Poppins_400Regular', fontSize: z(10), color: theme.dockDim }}>none</Text>
+          ) : player.legendaries.map(leg => (
+            <View key={leg.pokedexNumber} style={{
+              width: z(20), height: z(20), borderRadius: z(10), overflow: 'hidden',
+              borderWidth: 1.5, borderColor: theme.accentSolid, alignItems: 'center', justifyContent: 'center',
+            }}>
+              <ArtworkImage dex={leg.pokedexNumber} style={{ width: z(20), height: z(20) }} />
+            </View>
+          ))}
+        </View>
+      </View>
+
       {showActions && (
       <View style={{ marginLeft: 'auto', flexDirection: 'row', alignItems: 'center', gap: z(8) }}>
         {selecting ? (
